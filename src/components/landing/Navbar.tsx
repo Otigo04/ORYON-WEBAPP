@@ -51,38 +51,44 @@ export function Navbar() {
           <LogoWordmark className="h-7 w-auto" />
         </Link>
 
-        <ul className="hidden items-center gap-8 text-sm text-white/70 md:flex">
-          <li>
-            <ServicesMenu />
-          </li>
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <a href={link.href} className="transition-colors hover:text-white">
-                {link.label}
-              </a>
+        {/* Rechts gruppiert: erst die Navigations-Reiter, dann – durch Abstand
+            und einen dezenten Trenner klar abgesetzt – die Konto-Aktionen. */}
+        <div className="hidden items-center gap-8 md:flex">
+          <ul className="flex items-center gap-7 text-sm text-white/70">
+            <li>
+              <ServicesMenu />
             </li>
-          ))}
-        </ul>
+            {navLinks.map((link) => (
+              <li key={link.href}>
+                <a href={link.href} className="transition-colors hover:text-white">
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
 
-        <div className="hidden items-center gap-2 md:flex">
-          <Link
-            href="/login"
-            className="rounded-full px-4 py-2 text-sm font-semibold text-white/80 transition hover:text-white"
-          >
-            Anmelden
-          </Link>
-          <Link
-            href="/register"
-            className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/25 hover:bg-white/10"
-          >
-            Registrieren
-          </Link>
-          <a
-            href="#kontakt"
-            className="rounded-full bg-[#09ed2d] px-4 py-2 text-sm font-semibold text-black shadow-[0_0_20px_-4px_rgba(9,237,45,0.6)] transition hover:bg-[#09ed2d]/90"
-          >
-            Projekt starten
-          </a>
+          <span aria-hidden="true" className="h-5 w-px bg-white/15" />
+
+          <div className="flex items-center gap-2">
+            <Link
+              href="/login"
+              className="rounded-full px-4 py-2 text-sm font-semibold text-white/80 transition hover:text-white"
+            >
+              Anmelden
+            </Link>
+            <Link
+              href="/register"
+              className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/25 hover:bg-white/10"
+            >
+              Registrieren
+            </Link>
+            <a
+              href="#kontakt"
+              className="rounded-full bg-[#09ed2d] px-4 py-2 text-sm font-semibold text-black shadow-[0_0_20px_-4px_rgba(9,237,45,0.6)] transition hover:bg-[#09ed2d]/90"
+            >
+              Projekt starten
+            </a>
+          </div>
         </div>
 
         {/* Mobile-Umschalter */}

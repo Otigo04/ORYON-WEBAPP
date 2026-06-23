@@ -56,10 +56,24 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="mx-auto mt-10 max-w-5xl border-t border-white/10 pt-6">
+      <div className="mx-auto mt-10 flex max-w-5xl flex-col-reverse gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-xs text-white/40">
           © {new Date().getFullYear()} OTIGO Digital. Alle Rechte vorbehalten.
         </p>
+        <nav aria-label="Rechtliches" className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <Link
+            href="/impressum"
+            className="text-xs text-white/40 transition hover:text-white"
+          >
+            Impressum
+          </Link>
+          <Link
+            href="/datenschutz"
+            className="text-xs text-white/40 transition hover:text-white"
+          >
+            Datenschutz
+          </Link>
+        </nav>
       </div>
     </footer>
   );

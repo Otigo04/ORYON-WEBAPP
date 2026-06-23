@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ScrollProgress } from "@/components/ScrollProgress";
+import { JsonLd } from "@/components/JsonLd";
+import { siteConfig, siteKeywords } from "@/lib/site";
+import { organizationSchema, websiteSchema } from "@/lib/structured-data";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,12 +17,48 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: "OTIGO Digital – Software-Agentur",
+    default: "OTIGO Digital – Preiswerte Webagentur aus Berlin",
     template: "%s | OTIGO Digital",
   },
-  description:
-    "OTIGO Digital: Moderne Webanwendungen, Portfolio, Preisrechner und Kundenportal.",
+  description: siteConfig.description,
+  keywords: siteKeywords,
+  applicationName: siteConfig.name,
+  authors: [{ name: siteConfig.name, url: siteConfig.url }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  category: "technology",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: siteConfig.locale,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    title: "OTIGO Digital – Preiswerte Webagentur aus Berlin",
+    description: siteConfig.description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: siteConfig.social.twitter,
+    creator: siteConfig.social.twitter,
+    title: "OTIGO Digital – Preiswerte Webagentur aus Berlin",
+    description: siteConfig.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  formatDetection: { telephone: false, address: false, email: false },
 };
 
 export default function RootLayout({
@@ -33,6 +72,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <JsonLd data={[organizationSchema(), websiteSchema()]} />
         <ScrollProgress />
         {children}
       </body>

@@ -3,7 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
+import { JsonLd } from "@/components/JsonLd";
 import { branches, getBranche } from "@/lib/branches";
+import { breadcrumbSchema } from "@/lib/structured-data";
 
 type Params = { slug: string };
 
@@ -21,10 +23,14 @@ export async function generateMetadata({
   const branche = getBranche(slug);
   if (!branche) return {};
 
+  const path = `/branchen/${branche.slug}`;
   return {
-    title: `${branche.solution} | OTIGO Digital`,
+    title: branche.solution,
     description: branche.description,
+    alternates: { canonical: path },
     openGraph: {
+      type: "article",
+      url: path,
       title: `${branche.solution} | OTIGO Digital`,
       description: branche.description,
     },
@@ -38,6 +44,13 @@ export default async function BranchePage({ params }: { params: Promise<Params> 
 
   return (
     <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Start", path: "/" },
+          { name: "Leistungen", path: "/#leistungen" },
+          { name: branche.industry, path: `/branchen/${branche.slug}` },
+        ])}
+      />
       <Navbar />
       <main>
         <section className="relative overflow-hidden bg-gradient-to-b from-black via-[#03100a] to-black px-6 pb-24 pt-36">

@@ -15,6 +15,17 @@ const reasons: Reason[] = [
   {
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
+        <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+        <circle cx="12" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.8" />
+      </svg>
+    ),
+    title: "Berliner Unternehmen",
+    description:
+      "Wir sind ein Team aus Berlin – mit echtem Ansprechpartner, kurzen Wegen und persönlichen Terminen vor Ort. Regionale Nähe trifft auf digitale Exzellenz.",
+  },
+  {
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
         <path d="M13 2 4.5 13.5H11l-1 8.5L19.5 10H13z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
       </svg>
     ),

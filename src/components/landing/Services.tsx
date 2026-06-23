@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
+import { PRICING, formatEuro } from "@/lib/pricing";
 
 /**
  * Problem & Solution ("Leistungen") – holt den Kunden bei seinen Pain-Points ab
  * und stellt OTIGO Digital als die Lösung dar. Reine Server Component.
+ * Betont zusätzlich prominent den USP: Agentur-Qualität zum kleinen Preis.
  */
 type Pillar = {
   icon: ReactNode;
@@ -79,7 +81,8 @@ export function Services() {
           </h2>
           <p className="mt-4 text-base text-white/60">
             Die meisten Unternehmen verlieren online Kunden, ohne es zu merken.
-            Wir finden die Schwachstellen – und beheben sie.
+            Wir finden die Schwachstellen – und beheben sie. Zum fairen Festpreis,
+            der deutlich unter dem klassischer Agenturen liegt.
           </p>
         </header>
 
@@ -103,6 +106,38 @@ export function Services() {
               </p>
             </article>
           ))}
+        </div>
+
+        {/* Preis-USP: klar betonen, dass OTIGO Digital sehr preiswert ist */}
+        <div className="relative mt-8 overflow-hidden rounded-2xl border border-[#09ed2d]/30 bg-gradient-to-br from-[#09ed2d]/[0.12] via-white/[0.03] to-black p-6 sm:p-8">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#09ed2d]/20 blur-3xl"
+          />
+          <div className="relative flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="max-w-xl">
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#09ed2d]/30 bg-[#09ed2d]/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[#09ed2d]">
+                Unschlagbar preiswert
+              </span>
+              <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white">
+                Agentur-Qualität zum fairen Festpreis – schon ab{" "}
+                <span className="text-[#09ed2d]">
+                  {formatEuro(PRICING.projectTypes.onepager.base[0])}
+                </span>
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-white/60">
+                Dank schlanker Prozesse und modernster Technik geben wir den
+                Kostenvorteil direkt an dich weiter. Kein Stundenchaos, keine
+                versteckten Kosten – nur ein transparenter Festpreis.
+              </p>
+            </div>
+            <a
+              href="#preisrechner"
+              className="inline-flex flex-shrink-0 items-center justify-center rounded-full bg-[#09ed2d] px-6 py-3 text-sm font-semibold text-black shadow-[0_0_24px_-4px_rgba(9,237,45,0.6)] transition hover:bg-[#09ed2d]/90"
+            >
+              Preis in 60 Sek. berechnen
+            </a>
+          </div>
         </div>
       </div>
     </section>

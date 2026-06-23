@@ -7,8 +7,9 @@ import { NextResponse, type NextRequest } from "next/server";
  *
  * Hinweis (MVP): Solange keine Supabase-Umgebungsvariablen gesetzt sind, wird
  * der Request unverändert durchgereicht, damit die App auch ohne Backend lokal
- * lauffähig bleibt. Die Absicherung geschützter Routen (z. B. Redirect von
- * `/dashboard` auf `/login`) wird aktiviert, sobald Auth & Login-Seite stehen.
+ * lauffähig bleibt. Bei konfiguriertem Backend werden geschützte Routen
+ * abgesichert: nicht eingeloggte Nutzer werden von `/dashboard` auf `/login`
+ * umgeleitet, eingeloggte von `/login` bzw. `/register` auf `/dashboard`.
  */
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -40,7 +41,32 @@ export async function updateSession(request: NextRequest) {
 
   // WICHTIG: getUser() erneuert das Token. Niemals Code dazwischen einfügen,
   // sonst können schwer auffindbare Logout-Bugs entstehen.
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const path = request.nextUrl.pathname;
+  const isProtected = path.startsWith("/dashboard");
+  const isAuthPage = path === "/login" || path === "/register";
+
+  // Geschützte Route ohne Login → zur Anmeldung.
+  if (!user && isProtected) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/login";
+    const redirect = NextResponse.redirect(redirectUrl);
+    // Aktualisierte Auth-Cookies auf die Redirect-Antwort übertragen.
+    supabaseResponse.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
+    return redirect;
+  }
+
+  // Bereits eingeloggt, aber auf Login/Register → ins Dashboard.
+  if (user && isAuthPage) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/dashboard";
+    const redirect = NextResponse.redirect(redirectUrl);
+    supabaseResponse.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
+    return redirect;
+  }
 
   return supabaseResponse;
 }
