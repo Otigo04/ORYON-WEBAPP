@@ -94,13 +94,21 @@ export function calculatePrice(selection: QuoteSelection): PriceResult {
   min += selection.extraLanguages * PRICING.extraLanguage.price[0];
   max += selection.extraLanguages * PRICING.extraLanguage.price[1];
 
+  // Wartung & Hosting ist pro Projektart gestaffelt.
+  const maintenanceRange = PRICING.maintenance.byProjectType[selection.projectType];
+
   return {
     oneTimeMin: roundTo(min),
     oneTimeMax: roundTo(max),
-    monthlyMin: selection.maintenance ? PRICING.maintenance.price[0] : 0,
-    monthlyMax: selection.maintenance ? PRICING.maintenance.price[1] : 0,
+    monthlyMin: selection.maintenance ? maintenanceRange[0] : 0,
+    monthlyMax: selection.maintenance ? maintenanceRange[1] : 0,
     isComplex: project.complex,
   };
+}
+
+/** Wartungs-/Hosting-Spanne für eine Projektart (für die Live-Anzeige). */
+export function maintenanceRangeFor(projectType: ProjectType): Range {
+  return PRICING.maintenance.byProjectType[projectType];
 }
 
 const euroFormatter = new Intl.NumberFormat("de-DE", {

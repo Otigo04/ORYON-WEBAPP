@@ -14,10 +14,10 @@
 export const pricingConfig = {
   /** Projektarten – `base` ist die Einmalpreis-Spanne [min, max]. */
   projectTypes: {
-    onepager:    { label: "One-Pager / Landingpage", base: [900, 1800],    complex: false },
-    website:     { label: "Mehrseitige Website",      base: [2500, 5000],   complex: false },
-    shopSimple:  { label: "Einfacher Online-Shop",    base: [4000, 8000],   complex: false },
-    shopComplex: { label: "Komplexer Online-Shop",    base: [12000, 30000], complex: true  },
+    onepager:    { label: "One-Pager / Landingpage", base: [95, 195],     complex: false },
+    website:     { label: "Mehrseitige Website",      base: [199, 399],    complex: false },
+    shopSimple:  { label: "Einfacher Online-Shop",    base: [450, 990],    complex: false },
+    shopComplex: { label: "Komplexer Online-Shop",    base: [1490, 4900],  complex: true  },
   },
 
   /** Design-Faktor: maßgeschneidert = voller Preis, Template = günstiger. */
@@ -26,18 +26,29 @@ export const pricingConfig = {
 
   /** Optionale Zusatz-Features (Einmalpreis-Aufschlag [min, max]). */
   features: {
-    content:  { label: "Content & Texte",      hint: "Professionelle Texterstellung", price: [600, 1500] },
-    booking:  { label: "Online-Terminbuchung", hint: "Buchungs-/Kalenderfunktion",    price: [800, 1500] },
-    blog:     { label: "Blog / CMS",           hint: "Inhalte selbst pflegen",        price: [700, 1400] },
-    branding: { label: "Logo & Branding",      hint: "Logo-Design / CI-Paket",        price: [500, 1200] },
+    content:  { label: "Content & Texte",      hint: "Professionelle Texterstellung", price: [39, 99] },
+    booking:  { label: "Online-Terminbuchung", hint: "Buchungs-/Kalenderfunktion",    price: [99, 280] },
+    blog:     { label: "Blog / CMS",           hint: "Inhalte selbst pflegen",        price: [90, 180] },
+    branding: { label: "Logo & Branding",      hint: "Logo-Design / CI-Paket",        price: [200, 450] },
+  },
+  /** Aufpreis je zusätzlicher Sprache. `max` = maximal wählbare Sprachen. */
+  extraLanguage: { label: "Weitere Sprache", price: [39, 79], max: 5 },
+
+  /**
+   * Monatliche Wartungs- & Hosting-Pauschale (separat zum Einmalpreis).
+   * Pro Projektart gestaffelt – ein One-Pager ist günstiger zu betreiben als
+   * ein komplexer Online-Shop. Jeweils [min, max] € pro Monat.
+   */
+  maintenance: {
+    label: "Wartung & Hosting",
+    byProjectType: {
+      onepager:    [19, 39],
+      website:     [39, 69],
+      shopSimple:  [59, 119],
+      shopComplex: [99, 199],
+    },
   },
 
-  /** Aufpreis je zusätzlicher Sprache. `max` = maximal wählbare Sprachen. */
-  extraLanguage: { label: "Weitere Sprache", price: [500, 900], max: 5 },
-
-  /** Monatliche Wartungs- & Hosting-Pauschale (separat zum Einmalpreis). */
-  maintenance: { label: "Wartung & Hosting", price: [49, 99] },
-
   /** Beträge werden auf diesen Wert gerundet (saubere Zahlen). 0 = kein Runden. */
-  roundTo: 50,
+  roundTo: 0,
 } as const;

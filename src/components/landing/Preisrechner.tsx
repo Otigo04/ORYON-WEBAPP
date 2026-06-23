@@ -8,10 +8,13 @@ import {
   PROJECT_TYPES,
   FEATURE_KEYS,
   calculatePrice,
+  maintenanceRangeFor,
   formatEuro,
   quoteLeadSchema,
   type QuoteLeadInput,
   type FeatureKey,
+  type ProjectType,
+  type DesignType,
 } from "@/lib/pricing";
 import { saveQuoteLead, type SaveQuoteState } from "@/lib/actions/leads";
 
@@ -61,6 +64,9 @@ export function Preisrechner() {
     () => calculatePrice({ projectType, design, features, extraLanguages, maintenance }),
     [projectType, design, features, extraLanguages, maintenance],
   );
+
+  // Wartung/Hosting ist projektabhängig – Spanne für die Live-Anzeige.
+  const maintenanceRange = maintenanceRangeFor(projectType);
 
   const toggleFeature = (key: FeatureKey) => {
     const next = features.includes(key)
@@ -133,22 +139,22 @@ export function Preisrechner() {
               const pt = PRICING.projectTypes[key];
               const active = projectType === key;
               return (
-                <button
-                  type="button"
+                <OptionCard
                   key={key}
-                  onClick={() => setValue("projectType", key, { shouldValidate: true })}
-                  aria-pressed={active}
-                  className={`flex flex-col items-start gap-1 rounded-xl border p-4 text-left transition ${
-                    active
-                      ? "border-[#09ed2d] bg-[#09ed2d]/10"
-                      : "border-white/10 bg-white/5 hover:border-white/25"
-                  }`}
+                  active={active}
+                  label={pt.label}
+                  onSelect={() => setValue("projectType", key, { shouldValidate: true })}
                 >
-                  <span className="font-medium text-white">{pt.label}</span>
-                  <span className="text-xs text-white/50">
-                    {pt.complex ? "Individuelle Planung" : `ab ${formatEuro(pt.base[0])}`}
-                  </span>
-                </button>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex flex-col gap-1">
+                      <span className="font-medium text-white">{pt.label}</span>
+                      <span className="text-xs text-white/50">
+                        {pt.complex ? "Individuelle Planung" : `ab ${formatEuro(pt.base[0])}`}
+                      </span>
+                    </div>
+                    <HelpTip label={pt.label} text={HELP.project[key]} />
+                  </div>
+                </OptionCard>
               );
             })}
           </div>
@@ -159,22 +165,22 @@ export function Preisrechner() {
             {(["custom", "template"] as const).map((key) => {
               const active = design === key;
               return (
-                <button
-                  type="button"
+                <OptionCard
                   key={key}
-                  onClick={() => setValue("design", key, { shouldValidate: true })}
-                  aria-pressed={active}
-                  className={`flex flex-col items-start gap-1 rounded-xl border p-4 text-left transition ${
-                    active
-                      ? "border-[#09ed2d] bg-[#09ed2d]/10"
-                      : "border-white/10 bg-white/5 hover:border-white/25"
-                  }`}
+                  active={active}
+                  label={PRICING.designLabel[key]}
+                  onSelect={() => setValue("design", key, { shouldValidate: true })}
                 >
-                  <span className="font-medium text-white">{PRICING.designLabel[key]}</span>
-                  <span className="text-xs text-white/50">
-                    {key === "template" ? "günstiger (−20 %)" : "voller Funktionsumfang"}
-                  </span>
-                </button>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex flex-col gap-1">
+                      <span className="font-medium text-white">{PRICING.designLabel[key]}</span>
+                      <span className="text-xs text-white/50">
+                        {key === "template" ? "günstiger (−20 %)" : "voller Funktionsumfang"}
+                      </span>
+                    </div>
+                    <HelpTip label={PRICING.designLabel[key]} text={HELP.design[key]} />
+                  </div>
+                </OptionCard>
               );
             })}
           </div>
@@ -186,41 +192,41 @@ export function Preisrechner() {
               const feature = PRICING.features[key];
               const active = features.includes(key);
               return (
-                <button
-                  type="button"
+                <OptionCard
                   key={key}
-                  onClick={() => toggleFeature(key)}
-                  aria-pressed={active}
-                  className={`flex items-start gap-3 rounded-xl border p-4 text-left transition ${
-                    active
-                      ? "border-[#09ed2d] bg-[#09ed2d]/10"
-                      : "border-white/10 bg-white/5 hover:border-white/25"
-                  }`}
+                  active={active}
+                  label={feature.label}
+                  onSelect={() => toggleFeature(key)}
                 >
-                  <span
-                    className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md border ${
-                      active ? "border-[#09ed2d] bg-[#09ed2d] text-black" : "border-white/30"
-                    }`}
-                  >
-                    {active && (
-                      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-3.5 w-3.5">
-                        <path
-                          d="m5 13 4 4 10-10"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    )}
-                  </span>
-                  <span className="flex flex-col gap-0.5">
-                    <span className="font-medium text-white">{feature.label}</span>
-                    <span className="text-xs text-white/50">{feature.hint}</span>
-                    <span className="text-xs text-[#09ed2d]">+ ab {formatEuro(feature.price[0])}</span>
-                  </span>
-                </button>
+                  <div className="flex items-start gap-3">
+                    <span
+                      className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md border ${
+                        active ? "border-[#09ed2d] bg-[#09ed2d] text-black" : "border-white/30"
+                      }`}
+                    >
+                      {active && (
+                        <svg viewBox="0 0 24 24" aria-hidden="true" className="h-3.5 w-3.5">
+                          <path
+                            d="m5 13 4 4 10-10"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      )}
+                    </span>
+                    <span className="flex flex-1 flex-col gap-0.5">
+                      <span className="flex items-center justify-between gap-2">
+                        <span className="font-medium text-white">{feature.label}</span>
+                        <HelpTip label={feature.label} text={HELP.feature[key]} />
+                      </span>
+                      <span className="text-xs text-white/50">{feature.hint}</span>
+                      <span className="text-xs text-[#09ed2d]">+ ab {formatEuro(feature.price[0])}</span>
+                    </span>
+                  </div>
+                </OptionCard>
               );
             })}
           </div>
@@ -228,7 +234,10 @@ export function Preisrechner() {
           {/* Sprachen-Stepper */}
           <div className="mt-3 flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4">
             <div className="flex flex-col gap-0.5">
-              <span className="font-medium text-white">Weitere Sprachen</span>
+              <span className="flex items-center gap-1.5 font-medium text-white">
+                Weitere Sprachen
+                <HelpTip label="Weitere Sprachen" text={HELP.languages} />
+              </span>
               <span className="text-xs text-white/50">
                 Mehrsprachigkeit · + ab {formatEuro(PRICING.extraLanguage.price[0])}/Sprache
               </span>
@@ -250,35 +259,44 @@ export function Preisrechner() {
             </div>
           </div>
 
-          {/* Wartung & Hosting (monatlich) */}
-          <button
-            type="button"
-            onClick={() => setValue("maintenance", !maintenance, { shouldValidate: true })}
-            aria-pressed={maintenance}
-            className={`mt-3 flex w-full items-center justify-between rounded-xl border p-4 text-left transition ${
+          {/* Wartung & Hosting (monatlich, projektabhängig) */}
+          <div
+            className={`relative mt-3 rounded-xl border p-4 transition ${
               maintenance
                 ? "border-[#09ed2d] bg-[#09ed2d]/10"
                 : "border-white/10 bg-white/5 hover:border-white/25"
             }`}
           >
-            <span className="flex flex-col gap-0.5">
-              <span className="font-medium text-white">{PRICING.maintenance.label}</span>
-              <span className="text-xs text-white/50">
-                Monatlich · ab {formatEuro(PRICING.maintenance.price[0])}/Monat
+            <button
+              type="button"
+              onClick={() => setValue("maintenance", !maintenance, { shouldValidate: true })}
+              aria-pressed={maintenance}
+              aria-label={PRICING.maintenance.label}
+              className="absolute inset-0 z-0 rounded-xl"
+            />
+            <div className="pointer-events-none relative z-10 flex items-center justify-between gap-3">
+              <span className="flex flex-col gap-0.5">
+                <span className="flex items-center gap-1.5 font-medium text-white">
+                  {PRICING.maintenance.label}
+                  <HelpTip label={PRICING.maintenance.label} text={HELP.maintenance} />
+                </span>
+                <span className="text-xs text-white/50">
+                  Monatlich · ab {formatEuro(maintenanceRange[0])}/Monat
+                </span>
               </span>
-            </span>
-            <span
-              className={`relative h-6 w-11 flex-shrink-0 rounded-full transition ${
-                maintenance ? "bg-[#09ed2d]" : "bg-white/15"
-              }`}
-            >
               <span
-                className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${
-                  maintenance ? "left-[1.375rem]" : "left-0.5"
+                className={`relative h-6 w-11 flex-shrink-0 rounded-full transition ${
+                  maintenance ? "bg-[#09ed2d]" : "bg-white/15"
                 }`}
-              />
-            </span>
-          </button>
+              >
+                <span
+                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${
+                    maintenance ? "left-[1.375rem]" : "left-0.5"
+                  }`}
+                />
+              </span>
+            </div>
+          </div>
         </Fieldset>
       </div>
 
@@ -395,6 +413,48 @@ export function Preisrechner() {
 const inputClass =
   "w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder:text-white/30 outline-none transition focus:border-[#09ed2d]/60 focus:ring-1 focus:ring-[#09ed2d]/40";
 
+/**
+ * Kurze, laienverständliche Erklärungen je Punkt – erscheinen im "?"-Tooltip.
+ * Bewusst hier (nicht in der Preis-Config), damit die Preisdatei schlank bleibt.
+ */
+const HELP: {
+  project: Record<ProjectType, string>;
+  design: Record<DesignType, string>;
+  feature: Record<FeatureKey, string>;
+  languages: string;
+  maintenance: string;
+} = {
+  project: {
+    onepager:
+      "Eine einzelne, fokussierte Seite – ideal als digitale Visitenkarte oder für eine Kampagne.",
+    website:
+      "Mehrere Unterseiten (z. B. Start, Über uns, Leistungen, Kontakt) für einen vollständigen Auftritt.",
+    shopSimple:
+      "Online-Shop mit überschaubarem Sortiment, Warenkorb und sicherer Bezahlung.",
+    shopComplex:
+      "Großer Shop mit vielen Produkten, Varianten, Filtern und individuellen Funktionen.",
+  },
+  design: {
+    custom:
+      "Komplett individuell für deine Marke gestaltet – einzigartig und maßgeschneidert.",
+    template:
+      "Basiert auf einer bewährten Vorlage, an deine Marke angepasst – schneller und günstiger.",
+  },
+  feature: {
+    content:
+      "Wir schreiben professionelle, suchmaschinenoptimierte Texte für deine Seite.",
+    booking:
+      "Kunden buchen Termine rund um die Uhr online über einen integrierten Kalender.",
+    blog: "Ein Redaktionssystem (CMS), mit dem du Beiträge und Inhalte selbst pflegen kannst.",
+    branding:
+      "Logo-Design und ein einheitliches Erscheinungsbild (Farben, Schriften, Corporate Identity).",
+  },
+  languages:
+    "Deine Seite zusätzlich in weiteren Sprachen – der Preis gilt je zusätzlicher Sprache.",
+  maintenance:
+    "Laufende Pflege, Sicherheits-Updates, Backups und Hosting deiner Seite – monatlich. Der Preis richtet sich nach der Projektart.",
+};
+
 function Fieldset({
   legend,
   hint,
@@ -466,6 +526,72 @@ function Stepper({
 
 function Dot() {
   return <span className="h-1.5 w-1.5 flex-none rounded-full bg-[#09ed2d]" aria-hidden="true" />;
+}
+
+/**
+ * Auswahl-Karte mit voller Klickfläche.
+ *
+ * Der eigentliche Auswahl-Button liegt als unsichtbare Ebene über der gesamten
+ * Karte (`absolute inset-0`); der sichtbare Inhalt ist `pointer-events-none`,
+ * leitet Klicks also durch. Einzelne interaktive Elemente im Inhalt (z. B. der
+ * "?"-Tooltip) reaktivieren ihre Klicks selbst – so liegt kein Button im Button
+ * (valides, barrierefreies Markup) und die Karte bleibt komplett anklickbar.
+ */
+function OptionCard({
+  active,
+  label,
+  onSelect,
+  children,
+}: {
+  active: boolean;
+  label: string;
+  onSelect: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      className={`relative rounded-xl border p-4 text-left transition ${
+        active
+          ? "border-[#09ed2d] bg-[#09ed2d]/10"
+          : "border-white/10 bg-white/5 hover:border-white/25"
+      }`}
+    >
+      <button
+        type="button"
+        onClick={onSelect}
+        aria-pressed={active}
+        aria-label={label}
+        className="absolute inset-0 z-0 rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-[#09ed2d]/50"
+      />
+      <div className="pointer-events-none relative z-10">{children}</div>
+    </div>
+  );
+}
+
+/**
+ * "?"-Symbol mit Hover-/Fokus-Tooltip, das den jeweiligen Punkt in einfacher
+ * Sprache erklärt. Reines CSS (group-hover / focus-within) – sofort & ohne
+ * State. `pointer-events-auto` macht es auch in durchklickbaren Karten nutzbar.
+ */
+function HelpTip({ text, label }: { text: string; label: string }) {
+  return (
+    <span className="group/tip pointer-events-auto relative inline-flex flex-shrink-0">
+      <button
+        type="button"
+        aria-label={`Erklärung: ${label}`}
+        onClick={(e) => e.preventDefault()}
+        className="flex h-4 w-4 items-center justify-center rounded-full border border-white/25 text-[10px] font-bold leading-none text-white/50 transition hover:border-[#09ed2d]/60 hover:text-[#09ed2d] focus:outline-none focus-visible:ring-1 focus-visible:ring-[#09ed2d]/60"
+      >
+        ?
+      </button>
+      <span
+        role="tooltip"
+        className="pointer-events-none absolute bottom-[calc(100%+8px)] right-0 z-50 w-48 translate-y-1 rounded-lg border border-[#09ed2d]/20 bg-black/95 px-3 py-2 text-left text-xs font-normal leading-relaxed text-white/80 opacity-0 shadow-[0_10px_30px_-12px_rgba(9,237,45,0.45)] backdrop-blur-sm transition-all duration-150 group-hover/tip:translate-y-0 group-hover/tip:opacity-100 group-focus-within/tip:translate-y-0 group-focus-within/tip:opacity-100"
+      >
+        {text}
+      </span>
+    </span>
+  );
 }
 
 /**
