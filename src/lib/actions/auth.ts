@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { siteConfig } from "@/lib/site";
@@ -36,11 +37,41 @@ const registerSchema = z.object({
     .max(72, "Das Passwort darf höchstens 72 Zeichen lang sein."),
 });
 
+const requestResetSchema = z.object({
+  email: z.email("Bitte gib eine gültige E-Mail-Adresse an."),
+});
+
+const updatePasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "Das Passwort muss mindestens 8 Zeichen lang sein.")
+      .max(72, "Das Passwort darf höchstens 72 Zeichen lang sein."),
+    confirm: z.string(),
+  })
+  .refine((data) => data.password === data.confirm, {
+    message: "Die Passwörter stimmen nicht überein.",
+    path: ["confirm"],
+  });
+
 function hasSupabaseEnv() {
   return (
     !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
     !!process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
   );
+}
+
+/**
+ * Ermittelt den Origin der aktuellen Anfrage (z. B. http://localhost:3000 oder
+ * https://www.tas-webworks.de), damit E-Mail-Links lokal wie in Produktion
+ * korrekt funktionieren. Fällt auf die konfigurierte Site-URL zurück.
+ */
+async function getRequestOrigin() {
+  const hdrs = await headers();
+  const host = hdrs.get("host");
+  if (!host) return siteConfig.url;
+  const proto = hdrs.get("x-forwarded-proto") ?? "http";
+  return `${proto}://${host}`;
 }
 
 export async function signInAction(
@@ -119,5 +150,102 @@ export async function signUpAction(
   }
 
   // Session direkt vorhanden (E-Mail-Bestätigung deaktiviert): ins Dashboard.
+  redirect("/dashboard");
+}
+
+/**
+ * Meldet den Nutzer ab (löscht die Supabase-Session bzw. Auth-Cookies) und
+ * leitet zur Anmeldeseite weiter. Als Server-Action direkt in einem <form>
+ * im Dashboard verwendbar.
+ */
+export async function signOutAction() {
+  if (hasSupabaseEnv()) {
+    const supabase = await createClient();
+    await supabase.auth.signOut();
+  }
+  redirect("/login");
+}
+
+/**
+ * Fordert eine Passwort-Zurücksetzen-E-Mail an.
+ *
+ * Sicherheit: Es wird IMMER eine generische Erfolgsmeldung zurückgegeben –
+ * unabhängig davon, ob die E-Mail registriert ist. So lässt sich nicht
+ * herausfinden, welche Adressen ein Konto besitzen (kein User-Enumeration).
+ */
+export async function requestPasswordResetAction(
+  _prev: AuthState,
+  formData: FormData,
+): Promise<AuthState> {
+  const parsed = requestResetSchema.safeParse({
+    email: formData.get("email"),
+  });
+  if (!parsed.success) {
+    return { fieldErrors: parsed.error.flatten().fieldErrors };
+  }
+
+  const successMessage =
+    "Falls ein Konto mit dieser E-Mail existiert, haben wir dir einen Link zum Zurücksetzen geschickt.";
+
+  if (!hasSupabaseEnv()) {
+    return { success: successMessage };
+  }
+
+  try {
+    const origin = await getRequestOrigin();
+    const supabase = await createClient();
+    await supabase.auth.resetPasswordForEmail(parsed.data.email, {
+      redirectTo: `${origin}/auth/confirm?next=/passwort-zuruecksetzen`,
+    });
+  } catch {
+    // Bewusst still: keine Rückmeldung über Existenz/Fehler nach außen.
+  }
+
+  return { success: successMessage };
+}
+
+/**
+ * Setzt ein neues Passwort für den aktuell (per Recovery-Link) eingeloggten
+ * Nutzer. Die Session entsteht zuvor durch die Verify-Route (/auth/confirm),
+ * die den Token aus der E-Mail einlöst.
+ */
+export async function updatePasswordAction(
+  _prev: AuthState,
+  formData: FormData,
+): Promise<AuthState> {
+  const parsed = updatePasswordSchema.safeParse({
+    password: formData.get("password"),
+    confirm: formData.get("confirm"),
+  });
+  if (!parsed.success) {
+    return { fieldErrors: parsed.error.flatten().fieldErrors };
+  }
+
+  if (!hasSupabaseEnv()) {
+    return { error: "Diese Funktion ist derzeit nicht verfügbar. Bitte versuche es später erneut." };
+  }
+
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return {
+        error:
+          "Der Link ist abgelaufen oder ungültig. Bitte fordere einen neuen Link an.",
+      };
+    }
+
+    const { error } = await supabase.auth.updateUser({
+      password: parsed.data.password,
+    });
+    if (error) {
+      return { error: "Passwort konnte nicht gespeichert werden. Bitte versuche es erneut." };
+    }
+  } catch {
+    return { error: "Unerwarteter Fehler. Bitte versuche es erneut." };
+  }
+
   redirect("/dashboard");
 }

@@ -5,7 +5,7 @@ import { LoginForm } from "@/components/auth/LoginForm";
 
 export const metadata: Metadata = {
   title: "Anmelden",
-  description: "Melde dich in deinem OTIGO-Digital-Kundenportal an.",
+  description: "Melde dich in deinem TAS-Webworks-Kundenportal an.",
   robots: { index: false, follow: false },
 };
 

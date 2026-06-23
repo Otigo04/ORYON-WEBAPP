@@ -20,14 +20,15 @@ export function Hero() {
         </span>
 
         <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-6xl">
-          Preiswerte Websites & Lösungen, die dein Unternehmen
-          <span className="text-[#09ed2d]"> wachsen lassen</span>
+          Smarte Web-Lösungen, die dein Unternehmen
+          <span className="text-[#09ed2d]"> wachsen lassen.</span>
         </h1>
 
         <p className="mt-6 max-w-xl text-pretty text-base text-white/70 sm:text-lg">
-          OTIGO Digital ist deine preiswerte Webagentur aus Berlin. Wir
-          entwickeln schnelle, SEO-optimierte Websites, Online-Shops und
-          Landingpages – Performance, Design und Conversion aus einer Hand.
+          TAS Webworks ist dein strategischer Tech-Partner aus Berlin.
+          Wir entwickeln rasante, SEO-optimierte Plattformen, 
+          Online-Shops und Landingpages – Performance, 
+          Design und messbare Ergebnisse aus einer Hand.
         </p>
 
         <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">

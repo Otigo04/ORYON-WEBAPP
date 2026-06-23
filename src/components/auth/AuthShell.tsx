@@ -20,7 +20,7 @@ export function AuthShell({
   title: string;
   subtitle: string;
   children: ReactNode;
-  footer: ReactNode;
+  footer?: ReactNode;
 }) {
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-6 py-16">
@@ -32,7 +32,7 @@ export function AuthShell({
 
       <div className="animate-auth-rise relative z-10 w-full max-w-md">
         <div className="flex justify-center">
-          <Link href="/" aria-label="OTIGO Digital – Startseite" className="inline-flex">
+          <Link href="/" aria-label="TAS Webworks – Startseite" className="inline-flex">
             <LogoWordmark className="h-8 w-auto" />
           </Link>
         </div>
@@ -51,7 +51,9 @@ export function AuthShell({
           <div className="mt-8">{children}</div>
         </div>
 
-        <p className="mt-6 text-center text-sm text-white/50">{footer}</p>
+        {footer && (
+          <p className="mt-6 text-center text-sm text-white/50">{footer}</p>
+        )}
       </div>
     </main>
   );

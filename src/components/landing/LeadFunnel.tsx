@@ -4,6 +4,8 @@
  * interaktiven Rechner auf der Landingpage (`#preisrechner`); alternativ ist die
  * direkte Kontaktaufnahme der zweite Conversion-Pfad.
  */
+import { RainbowButton } from "@/components/ui/rainbow-button";
+
 const guarantees = [
   "Antwort innerhalb von 24 Stunden",
   "Unverbindliches Erstgespräch",
@@ -33,14 +35,11 @@ export function LeadFunnel() {
             </p>
 
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <RainbowButton asChild size="lg">
+                <a href="#preisrechner">Preis berechnen</a>
+              </RainbowButton>
               <a
-                href="#preisrechner"
-                className="w-full rounded-full bg-[#09ed2d] px-7 py-3.5 text-sm font-semibold text-black transition hover:bg-[#09ed2d]/90 sm:w-auto"
-              >
-                Preis berechnen
-              </a>
-              <a
-                href="mailto:hello@otigo-digital.de"
+                href="mailto:hello@tas-webworks.de"
                 className="w-full rounded-full border border-white/15 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 sm:w-auto"
               >
                 Direkt anfragen

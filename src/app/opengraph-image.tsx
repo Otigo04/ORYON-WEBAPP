@@ -6,7 +6,7 @@ import { siteConfig } from "@/lib/site";
  * Markendesign (dunkel + OTIGO-Grün) – sorgt für hochwertige Link-Previews
  * auf LinkedIn, X, WhatsApp & Co. (wichtiger Social-/SEO-Signalgeber).
  */
-export const alt = "OTIGO Digital – Preiswerte Webagentur aus Berlin";
+export const alt = "TAS Webworks – Preiswerte Webagentur aus Berlin";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -37,9 +37,9 @@ export default function OpengraphImage() {
             }}
           />
           <div style={{ display: "flex", fontSize: "34px", fontWeight: 700, color: "#fff" }}>
-            OTIGO{" "}
+            TAS{" "}
             <span style={{ color: "rgba(255,255,255,0.55)", marginLeft: "10px" }}>
-              Digital
+              Webworks
             </span>
           </div>
         </div>

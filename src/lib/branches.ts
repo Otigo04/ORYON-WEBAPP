@@ -26,12 +26,12 @@ export const branches: Branche[] = [
   {
     slug: "personenbefoerderung",
     industry: "Personenbeförderung",
-    solution: "OTIGO-FLEET – Ihre Flottenlösung",
+    solution: "TAS-FLEET – Ihre Flottenlösung",
     description:
       "Digitale Flotten-, Buchungs- und Dispositionsverwaltung für Taxi-, Mietwagen- und Shuttle-Unternehmen.",
-    headline: "OTIGO-FLEET – Die digitale Flottenlösung für die Personenbeförderung",
+    headline: "TAS-FLEET – Die digitale Flottenlösung für die Personenbeförderung",
     intro:
-      "Schluss mit Zettelwirtschaft und Telefonchaos. OTIGO-FLEET bündelt Buchung, Disposition und Abrechnung in einer schnellen, sicheren Web-App – maßgeschneidert für Taxi-, Mietwagen- und Shuttle-Betriebe.",
+      "Schluss mit Zettelwirtschaft und Telefonchaos. TAS-FLEET bündelt Buchung, Disposition und Abrechnung in einer schnellen, sicheren Web-App – maßgeschneidert für Taxi-, Mietwagen- und Shuttle-Betriebe.",
     features: [
       "Online-Buchung & automatische Disposition",
       "Fahrer-, Fahrzeug- und Schichtverwaltung",

@@ -31,7 +31,7 @@ const reasons: Reason[] = [
     ),
     title: "Blitzschnelle Ladezeiten",
     description:
-      "Deine Website öffnet sich in unter einer Sekunde – so verlieren Besucher keine Geduld und kaufen lieber bei dir ein.",
+      "Deine Website öffnet sich in unter einer Sekunde, so verlieren Besucher keine Geduld und kaufen lieber bei dir ein.",
     details:
       "Server-Side Rendering, Edge-Caching und optimierte Assets sorgen für Ladezeiten unter 1 s und grüne Core Web Vitals.",
   },
@@ -43,7 +43,7 @@ const reasons: Reason[] = [
     ),
     title: "Zukunftssichere Technik",
     description:
-      "Wir bauen mit Technologie, die noch in fünf Jahren einwandfrei funktioniert – kein teurer Umbau, keine veralteten Systeme.",
+      "Wir bauen mit Technologie, die noch in fünf Jahren einwandfrei funktioniert! Kein teurer Umbau, keine veralteten Systeme.",
     details:
       "Next.js App Router, TypeScript Strict Mode und saubere, typsichere Datenflüsse garantieren langfristige Wartbarkeit und einfache Erweiterungen.",
   },
@@ -56,7 +56,7 @@ const reasons: Reason[] = [
     ),
     title: "Mehr Kunden über Google",
     description:
-      "Wir sorgen dafür, dass dich deine Kunden bei Google finden – ohne teure Werbeanzeigen, einfach durch bessere Technik.",
+      "Wir sorgen dafür, dass dich deine Kunden bei Google finden. Ohne teure Werbeanzeigen, einfach durch bessere Technik.",
     details:
       "Technisch sauberes, serverseitig gerendertes HTML, strukturierte Daten (Schema.org) und grüne Core Web Vitals optimieren dein organisches Ranking.",
   },
@@ -69,9 +69,9 @@ const reasons: Reason[] = [
     ),
     title: "Immer online & sicher",
     description:
-      "Deine Website ist rund um die Uhr erreichbar und alle Kundendaten sind sicher geschützt – automatisch und ohne extra Aufwand für dich.",
+      "Deine Website ist rund um die Uhr erreichbar und alle Kundendaten sind sicher geschützt. Automatisch und ohne extra Aufwand für dich.",
     details:
-      "Serverless-Hosting auf Vercel & Supabase mit Auto-Scaling, Row-Level Security und Ende-zu-Ende-Verschlüsselung – höchste Verfügbarkeit garantiert.",
+      "Serverless-Hosting auf Vercel & Supabase mit Auto-Scaling, Row-Level Security und Ende-zu-Ende-Verschlüsselung –> höchste Verfügbarkeit garantiert.",
   },
   {
     icon: (
@@ -81,7 +81,7 @@ const reasons: Reason[] = [
     ),
     title: "Design, das verkauft",
     description:
-      "Wir gestalten deine Website so, dass aus Besuchern echte Kunden werden – durch klares Design und den richtigen ersten Eindruck.",
+      "Wir gestalten deine Website so, dass aus Besuchern echte Kunden werden, durch klares Design und den richtigen ersten Eindruck.",
     details:
       "Datengetriebenes UI/UX, durchdachte Call-to-Actions und Conversion-Funnels, die messbar mehr Anfragen und Käufe generieren.",
   },
@@ -96,9 +96,37 @@ const reasons: Reason[] = [
     ),
     title: "Alles aus einer Hand",
     description:
-      "Von der ersten Idee bis zur fertigen Website – ein Team, ein Ansprechpartner, kein Chaos. Du musst nichts koordinieren.",
+      "Von der ersten Idee bis zur fertigen Website - ein Team, ein Ansprechpartner, kein Chaos. Du musst nichts koordinieren.",
     details:
-      "Integrierter Prozess aus Strategie, Design, Entwicklung und Hosting – keine Schnittstellen zwischen Dienstleistern, klare Verantwortung.",
+      "Integrierter Prozess aus Strategie, Design, Entwicklung und Hosting, keine Schnittstellen zwischen Dienstleistern, klare Verantwortung.",
+  },
+  {
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
+        <path d="M9 7h6M9 11h6M9 15h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" strokeWidth="1.8" />
+        <circle cx="19" cy="19" r="4" fill="black" stroke="currentColor" strokeWidth="1.6" />
+        <path d="M19 17v2l1 1" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+    title: "Transparente Festpreise",
+    description:
+      "Keine versteckten Kosten oder böse Überraschungen. Mit unserem interaktiven Preisrechner kalkulierst du dein Budget vorab und weißt von Tag eins an exakt, woran du bist.",
+    details:
+      "Dynamische Kostenkalkulation in Echtzeit. Feste Projektpakete statt stündlicher Abrechnungen – Planungssicherheit vom ersten Klick an.",
+  },
+  {
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
+        <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+        <path d="M14 17h6M17 14v6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    ),
+    title: "Automatisierte Prozesse",
+    description:
+      "Wir beenden das Zettelchaos. Ob digitale Terminbuchung, Mitarbeiter-Dashboard oder Planungs-App – wir digitalisieren und vereinfachen deinen Arbeitsalltag spürbar.",
+    details:
+      "Maßgeschneiderte Web-Apps mit Next.js. Automatische Workflows ersetzen manuelle Schritte und sparen deinem Team täglich wertvolle Zeit.",
   },
 ];
 
@@ -152,13 +180,13 @@ export function WhyUs() {
       <div className="relative mx-auto max-w-5xl">
         <header className="mb-14 max-w-2xl">
           <span className="text-sm font-medium uppercase tracking-[0.2em] text-[#09ed2d]">
-            Warum OTIGO Digital
+            Warum TAS Webworks
           </span>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
             Was uns zur richtigen Wahl macht
           </h2>
           <p className="mt-4 text-base text-white/60">
-            Wir kümmern uns um alles Technische – damit du dich auf dein
+            Wir kümmern uns um alles Technische, damit du dich auf dein
             Geschäft konzentrieren kannst und deine Website für dich arbeitet.
           </p>
         </header>

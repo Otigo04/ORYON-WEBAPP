@@ -9,16 +9,16 @@
  * fällt sonst auf die Standard-Domain zurück.
  */
 export const siteConfig = {
-  name: "OTIGO Digital",
+  name: "TAS Webworks",
   /** Vollständiger rechtlicher Name (Impressum). */
-  legalName: "OTIGO Digital (Inhaber: Max Mustermann)",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.otigo-digital.de",
+  legalName: "TAS Webworks (Inhaber: Max Mustermann)",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.tas-webworks.de",
   description:
-    "OTIGO Digital ist deine Webagentur aus Berlin für blitzschnelle, SEO-optimierte Websites, Online-Shops und Landingpages – preiswert, modern und conversion-stark. Richtpreis in 60 Sekunden berechnen.",
+    "TAS Webworks ist deine Webagentur aus Berlin für blitzschnelle, SEO-optimierte Websites, Online-Shops und Landingpages – preiswert, modern und conversion-stark. Richtpreis in 60 Sekunden berechnen.",
   /** Kurze Tagline für OG-Bild & Social. */
   tagline: "Preiswerte Webagentur aus Berlin",
   locale: "de_DE",
-  email: "hello@otigo-digital.de",
+  email: "hello@tas-webworks.de",
   /** Platzhalter-Telefonnummer (Impressum/Kontakt). */
   telephone: "+49 30 1234567",
   /** Platzhalter-Anschrift (Berlin). */
@@ -36,9 +36,9 @@ export const siteConfig = {
   founder: "Max Mustermann",
   foundingYear: "2024",
   social: {
-    twitter: "@otigodigital",
-    linkedin: "https://www.linkedin.com/company/otigo-digital",
-    instagram: "https://www.instagram.com/otigo.digital",
+    twitter: "@taswebworks",
+    linkedin: "https://www.linkedin.com/company/tas-webworks",
+    instagram: "https://www.instagram.com/tas.webworks",
   },
 } as const;
 
@@ -57,5 +57,5 @@ export const siteKeywords = [
   "Next.js Agentur",
   "Webentwicklung Berlin",
   "professionelle Website günstig",
-  "OTIGO Digital",
+  "TAS Webworks",
 ];

@@ -31,7 +31,7 @@ export async function generateMetadata({
     openGraph: {
       type: "article",
       url: path,
-      title: `${branche.solution} | OTIGO Digital`,
+      title: `${branche.solution} | TAS Webworks`,
       description: branche.description,
     },
   };

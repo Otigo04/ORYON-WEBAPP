@@ -11,7 +11,7 @@ import { siteConfig } from "@/lib/site";
 const ORG_ID = `${siteConfig.url}/#organization`;
 const WEBSITE_ID = `${siteConfig.url}/#website`;
 
-/** OTIGO Digital als lokales Unternehmen (Berlin) – Basis für Knowledge Graph. */
+/** TAS Webworks als lokales Unternehmen (Berlin) – Basis für Knowledge Graph. */
 export function organizationSchema() {
   return {
     "@context": "https://schema.org",

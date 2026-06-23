@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { PRICING, formatEuro } from "@/lib/pricing";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 
 /**
  * Problem & Solution ("Leistungen") – holt den Kunden bei seinen Pain-Points ab
@@ -55,9 +56,9 @@ const pillars: Pillar[] = [
       </svg>
     ),
     problem: "Fehlende Digitalisierung & Skalierung",
-    title: "Skalierbare Cloud-Lösungen",
+    title: "Automatisierte Prozesse",
     description:
-      "Manuelle Prozesse bremsen Wachstum. Wir digitalisieren Abläufe und deployen serverless auf Vercel & Supabase – sicher, RLS-geschützt und mitwachsend.",
+      "Wir digitalisieren deine Abläufe, von der Terminbuchung bis zur Kundenverwaltung. Sicher, DSGVO-konform und jederzeit erweiterbar.",
   },
 ];
 
@@ -131,12 +132,9 @@ export function Services() {
                 versteckten Kosten – nur ein transparenter Festpreis.
               </p>
             </div>
-            <a
-              href="#preisrechner"
-              className="inline-flex flex-shrink-0 items-center justify-center rounded-full bg-[#09ed2d] px-6 py-3 text-sm font-semibold text-black shadow-[0_0_24px_-4px_rgba(9,237,45,0.6)] transition hover:bg-[#09ed2d]/90"
-            >
-              Preis in 60 Sek. berechnen
-            </a>
+            <RainbowButton asChild>
+              <a href="#preisrechner">Preis in 60 Sek. berechnen</a>
+            </RainbowButton>
           </div>
         </div>
       </div>

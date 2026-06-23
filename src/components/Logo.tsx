@@ -9,11 +9,11 @@ function isSvg(src: string) {
   return src.toLowerCase().endsWith(".svg");
 }
 
-export function LogoMark({ className, src = "/logo/otigo-mark.svg" }: LogoProps) {
+export function LogoMark({ className, src = "/logo/tas_mark.svg" }: LogoProps) {
   return (
     <Image
       src={src}
-      alt="OTIGO Digital"
+      alt="TAS Webworks"
       width={32}
       height={32}
       priority
@@ -23,11 +23,11 @@ export function LogoMark({ className, src = "/logo/otigo-mark.svg" }: LogoProps)
   );
 }
 
-export function LogoWordmark({ className, src = "/logo/otigo-wordmark.svg" }: LogoProps) {
+export function LogoWordmark({ className, src = "/logo/tas_wordmark.svg" }: LogoProps) {
   return (
     <Image
       src={src}
-      alt="OTIGO Digital"
+      alt="TAS Webworks"
       width={200}
       height={32}
       priority

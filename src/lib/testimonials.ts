@@ -18,7 +18,7 @@ const fallbackTestimonials: Testimonial[] = [
     author: "Lena Brandt",
     role: "Gründerin, NORDLICHT Studio",
     quote:
-      "OTIGO hat unsere Plattform in Rekordzeit umgesetzt. Schnell, sauber und messbar mehr Anfragen über die Seite.",
+      "TAS Webworks hat unsere Plattform in Rekordzeit umgesetzt. Schnell, sauber und messbar mehr Anfragen über die Seite.",
     rating: 5,
   },
   {

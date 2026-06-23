@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import BeamsBackground from "@/components/BeamsBackground";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { getMyLeads, projectTypeLabel } from "@/lib/leads";
+import { getMyProfile, firstNameOf } from "@/lib/profile";
 import { formatEuro } from "@/lib/pricing";
 
 export const metadata: Metadata = {
-  title: "Dashboard – OTIGO Digital",
+  title: "Dashboard – TAS Webworks",
   description: "Dein persönlicher Bereich: Angebote, Leads und Projektübersicht.",
   robots: { index: false, follow: false },
 };
@@ -24,7 +26,9 @@ const dateFormatter = new Intl.DateTimeFormat("de-DE", {
  * des eingeloggten Nutzers via RLS abgesichert geladen.
  */
 export default async function DashboardPage() {
-  const leads = await getMyLeads();
+  const [leads, profile] = await Promise.all([getMyLeads(), getMyProfile()]);
+  const firstName = firstNameOf(profile?.full_name);
+  const greeting = firstName ? `Willkommen zurück, ${firstName}` : "Willkommen zurück";
 
   const stats = [
     {
@@ -44,16 +48,19 @@ export default async function DashboardPage() {
     <main className="relative min-h-screen overflow-hidden bg-black text-white">
       <BeamsBackground />
 
-      {/* Lesbarkeits-Overlay über dem WebGL-Hintergrund */}
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-black/30 via-black/50 to-black/80" />
+      {/* Lesbarkeits-Overlay über dem WebGL-Hintergrund – bewusst leicht
+          gehalten, damit der Hintergrund so clean wirkt wie auf der Startseite. */}
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-black/40 via-black/25 to-black" />
 
-      <div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-10 px-6 py-12">
+      <DashboardHeader />
+
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 pb-16 pt-10">
         <header className="flex flex-col gap-2">
           <span className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-400">
-            OTIGO Digital
+            Kundenportal
           </span>
           <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-            Willkommen zurück
+            {greeting}
           </h1>
           <p className="max-w-xl text-base text-white/70">
             Hier findest du deine berechneten Angebote, eingegangenen Leads und

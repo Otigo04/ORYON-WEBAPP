@@ -5,7 +5,7 @@ import { RegisterForm } from "@/components/auth/RegisterForm";
 
 export const metadata: Metadata = {
   title: "Registrieren",
-  description: "Erstelle dein kostenloses OTIGO-Digital-Konto und verwalte deine Projekte.",
+  description: "Erstelle dein kostenloses TAS-Webworks-Konto und verwalte deine Projekte.",
   robots: { index: false, follow: false },
 };
 

@@ -8,6 +8,7 @@ import { Testimonials } from "@/components/landing/Testimonials";
 import { PreisrechnerSection } from "@/components/landing/PreisrechnerSection";
 import { Faq } from "@/components/landing/Faq";
 import { LeadFunnel } from "@/components/landing/LeadFunnel";
+import { BrandSection } from "@/components/landing/BrandSection";
 import { Footer } from "@/components/landing/Footer";
 import { JsonLd } from "@/components/JsonLd";
 import { faqSchema } from "@/lib/structured-data";
@@ -28,6 +29,7 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
+        <BrandSection />
         <Services />
         <WhyUs />
         <Portfolio />

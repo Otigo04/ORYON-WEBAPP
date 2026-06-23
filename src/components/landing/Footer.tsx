@@ -13,8 +13,8 @@ export function Footer() {
     <footer className="border-t border-white/10 bg-black px-6 py-14">
       <div className="mx-auto flex max-w-5xl flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
         <div className="max-w-sm">
-          <Link href="/" aria-label="OTIGO Digital – Startseite" className="inline-flex">
-            <LogoWordmark className="h-7 w-auto" />
+          <Link href="/" aria-label="TAS Webworks – Startseite" className="inline-flex">
+            <LogoWordmark className="h-12 w-auto" />
           </Link>
           <p className="mt-4 text-sm text-white/60">
             Software, die dein Unternehmen wachsen lässt. Performance, Design und
@@ -42,10 +42,10 @@ export function Footer() {
             Kontakt
           </span>
           <a
-            href="mailto:hello@otigo-digital.de"
+            href="mailto:hello@tas-webworks.de"
             className="text-sm text-white/60 transition hover:text-white"
           >
-            hello@otigo-digital.de
+            hello@tas-webworks.de
           </a>
           <Link
             href="/dashboard"
@@ -58,7 +58,7 @@ export function Footer() {
 
       <div className="mx-auto mt-10 flex max-w-5xl flex-col-reverse gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-xs text-white/40">
-          © {new Date().getFullYear()} OTIGO Digital. Alle Rechte vorbehalten.
+          © {new Date().getFullYear()} TAS Webworks. Alle Rechte vorbehalten.
         </p>
         <nav aria-label="Rechtliches" className="flex flex-wrap items-center gap-x-6 gap-y-2">
           <Link

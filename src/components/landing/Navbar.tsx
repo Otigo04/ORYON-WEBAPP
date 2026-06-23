@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { LogoWordmark } from "@/components/Logo";
+import { LogoMark } from "@/components/Logo";
 import { ServicesMenu } from "@/components/landing/ServicesMenu";
 import { branches } from "@/lib/branches";
 
@@ -44,11 +44,13 @@ export function Navbar() {
       >
         <Link
           href="/"
-          aria-label="OTIGO Digital – Startseite"
+          aria-label="TAS Webworks – Startseite"
           className="flex items-center"
           onClick={() => setMenuOpen(false)}
         >
-          <LogoWordmark className="h-7 w-auto" />
+          <span className="animate-gem-glow inline-flex items-center justify-center rounded-xl p-1.5">
+            <LogoMark className="h-8 w-auto animate-gem-pulse" />
+          </span>
         </Link>
 
         {/* Rechts gruppiert: erst die Navigations-Reiter, dann – durch Abstand

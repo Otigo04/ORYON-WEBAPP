@@ -19,8 +19,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "OTIGO Digital – Preiswerte Webagentur aus Berlin",
-    template: "%s | OTIGO Digital",
+    default: "TAS Webworks – Preiswerte Webagentur aus Berlin",
+    template: "%s | TAS Webworks",
   },
   description: siteConfig.description,
   keywords: siteKeywords,
@@ -37,14 +37,14 @@ export const metadata: Metadata = {
     locale: siteConfig.locale,
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: "OTIGO Digital – Preiswerte Webagentur aus Berlin",
+    title: "TAS Webworks – Preiswerte Webagentur aus Berlin",
     description: siteConfig.description,
   },
   twitter: {
     card: "summary_large_image",
     site: siteConfig.social.twitter,
     creator: siteConfig.social.twitter,
-    title: "OTIGO Digital – Preiswerte Webagentur aus Berlin",
+    title: "TAS Webworks – Preiswerte Webagentur aus Berlin",
     description: siteConfig.description,
   },
   robots: {
