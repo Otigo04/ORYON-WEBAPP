@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 /**
  * „Warum wir" – Vertrauens- & USP-Sektion. Bündelt die zentralen
- * Verkaufsargumente von ORYON SYSTEMS. Reine Server Component. Ein dezenter
+ * Verkaufsargumente von OTIGO Digital. Reine Server Component. Ein dezenter
  * grüner Ambient-Glow lockert die ansonsten sehr dunkle Fläche auf.
  */
 type Reason = {
@@ -94,7 +94,7 @@ export function WhyUs() {
       <div className="relative mx-auto max-w-5xl">
         <header className="mb-14 max-w-2xl">
           <span className="text-sm font-medium uppercase tracking-[0.2em] text-[#09ed2d]">
-            Warum ORYON SYSTEMS
+            Warum OTIGO Digital
           </span>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
             Was uns zur richtigen Wahl macht

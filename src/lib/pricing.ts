@@ -2,7 +2,7 @@ import { z } from "zod";
 import { pricingConfig } from "../../pricing.config";
 
 /**
- * Preislogik des ORYON-Preisrechners.
+ * Preislogik des OTIGO-Preisrechners.
  *
  * Eine einzige Quelle der Wahrheit für Validierung UND Berechnung – genutzt
  * sowohl im Client (Live-Berechnung, React-Hook-Form) als auch in der Server

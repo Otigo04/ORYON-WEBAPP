@@ -1,5 +1,5 @@
 /**
- * Branchen-Lösungen von ORYON SYSTEMS.
+ * Branchen-Lösungen von OTIGO Digital.
  *
  * Zentrale Datenquelle für das "Leistungen"-Dropdown in der Navbar sowie für die
  * dynamischen Branchenseiten unter `/branchen/[slug]`. So bleiben Navigation und
@@ -10,7 +10,7 @@ export type Branche = {
   slug: string;
   /** Branche – wird im Dropdown als kleine Überschrift gezeigt. */
   industry: string;
-  /** Konkrete ORYON-Lösung für diese Branche (Card-Titel). */
+  /** Konkrete OTIGO-Lösung für diese Branche (Card-Titel). */
   solution: string;
   /** Kurzbeschreibung für Dropdown & SEO-Description. */
   description: string;
@@ -26,12 +26,12 @@ export const branches: Branche[] = [
   {
     slug: "personenbefoerderung",
     industry: "Personenbeförderung",
-    solution: "ORYON-FLEET – Ihre Flottenlösung",
+    solution: "OTIGO-FLEET – Ihre Flottenlösung",
     description:
       "Digitale Flotten-, Buchungs- und Dispositionsverwaltung für Taxi-, Mietwagen- und Shuttle-Unternehmen.",
-    headline: "ORYON-FLEET – Die digitale Flottenlösung für die Personenbeförderung",
+    headline: "OTIGO-FLEET – Die digitale Flottenlösung für die Personenbeförderung",
     intro:
-      "Schluss mit Zettelwirtschaft und Telefonchaos. ORYON-FLEET bündelt Buchung, Disposition und Abrechnung in einer schnellen, sicheren Web-App – maßgeschneidert für Taxi-, Mietwagen- und Shuttle-Betriebe.",
+      "Schluss mit Zettelwirtschaft und Telefonchaos. OTIGO-FLEET bündelt Buchung, Disposition und Abrechnung in einer schnellen, sicheren Web-App – maßgeschneidert für Taxi-, Mietwagen- und Shuttle-Betriebe.",
     features: [
       "Online-Buchung & automatische Disposition",
       "Fahrer-, Fahrzeug- und Schichtverwaltung",

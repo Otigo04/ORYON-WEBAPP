@@ -40,7 +40,7 @@ export function LeadFunnel() {
                 Preis berechnen
               </a>
               <a
-                href="mailto:hello@oryon-systems.de"
+                href="mailto:hello@otigo-digital.de"
                 className="w-full rounded-full border border-white/15 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/10 sm:w-auto"
               >
                 Direkt anfragen

@@ -25,7 +25,7 @@ export function Hero() {
         </h1>
 
         <p className="mt-6 max-w-xl text-pretty text-base text-white/70 sm:text-lg">
-          ORYON SYSTEMS entwickelt schnelle, skalierbare Webanwendungen –
+          OTIGO Digital entwickelt schnelle, skalierbare Webanwendungen –
           von der Landingpage bis zum Kundenportal. Performance, Design und
           Conversion aus einer Hand.
         </p>

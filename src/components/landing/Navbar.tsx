@@ -44,7 +44,7 @@ export function Navbar() {
       >
         <Link
           href="/"
-          aria-label="ORYON SYSTEMS – Startseite"
+          aria-label="OTIGO Digital – Startseite"
           className="flex items-center"
           onClick={() => setMenuOpen(false)}
         >

@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- *  ORYON PREISRECHNER – PREISE HIER BEARBEITEN
+ *  OTIGO PREISRECHNER – PREISE HIER BEARBEITEN
  * ============================================================================
  *
  * Diese Datei liegt bewusst im Projekt-Hauptverzeichnis, damit Preise schnell

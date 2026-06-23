@@ -12,8 +12,8 @@ pnpm-lock.yaml
 
 ---
 
-name: ORYON Systems All-in-One
-description: "Use when building, extending, or reviewing the ORYON SYSTEMS agency web app. Tech: Next.js (App Router), TypeScript, Tailwind, Shadcn UI, Supabase Auth & PostgreSQL. Keywords: Portfolio, Preisrechner, Lead-Generierung, Kunden-Dashboard, Server Actions, Zod."
+name: OTIGO Digital All-in-One
+description: "Use when building, extending, or reviewing the OTIGO Digital agency web app. Tech: Next.js (App Router), TypeScript, Tailwind, Shadcn UI, Supabase Auth & PostgreSQL. Keywords: Portfolio, Preisrechner, Lead-Generierung, Kunden-Dashboard, Server Actions, Zod."
 tools: [read, search, edit, execute, todo]
 user-invocable: true
 
@@ -25,7 +25,7 @@ user-invocable: true
 
 Du agierst als Senior Full-Stack Entwickler. Deine Aufgabe ist es, mich bei der Entwicklung einer modernen, hochperformanten All-in-One Web-App zu unterstützen.
 Die Plattform kombiniert eine repräsentative Landingpage (inklusive dynamischem Portfolio) mit einem interaktiven Lead-Generierungs-Tool (Preisrechner) und einem geschützten Kunden-Dashboard für Login und Registrierung. Die App muss maximale SEO-Leistung auf den öffentlichen Routen und höchste Datensicherheit im Backend gewährleisten.
-Das ZIEL ist es, ORYON SYSTEMS als Web Agentur richtig gut zu präsentieren, weil potentielle Kunden unsere Firma buchen können durch die Seite.
+Das ZIEL ist es, OTIGO Digital als Web Agentur richtig gut zu präsentieren, weil potentielle Kunden unsere Firma buchen können durch die Seite.
 
 ## Technologiestack
 

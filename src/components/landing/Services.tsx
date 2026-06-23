@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 /**
  * Problem & Solution ("Leistungen") – holt den Kunden bei seinen Pain-Points ab
- * und stellt ORYON SYSTEMS als die Lösung dar. Reine Server Component.
+ * und stellt OTIGO Digital als die Lösung dar. Reine Server Component.
  */
 type Pillar = {
   icon: ReactNode;

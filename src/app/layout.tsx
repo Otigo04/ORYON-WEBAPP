@@ -15,11 +15,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "ORYON SYSTEMS – Software-Agentur",
-    template: "%s | ORYON SYSTEMS",
+    default: "OTIGO Digital – Software-Agentur",
+    template: "%s | OTIGO Digital",
   },
   description:
-    "ORYON SYSTEMS: Moderne Webanwendungen, Portfolio, Preisrechner und Kundenportal.",
+    "OTIGO Digital: Moderne Webanwendungen, Portfolio, Preisrechner und Kundenportal.",
 };
 
 export default function RootLayout({

@@ -22,10 +22,10 @@ export async function generateMetadata({
   if (!branche) return {};
 
   return {
-    title: `${branche.solution} | ORYON SYSTEMS`,
+    title: `${branche.solution} | OTIGO Digital`,
     description: branche.description,
     openGraph: {
-      title: `${branche.solution} | ORYON SYSTEMS`,
+      title: `${branche.solution} | OTIGO Digital`,
       description: branche.description,
     },
   };

@@ -4,7 +4,7 @@ import { getMyLeads, projectTypeLabel } from "@/lib/leads";
 import { formatEuro } from "@/lib/pricing";
 
 export const metadata: Metadata = {
-  title: "Dashboard – ORYON SYSTEMS",
+  title: "Dashboard – OTIGO Digital",
   description: "Dein persönlicher Bereich: Angebote, Leads und Projektübersicht.",
   robots: { index: false, follow: false },
 };
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-10 px-6 py-12">
         <header className="flex flex-col gap-2">
           <span className="text-sm font-medium uppercase tracking-[0.2em] text-emerald-400">
-            ORYON SYSTEMS
+            OTIGO Digital
           </span>
           <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
             Willkommen zurück

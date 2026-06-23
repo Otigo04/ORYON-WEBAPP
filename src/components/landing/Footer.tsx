@@ -13,7 +13,7 @@ export function Footer() {
     <footer className="border-t border-white/10 bg-black px-6 py-14">
       <div className="mx-auto flex max-w-5xl flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
         <div className="max-w-sm">
-          <Link href="/" aria-label="ORYON SYSTEMS – Startseite" className="inline-flex">
+          <Link href="/" aria-label="OTIGO Digital – Startseite" className="inline-flex">
             <LogoWordmark className="h-7 w-auto" />
           </Link>
           <p className="mt-4 text-sm text-white/60">
@@ -42,10 +42,10 @@ export function Footer() {
             Kontakt
           </span>
           <a
-            href="mailto:hello@oryon-systems.de"
+            href="mailto:hello@otigo-digital.de"
             className="text-sm text-white/60 transition hover:text-white"
           >
-            hello@oryon-systems.de
+            hello@otigo-digital.de
           </a>
           <Link
             href="/dashboard"
@@ -58,7 +58,7 @@ export function Footer() {
 
       <div className="mx-auto mt-10 max-w-5xl border-t border-white/10 pt-6">
         <p className="text-xs text-white/40">
-          © {new Date().getFullYear()} ORYON SYSTEMS. Alle Rechte vorbehalten.
+          © {new Date().getFullYear()} OTIGO Digital. Alle Rechte vorbehalten.
         </p>
       </div>
     </footer>
