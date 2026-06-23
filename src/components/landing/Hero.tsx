@@ -20,7 +20,7 @@ export function Hero() {
         </span>
 
         <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-6xl">
-          Preiswerte Websites, die dein Unternehmen
+          Preiswerte Websites & Lösungen, die dein Unternehmen
           <span className="text-[#09ed2d]"> wachsen lassen</span>
         </h1>
 
@@ -33,7 +33,7 @@ export function Hero() {
         <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
           <a
             href="#kontakt"
-            className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-white/90"
+            className="whitespace-nowrap rounded-full bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-white/90"
           >
             Projekt starten
           </a>
