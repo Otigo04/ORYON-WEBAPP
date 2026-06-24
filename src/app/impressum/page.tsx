@@ -10,9 +10,8 @@ export const metadata: Metadata = {
 };
 
 /**
- * Impressum (Anbieterkennzeichnung) – rechtssicheres Dummy nach § 5 TMG und
- * § 18 Abs. 2 MStV. Die personen-/firmenbezogenen Angaben sind Platzhalter aus
- * `siteConfig` und müssen vor dem Live-Gang durch echte Daten ersetzt werden.
+ * Impressum (Anbieterkennzeichnung) nach § 5 TMG und § 18 Abs. 2 MStV.
+ * Die personen-/firmenbezogenen Angaben werden zentral aus `siteConfig` bezogen.
  */
 export default function ImpressumPage() {
   const { address } = siteConfig;
@@ -34,11 +33,6 @@ export default function ImpressumPage() {
           <br />
           Deutschland
         </p>
-        <p className="text-xs text-white/40">
-          Hinweis: Aktuell handelt es sich um Platzhalter-Angaben. Vor der
-          Veröffentlichung sind Name, Rechtsform und Anschrift durch die echten
-          Daten zu ersetzen.
-        </p>
       </LegalSection>
 
       <LegalSection heading="Kontakt">
@@ -51,11 +45,10 @@ export default function ImpressumPage() {
         </p>
       </LegalSection>
 
-      <LegalSection heading="Umsatzsteuer-Identifikationsnummer">
+      <LegalSection heading="Umsatzsteuer">
         <p>
-          Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:
-          <br />
-          <strong>{siteConfig.vatId}</strong>
+          Gemäß § 19 Abs. 1 Umsatzsteuergesetz (UStG) wird als Kleinunternehmer
+          keine Umsatzsteuer berechnet und daher auch nicht ausgewiesen.
         </p>
       </LegalSection>
 

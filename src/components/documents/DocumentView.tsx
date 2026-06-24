@@ -125,7 +125,10 @@ export function DocumentView({
       )}
 
       <footer className="mt-10 border-t border-neutral-200 pt-4 text-center text-xs text-neutral-400">
-        {siteConfig.legalName} · USt-IdNr. {siteConfig.vatId}
+        {siteConfig.legalName}
+        {siteConfig.vatId
+          ? ` · USt-IdNr. ${siteConfig.vatId}`
+          : " · Kleinunternehmer gemäß § 19 UStG"}
       </footer>
     </article>
   );

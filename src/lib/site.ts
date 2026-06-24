@@ -2,8 +2,7 @@
  * Zentrale Stammdaten der Firma & Website.
  *
  * Eine Quelle der Wahrheit für SEO-Metadaten, strukturierte Daten (JSON-LD),
- * Impressum, Datenschutz und Footer. Die rechtlichen Angaben sind aktuell
- * **Platzhalter** – vor dem Live-Gang durch echte Daten ersetzen.
+ * Impressum, Datenschutz und Footer.
  *
  * Die Produktions-URL kommt aus `NEXT_PUBLIC_SITE_URL` (z. B. in Vercel setzen),
  * fällt sonst auf die Standard-Domain zurück.
@@ -11,29 +10,34 @@
 export const siteConfig = {
   name: "TAS Webworks",
   /** Vollständiger rechtlicher Name (Impressum). */
-  legalName: "TAS Webworks (Inhaber: Max Mustermann)",
+  legalName: "TAS Webworks (Inhaber: Yakup Orhan Tas)",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.tas-webworks.de",
   description:
     "TAS Webworks ist deine Webagentur aus Berlin für blitzschnelle, SEO-optimierte Websites, Online-Shops und Landingpages – preiswert, modern und conversion-stark. Richtpreis in 60 Sekunden berechnen.",
   /** Kurze Tagline für OG-Bild & Social. */
   tagline: "Preiswerte Webagentur aus Berlin",
   locale: "de_DE",
-  email: "hello@tas-webworks.de",
-  /** Platzhalter-Telefonnummer (Impressum/Kontakt). */
-  telephone: "+49 30 1234567",
-  /** Platzhalter-Anschrift (Berlin). */
+  email: "kontakt@tas-webworks.de",
+  /** Kontakt-/Impressum-Telefonnummer. */
+  telephone: "+49 159 01054910",
+  /** Ladungsfähige Anschrift (Impressum § 5 TMG). */
   address: {
-    street: "Musterstraße 1",
-    postalCode: "10115",
+    street: "Brunowstr. 10",
+    postalCode: "13507",
     city: "Berlin",
     region: "Berlin",
     country: "DE",
   },
-  /** Geokoordinaten (Berlin Mitte – Platzhalter, für LocalBusiness). */
-  geo: { latitude: 52.531677, longitude: 13.381777 },
-  /** Platzhalter – im Impressum / DSGVO ersetzen. */
-  vatId: "DE000000000",
-  founder: "Max Mustermann",
+  /** Geokoordinaten (Berlin-Reinickendorf, Brunowstraße – für LocalBusiness). */
+  geo: { latitude: 52.5876, longitude: 13.2887 },
+  /**
+   * Umsatzsteuer-Identifikationsnummer. `null`, da Kleinunternehmer nach
+   * § 19 UStG – es wird keine USt-IdNr. geführt und keine USt. ausgewiesen.
+   */
+  vatId: null,
+  /** Kleinunternehmer-Regelung nach § 19 UStG. */
+  smallBusiness: true,
+  founder: "Yakup Orhan Tas",
   foundingYear: "2024",
   social: {
     twitter: "@taswebworks",

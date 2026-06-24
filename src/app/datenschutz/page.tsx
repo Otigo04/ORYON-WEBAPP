@@ -39,11 +39,6 @@ export default function DatenschutzPage() {
           <br />
           Telefon: {siteConfig.telephone}
         </p>
-        <p className="text-xs text-white/40">
-          Hinweis: Platzhalter-Angaben – vor Veröffentlichung durch echte Daten
-          ersetzen. Bei Verarbeitungen, die eine Pflicht zur Bestellung eines
-          Datenschutzbeauftragten auslösen, sind dessen Kontaktdaten zu ergänzen.
-        </p>
       </LegalSection>
 
       <LegalSection heading="2. Allgemeines zur Datenverarbeitung">
