@@ -33,6 +33,12 @@ export type BriefField = {
   monthlyPrices?: Record<string, number>;
   /** Kurze Erklärung je Option (für das „?"-Tooltip). Schlüssel = Options-Label. */
   optionHelp?: Record<string, string>;
+  /**
+   * Ausführlicher Detailtext je Option – beschreibt, was in diese Seite/Funktion
+   * reinkommt bzw. wie sie aufgebaut wird. Klappt im Konfigurator unter der
+   * Option auf, sobald sie ausgewählt ist. Schlüssel = Options-Label.
+   */
+  optionDetails?: Record<string, string>;
   /** Feld nur anzeigen, wenn ein anderes Feld einen bestimmten Wert hat. */
   showIf?: { field: string; equals: string | string[] };
 };
@@ -232,6 +238,27 @@ export const BRIEF_STEPS: BriefStep[] = [
           "Karriere / Jobs": "Stellenangebote & Bewerbung.",
           Preise: "Preisübersicht eurer Angebote.",
         },
+        optionDetails: {
+          Startseite:
+            "Aufmerksamkeitsstarker Hero mit klarer Botschaft, Highlights eurer Leistungen, Vertrauenselemente (Bewertungen/Logos) und ein deutlicher Call-to-Action. Der erste Eindruck, der überzeugt.",
+          "Über uns":
+            "Eure Geschichte, Mission & Werte, was euch ausmacht und – auf Wunsch – eine kurze Team-Vorstellung. Schafft Vertrauen und Nähe.",
+          "Leistungen / Produkte":
+            "Übersichtliche Darstellung eurer Angebote mit Beschreibung, Vorteilen und je einem Call-to-Action pro Leistung – ideal als einzelne Karten oder Abschnitte.",
+          "Portfolio / Referenzen":
+            "Galerie eurer besten Projekte mit Bildern, kurzer Beschreibung und optional Kundenstimmen. Belegt eure Qualität sichtbar.",
+          "Blog / News":
+            "Übersichtsseite plus Detailseiten für Beiträge, Kategorien/Tags und ein Redaktionssystem zum Selbstpflegen – gut für SEO.",
+          Kontakt:
+            "Kontaktformular, Adresse, Öffnungszeiten, optional eine eingebettete Karte und alle Kontaktwege auf einen Blick.",
+          FAQ: "Häufige Fragen in sauber aufklappbaren Abschnitten (Akkordeon) – reduziert Rückfragen und schafft Klarheit.",
+          Team: "Vorstellung der Teammitglieder mit Foto, Position und kurzer Beschreibung – persönlich und sympathisch.",
+          Shop: "Produktübersicht mit Filtern, Detailseiten, Warenkorb und sicherer Bezahlung. Umfang abhängig vom Sortiment.",
+          "Karriere / Jobs":
+            "Stellenangebote, Infos zu euch als Arbeitgeber und ein Bewerbungsformular mit Datei-Upload.",
+          Preise:
+            "Transparente Preis- bzw. Paketübersicht mit Vergleich der Optionen und klarem Call-to-Action.",
+        },
         optional: true,
       },
       {
@@ -305,6 +332,30 @@ export const BRIEF_STEPS: BriefStep[] = [
           Bewertungen: "Kundenbewertungen / Sterne auf der Seite anzeigen.",
           Downloadbereich: "Dateien (PDFs etc.) zum Herunterladen bereitstellen.",
         },
+        optionDetails: {
+          Kontaktformular:
+            "Formular mit Feldern nach Wunsch, Spam-Schutz und automatischer Weiterleitung an euer Postfach – inkl. Datenschutz-Checkbox.",
+          Terminbuchung:
+            "Integrierter Kalender mit euren Verfügbarkeiten, automatischer Bestätigungs-E-Mail und optionaler Erinnerung. Anbindung an gängige Tools möglich.",
+          Onlineshop:
+            "Produktverwaltung, Warenkorb, sichere Bezahlung (z. B. Stripe/PayPal) und Bestellübersicht. Umfang richtet sich nach Sortiment & Varianten.",
+          "Blog / CMS":
+            "Redaktionssystem, mit dem ihr Beiträge, Bilder und Seiten selbst pflegt – ganz ohne Technikkenntnisse.",
+          Mehrsprachigkeit:
+            "Saubere Sprachumschaltung, übersetzte Inhalte und suchmaschinenfreundliche Sprachversionen (je Sprache abgerechnet).",
+          "Mitgliederbereich / Login":
+            "Geschützter Bereich mit Registrierung, Login und individuell sichtbaren Inhalten je Nutzer.",
+          "Newsletter-Anmeldung":
+            "Anmeldeformular mit Double-Opt-in (DSGVO-konform) und Anbindung an euer Newsletter-Tool (z. B. Mailchimp, Brevo).",
+          "Live-Chat":
+            "Chat-Fenster für direkte Fragen – wahlweise per Tool (z. B. Tidio) oder als WhatsApp-Direktkontakt.",
+          "Karte / Anfahrt":
+            "Eingebettete, interaktive Karte mit eurem Standort und optionaler Routenführung.",
+          Bewertungen:
+            "Anzeige von Kundenbewertungen / Sternen – manuell gepflegt oder automatisch z. B. aus Google eingebunden.",
+          Downloadbereich:
+            "Bereich zum Bereitstellen von Dateien (PDFs, Preislisten etc.) – auf Wunsch zugriffsgeschützt.",
+        },
         optional: true,
       },
       {
@@ -356,6 +407,14 @@ export const BRIEF_STEPS: BriefStep[] = [
           "Social Media (inkl. WhatsApp)": "Verlinkung zu Instagram, Facebook, WhatsApp & Co.",
           "Google Maps": "Interaktive Karte mit deinem Standort.",
           "CRM-Anbindung": "Anbindung an ein Kundenverwaltungs-System (z. B. HubSpot).",
+        },
+        optionDetails: {
+          "Social Media (inkl. WhatsApp)":
+            "Verlinkte Icons zu euren Profilen (Instagram, Facebook & Co.) und ein WhatsApp-Direktkontakt-Button für schnelle Anfragen.",
+          "Google Maps":
+            "Interaktive Karte mit eurem Standort, eingebettet auf der Kontaktseite – inkl. Marker und Routenlink.",
+          "CRM-Anbindung":
+            "Automatische Übergabe von Formular-Leads an euer CRM (z. B. HubSpot, Pipedrive) – kein manuelles Übertragen mehr.",
         },
         optional: true,
       },

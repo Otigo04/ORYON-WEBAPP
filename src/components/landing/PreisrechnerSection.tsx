@@ -11,7 +11,7 @@ export function PreisrechnerSection() {
   return (
     <section
       id="preisrechner"
-      className="relative overflow-hidden border-t border-white/10 bg-gradient-to-b from-black via-[#03100a] to-black px-6 py-24 scroll-mt-28"
+      className="relative overflow-hidden border-t border-white/10 bg-gradient-to-b from-black via-[#03100a] to-black px-4 py-20 scroll-mt-28 sm:px-6 sm:py-24"
     >
       <div
         aria-hidden="true"

@@ -169,7 +169,7 @@ export function Configurator() {
       {/* Kopf */}
       <header className="flex items-center justify-between">
         <Link href="/" aria-label="TAS Webworks – Startseite" className="flex items-center">
-          <LogoWordmark className="h-8 w-auto" />
+          <LogoWordmark className="h-11 w-auto sm:h-14" />
         </Link>
         <Link
           href="/#preisrechner"
@@ -393,6 +393,11 @@ function FieldRenderer({
     }
   };
 
+  // Detailtexte der aktuell gewählten Optionen (klappen bei Auswahl auf).
+  const detailedOptions = field.optionDetails
+    ? selected.filter((opt) => field.optionDetails?.[opt])
+    : [];
+
   return (
     <div className="flex flex-col gap-2">
       {labelEl}
@@ -440,6 +445,36 @@ function FieldRenderer({
           );
         })}
       </div>
+
+      {/* Detailtexte der gewählten Optionen – klappen bei Auswahl auf und
+          erklären, was in die Seite/Funktion reinkommt bzw. wie sie aufgebaut wird. */}
+      {detailedOptions.length > 0 && (
+        <ul className="mt-1.5 flex flex-col gap-2">
+          {detailedOptions.map((opt) => (
+            <li
+              key={opt}
+              className="animate-detail-in rounded-xl border border-white/10 border-l-2 border-l-[#09ed2d]/50 bg-white/[0.03] px-3.5 py-2.5"
+            >
+              <p className="flex items-center gap-1.5 text-xs font-semibold text-[#09ed2d]">
+                <svg viewBox="0 0 24 24" aria-hidden="true" className="h-3.5 w-3.5 flex-none">
+                  <path
+                    d="m5 13 4 4 10-10"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                {opt}
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-white/55">
+                {field.optionDetails?.[opt]}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
@@ -701,90 +736,89 @@ function countPricedOptions(data: BriefDraft["data"]): { chosen: number; total: 
 }
 
 /**
- * Gamifizierter Live-Kosten-Zähler. Grün, animiert: pulsierender Glow, animierter
- * Sheen über der Zahl, Pop-Effekt bei jeder Änderung, „Ausstattung"-Fortschritt
- * und Level-Stufe. Auf dem Desktop sticky rechts neben den Eingaben, auf Mobil
- * kompakt oben.
+ * Live-Kosten-Zähler des Konfigurators. Bewusst ruhig & aufgeräumt: klare Summe
+ * mit sanftem Pop bei Änderung, dezenter statischer Grün-Glow, „Ausstattung"-
+ * Fortschritt, Level-Stufe und eine saubere Aufschlüsselung. Auf dem Desktop
+ * sticky rechts, auf Mobil kompakt oben.
  */
 function CostCounter({ draft }: { draft: BriefDraft }) {
   const estimate = computeBriefEstimate(draft.data, draft.summary);
   const pt = draft.summary.projectType;
+  const ptLabel =
+    pt && pt in PRICING.projectTypes
+      ? PRICING.projectTypes[pt as keyof typeof PRICING.projectTypes].label
+      : "—";
 
   const level = projectLevel(estimate.oneTime);
   const { chosen, total } = countPricedOptions(draft.data);
   const fill = total > 0 ? Math.round((chosen / total) * 100) : 0;
 
   return (
-    <div className="animate-cost-glow relative overflow-hidden rounded-3xl border border-[#09ed2d]/40 bg-gradient-to-br from-[#0a2e15] via-black to-black p-5 sm:p-6">
-      {/* dezente, schwebende Funken */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-        <span className="animate-spark absolute left-[18%] top-[60%] h-1 w-1 rounded-full bg-[#09ed2d]" style={{ animationDelay: "0s" }} />
-        <span className="animate-spark absolute left-[72%] top-[70%] h-1.5 w-1.5 rounded-full bg-[#09ed2d]/80" style={{ animationDelay: "0.9s" }} />
-        <span className="animate-spark absolute left-[45%] top-[80%] h-1 w-1 rounded-full bg-[#67f545]" style={{ animationDelay: "1.7s" }} />
+    <div className="relative overflow-hidden rounded-3xl border border-[#09ed2d]/25 bg-gradient-to-br from-[#0a2e15]/70 via-black to-black p-5 shadow-[0_0_40px_-14px_rgba(9,237,45,0.3)] sm:p-6">
+      {/* Kopf: Titel + Level */}
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#09ed2d]">
+          Deine Kalkulation
+        </p>
+        <span className="inline-flex items-center gap-1 rounded-full border border-[#09ed2d]/30 bg-[#09ed2d]/10 px-2.5 py-0.5 text-[11px] font-bold text-[#09ed2d]">
+          <span aria-hidden="true">{level.emoji}</span>
+          {level.label}
+        </span>
       </div>
 
-      <div className="relative">
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#09ed2d]">
-            Deine Kalkulation
-          </p>
-          <span className="inline-flex items-center gap-1 rounded-full border border-[#09ed2d]/30 bg-[#09ed2d]/10 px-2.5 py-0.5 text-[11px] font-bold text-[#09ed2d]">
-            <span aria-hidden="true">{level.emoji}</span>
-            {level.label}
+      {/* Summe */}
+      <div className="mt-4">
+        <span className="text-xs text-white/45">geschätzt, einmalig</span>
+        <div key={estimate.oneTime} className="animate-cost-pop mt-0.5 origin-left">
+          <span className="text-[2.6rem] font-bold leading-none tabular-nums text-[#09ed2d] drop-shadow-[0_0_18px_rgba(9,237,45,0.35)] sm:text-5xl">
+            ca. <AnimatedEuro value={estimate.oneTime} />
           </span>
         </div>
-
-        {/* Große, animierte Summe */}
-        <div className="mt-3">
-          <span className="text-xs text-white/45">geschätzt, ca.</span>
-          <div
-            key={estimate.oneTime}
-            className="animate-cost-pop mt-0.5 inline-block origin-left"
-          >
-            <span className="animate-cost-sheen bg-gradient-to-r from-[#09ed2d] via-[#aaffbf] to-[#09ed2d] bg-clip-text text-4xl font-extrabold tabular-nums text-transparent drop-shadow-[0_0_14px_rgba(9,237,45,0.45)] sm:text-5xl">
-              <AnimatedEuro value={estimate.oneTime} />
-            </span>
-          </div>
-          {estimate.monthly > 0 && (
-            <p className="mt-1 text-xs text-white/60">
-              + <span className="font-semibold text-white/80">{formatEuro(estimate.monthly)}</span>
-              /Monat (Hosting/Wartung)
-            </p>
-          )}
-        </div>
-
-        {/* Ausstattungs-Fortschritt (Gamification) */}
-        <div className="mt-5">
-          <div className="flex items-center justify-between text-[11px] text-white/55">
-            <span className="font-medium uppercase tracking-wide">Ausstattung</span>
-            <span className="tabular-nums text-[#09ed2d]">
-              {chosen}/{total}
-            </span>
-          </div>
-          <div className="mt-1.5 h-2.5 overflow-hidden rounded-full bg-white/10">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-[#09ed2d] to-[#67f545] shadow-[0_0_12px_rgba(9,237,45,0.6)] transition-all duration-500 ease-out"
-              style={{ width: `${fill}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Aufschlüsselung – auf Mobil ausgeblendet, um kompakt zu bleiben */}
-        <dl className="mt-5 hidden flex-col gap-1.5 text-sm lg:flex">
-          <div className="flex items-center justify-between">
-            <dt className="text-white/50">Basis ({pt && pt in PRICING.projectTypes ? PRICING.projectTypes[pt as keyof typeof PRICING.projectTypes].label : "—"})</dt>
-            <dd className="tabular-nums text-white/80">{formatEuro(estimate.base)}</dd>
-          </div>
-          <div className="flex items-center justify-between">
-            <dt className="text-white/50">Zusatz-Optionen</dt>
-            <dd className="tabular-nums text-white/80">+ {formatEuro(estimate.addOns)}</dd>
-          </div>
-        </dl>
-
-        <p className="mt-4 border-t border-white/10 pt-3 text-[11px] leading-relaxed text-white/40">
-          Unverbindlicher Richtwert. Dein finales Angebot erstellen wir individuell.
-        </p>
+        {estimate.monthly > 0 && (
+          <p className="mt-2 text-sm text-white/60">
+            + <span className="font-semibold text-white/85">{formatEuro(estimate.monthly)}</span>
+            /Monat <span className="text-white/40">· Hosting/Wartung</span>
+          </p>
+        )}
       </div>
+
+      {/* Ausstattungs-Fortschritt */}
+      <div className="mt-5">
+        <div className="flex items-center justify-between text-[11px] text-white/55">
+          <span className="font-medium uppercase tracking-wide">Ausstattung</span>
+          <span className="tabular-nums text-[#09ed2d]">
+            {chosen}/{total}
+          </span>
+        </div>
+        <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-white/10">
+          <div
+            className="h-full rounded-full bg-[#09ed2d] transition-all duration-500 ease-out"
+            style={{ width: `${fill}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Aufschlüsselung */}
+      <dl className="mt-5 flex flex-col gap-2 border-t border-white/10 pt-4 text-sm">
+        <div className="flex items-center justify-between gap-2">
+          <dt className="text-white/50">Basis ({ptLabel})</dt>
+          <dd className="tabular-nums text-white/80">{formatEuro(estimate.base)}</dd>
+        </div>
+        <div className="flex items-center justify-between gap-2">
+          <dt className="text-white/50">Zusatz-Optionen</dt>
+          <dd className="tabular-nums text-white/80">+ {formatEuro(estimate.addOns)}</dd>
+        </div>
+        {estimate.monthly > 0 && (
+          <div className="flex items-center justify-between gap-2">
+            <dt className="text-white/50">Monatlich</dt>
+            <dd className="tabular-nums text-white/80">{formatEuro(estimate.monthly)}/Mt.</dd>
+          </div>
+        )}
+      </dl>
+
+      <p className="mt-4 text-[11px] leading-relaxed text-white/40">
+        Unverbindlicher Richtwert. Dein finales Angebot erstellen wir individuell.
+      </p>
     </div>
   );
 }

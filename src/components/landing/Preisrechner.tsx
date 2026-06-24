@@ -180,7 +180,24 @@ export function Preisrechner() {
   return (
     <form onSubmit={onSubmit} className="grid gap-8 lg:grid-cols-[1fr_380px]">
       {/* Linke Spalte: Optionen */}
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-8 sm:gap-10">
+        {/* Mobile-Preisvorschau: auf dem Handy oben sichtbar, da die volle
+            Preis-/Kontakt-Box erst darunter folgt. Auf Desktop ausgeblendet. */}
+        <div className="sticky top-20 z-20 -mt-2 rounded-2xl border border-[#09ed2d]/25 bg-black/80 px-4 py-3 backdrop-blur lg:hidden">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-[#09ed2d]">
+              Richtpreis
+            </span>
+            <span className="text-lg font-semibold tabular-nums text-white">
+              <AnimatedEuro value={price.oneTimeMin} /> – <AnimatedEuro value={price.oneTimeMax} />
+            </span>
+          </div>
+          <p className="mt-0.5 text-right text-[11px] tabular-nums text-white/55">
+            + <AnimatedEuro value={price.monthlyMin} /> – <AnimatedEuro value={price.monthlyMax} />/Mt.
+            <span className="text-white/35"> inkl. Hosting</span>
+          </p>
+        </div>
+
         <Fieldset legend="1 · Projektart" hint="Was möchtest du umsetzen?">
           <div className="grid gap-3 sm:grid-cols-2">
             {PROJECT_TYPES.map((key) => {
@@ -354,15 +371,52 @@ export function Preisrechner() {
           <span className="text-xs font-medium uppercase tracking-[0.2em] text-[#09ed2d]">
             Dein Richtpreis
           </span>
-          <p className="mt-2 text-3xl font-semibold tracking-tight tabular-nums text-white">
-            <AnimatedEuro value={price.oneTimeMin} /> – <AnimatedEuro value={price.oneTimeMax} />
-          </p>
-          {price.monthlyMax > 0 && (
-            <p className="mt-1 text-sm tabular-nums text-white/70">
-              + <AnimatedEuro value={price.monthlyMin} /> – <AnimatedEuro value={price.monthlyMax} /> /
-              Monat (Wartung)
+          <div className="mt-2 flex flex-wrap items-baseline gap-x-2">
+            <p className="text-3xl font-semibold tracking-tight tabular-nums text-white">
+              <AnimatedEuro value={price.oneTimeMin} /> – <AnimatedEuro value={price.oneTimeMax} />
             </p>
-          )}
+            <span className="text-xs text-white/45">einmalig</span>
+          </div>
+
+          {/* Laufende Kosten – Hosting immer sichtbar (eigener Posten),
+              Wartung & Pflege nur, wenn gewählt. */}
+          <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.03] p-3.5">
+            <p className="text-[11px] font-medium uppercase tracking-wider text-white/45">
+              Laufende Kosten
+            </p>
+            <dl className="mt-2.5 flex flex-col gap-2 text-sm">
+              <div className="flex items-center justify-between gap-2">
+                <dt className="flex items-center gap-1.5 text-white/70">
+                  <Dot /> Hosting
+                </dt>
+                <dd className="tabular-nums text-white/80">
+                  ab <AnimatedEuro value={price.hostingMin} />/Mt.
+                </dd>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <dt className="flex items-center gap-1.5 text-white/70">
+                  <Dot /> Wartung &amp; Pflege
+                  {!maintenance && <span className="text-white/35">(optional)</span>}
+                </dt>
+                <dd className="tabular-nums text-white/80">
+                  {maintenance ? (
+                    <>
+                      + <AnimatedEuro value={price.maintenanceMin} /> –{" "}
+                      <AnimatedEuro value={price.maintenanceMax} />
+                    </>
+                  ) : (
+                    <span className="text-white/40">nicht gewählt</span>
+                  )}
+                </dd>
+              </div>
+            </dl>
+            <div className="mt-2.5 flex items-center justify-between border-t border-white/10 pt-2.5">
+              <span className="text-sm font-medium text-white">Summe / Monat</span>
+              <span className="text-sm font-semibold tabular-nums text-[#09ed2d]">
+                <AnimatedEuro value={price.monthlyMin} /> – <AnimatedEuro value={price.monthlyMax} />
+              </span>
+            </div>
+          </div>
 
           <ul className="mt-4 flex flex-col gap-1.5 text-xs text-white/60">
             <li className="flex items-center gap-2">
@@ -517,7 +571,7 @@ const HELP: {
   languages:
     "Deine Seite zusätzlich in weiteren Sprachen – der Preis gilt je zusätzlicher Sprache.",
   maintenance:
-    "Laufende Pflege, Sicherheits-Updates, Backups und Hosting deiner Seite – monatlich. Der Preis richtet sich nach der Projektart.",
+    "Laufende Pflege, Sicherheits-Updates, Backups und kleine Inhaltsanpassungen – monatlich. Optional, zusätzlich zum Hosting. Der Preis richtet sich nach der Projektart.",
 };
 
 function Fieldset({

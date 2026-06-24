@@ -35,17 +35,32 @@ export const pricingConfig = {
   extraLanguage: { label: "Weitere Sprache", price: [39, 79], max: 5 },
 
   /**
-   * Monatliche Wartungs- & Hosting-Pauschale (separat zum Einmalpreis).
-   * Pro Projektart gestaffelt – ein One-Pager ist günstiger zu betreiben als
-   * ein komplexer Online-Shop. Jeweils [min, max] € pro Monat.
+   * Monatliche Hosting-Pauschale (separat zum Einmalpreis). Fällt für jede
+   * live betriebene Seite an und wird daher im Preisrechner dauerhaft als
+   * eigener Posten angezeigt. Pro Projektart gestaffelt, jeweils [min, max] €/Monat.
+   */
+  hosting: {
+    label: "Hosting",
+    byProjectType: {
+      onepager:    [9, 15],
+      website:     [15, 25],
+      shopSimple:  [25, 45],
+      shopComplex: [45, 79],
+    },
+  },
+
+  /**
+   * Optionale monatliche Wartung & Pflege (separat zum Hosting): Updates,
+   * Backups, Sicherheit, kleine Inhaltsanpassungen. Pro Projektart gestaffelt,
+   * jeweils [min, max] € pro Monat.
    */
   maintenance: {
-    label: "Wartung & Hosting",
+    label: "Wartung & Pflege",
     byProjectType: {
-      onepager:    [19, 39],
-      website:     [39, 69],
-      shopSimple:  [59, 119],
-      shopComplex: [99, 199],
+      onepager:    [10, 24],
+      website:     [24, 44],
+      shopSimple:  [34, 74],
+      shopComplex: [54, 120],
     },
   },
 

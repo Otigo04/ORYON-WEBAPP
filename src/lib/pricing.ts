@@ -65,6 +65,13 @@ export type QuoteLeadInput = z.infer<typeof quoteLeadSchema>;
 export type PriceResult = {
   oneTimeMin: number;
   oneTimeMax: number;
+  /** Hosting – fällt immer an (eigener, dauerhaft sichtbarer Posten). */
+  hostingMin: number;
+  hostingMax: number;
+  /** Wartung & Pflege – nur wenn gewählt (sonst 0). */
+  maintenanceMin: number;
+  maintenanceMax: number;
+  /** Gesamte monatliche Spanne (Hosting + ggf. Wartung). */
   monthlyMin: number;
   monthlyMax: number;
   /** True bei "komplexem Online-Shop" → grobe Spanne + Planungs-Hinweis. */
@@ -94,19 +101,32 @@ export function calculatePrice(selection: QuoteSelection): PriceResult {
   min += selection.extraLanguages * PRICING.extraLanguage.price[0];
   max += selection.extraLanguages * PRICING.extraLanguage.price[1];
 
-  // Wartung & Hosting ist pro Projektart gestaffelt.
+  // Laufende Kosten je Projektart: Hosting immer, Wartung nur wenn gewählt.
+  const hostingRange = PRICING.hosting.byProjectType[selection.projectType];
   const maintenanceRange = PRICING.maintenance.byProjectType[selection.projectType];
+
+  const maintenanceMin = selection.maintenance ? maintenanceRange[0] : 0;
+  const maintenanceMax = selection.maintenance ? maintenanceRange[1] : 0;
 
   return {
     oneTimeMin: roundTo(min),
     oneTimeMax: roundTo(max),
-    monthlyMin: selection.maintenance ? maintenanceRange[0] : 0,
-    monthlyMax: selection.maintenance ? maintenanceRange[1] : 0,
+    hostingMin: hostingRange[0],
+    hostingMax: hostingRange[1],
+    maintenanceMin,
+    maintenanceMax,
+    monthlyMin: hostingRange[0] + maintenanceMin,
+    monthlyMax: hostingRange[1] + maintenanceMax,
     isComplex: project.complex,
   };
 }
 
-/** Wartungs-/Hosting-Spanne für eine Projektart (für die Live-Anzeige). */
+/** Hosting-Spanne für eine Projektart (eigener, dauerhaft sichtbarer Posten). */
+export function hostingRangeFor(projectType: ProjectType): Range {
+  return PRICING.hosting.byProjectType[projectType];
+}
+
+/** Wartungs-/Pflege-Spanne für eine Projektart (für die Live-Anzeige). */
 export function maintenanceRangeFor(projectType: ProjectType): Range {
   return PRICING.maintenance.byProjectType[projectType];
 }
