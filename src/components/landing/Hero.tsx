@@ -25,9 +25,9 @@ export function Hero() {
         </h1>
 
         <p className="mt-6 max-w-xl text-pretty text-base text-white/70 sm:text-lg">
-          Als strategischer Tech-Partner aus Berlin entwickeln wir rasante, 
-          SEO-optimierte Plattformen und Online-Shops – für 
-          messbare Ergebnisse aus einer Hand.
+          Agentur-Qualität muss nicht teuer sein. Wir entwickeln atemberaubende, 
+          SEO-optimierte Websites und Online-Shops zu Preisen, die jedes Budget schonen.
+          Jetzt konfigurieren und direkt online berechnen!
         </p>
 
         <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">

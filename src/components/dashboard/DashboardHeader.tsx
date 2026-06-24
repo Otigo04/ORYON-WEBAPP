@@ -8,8 +8,10 @@ import { signOutAction } from "@/lib/actions/auth";
  * Greift den Glas-Look der öffentlichen Navbar auf (Konsistenz zur Hauptseite)
  * und stellt den Weg zurück zur Website bereit: Logo und „Zur Website" führen
  * zur Startseite, „Abmelden" beendet die Session per Server-Action.
+ *
+ * `isAdmin` blendet für Superadmins einen Direktlink ins Admin-Panel ein.
  */
-export function DashboardHeader() {
+export function DashboardHeader({ isAdmin = false }: { isAdmin?: boolean }) {
   return (
     <header className="relative z-50 px-4 pt-4 sm:px-6 sm:pt-5">
       <nav
@@ -21,10 +23,21 @@ export function DashboardHeader() {
           aria-label="TAS Webworks – Startseite"
           className="flex items-center"
         >
-          <LogoWordmark className="h-7 w-auto" />
+          <LogoWordmark className="h-9 w-auto sm:h-10" />
         </Link>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#09ed2d]/30 bg-[#09ed2d]/10 px-3 py-2 text-sm font-semibold text-[#09ed2d] transition hover:bg-[#09ed2d]/20"
+            >
+              <ShieldIcon className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Admin-Bereich</span>
+              <span className="sm:hidden">Admin</span>
+            </Link>
+          )}
+
           <Link
             href="/"
             className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-white/70 transition hover:text-white"
@@ -39,7 +52,7 @@ export function DashboardHeader() {
                 strokeLinejoin="round"
               />
             </svg>
-            Zur Website
+            <span className="hidden sm:inline">Zur Website</span>
           </Link>
 
           <span aria-hidden="true" className="h-5 w-px bg-white/15" />
@@ -55,5 +68,19 @@ export function DashboardHeader() {
         </div>
       </nav>
     </header>
+  );
+}
+
+function ShieldIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
+      <path
+        d="M12 3 4.5 6v5.5c0 4.3 3.2 7.6 7.5 9 4.3-1.4 7.5-4.7 7.5-9V6L12 3Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }

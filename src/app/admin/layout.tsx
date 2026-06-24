@@ -42,6 +42,12 @@ export default async function AdminLayout({
 
             <div className="mt-auto flex flex-col gap-2 border-t border-white/10 pt-4">
               <Link
+                href="/"
+                className="rounded-xl px-4 py-2 text-sm text-white/50 transition hover:bg-white/5 hover:text-white"
+              >
+                ← Zur Website
+              </Link>
+              <Link
                 href="/dashboard"
                 className="rounded-xl px-4 py-2 text-sm text-white/50 transition hover:bg-white/5 hover:text-white"
               >

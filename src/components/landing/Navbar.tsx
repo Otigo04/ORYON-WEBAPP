@@ -27,6 +27,7 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -46,14 +47,32 @@ export function Navbar() {
     const supabase = createClient();
     let active = true;
 
+    // Rolle des Nutzers laden (für den Admin-Direktlink). RLS erlaubt jedem
+    // Nutzer, seine eigene Profilzeile zu lesen.
+    const loadRole = async (userId: string | undefined) => {
+      if (!userId) {
+        if (active) setIsAdmin(false);
+        return;
+      }
+      const { data } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", userId)
+        .maybeSingle();
+      if (active) setIsAdmin(data?.role === "admin");
+    };
+
     supabase.auth.getUser().then(({ data }) => {
-      if (active) setIsAuthenticated(!!data.user);
+      if (!active) return;
+      setIsAuthenticated(!!data.user);
+      loadRole(data.user?.id);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsAuthenticated(!!session?.user);
+      loadRole(session?.user?.id);
     });
 
     return () => {
@@ -104,6 +123,15 @@ export function Navbar() {
           <div className="flex items-center gap-2">
             {isAuthenticated ? (
               <>
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-[#09ed2d]/30 bg-[#09ed2d]/10 px-4 py-2 text-sm font-semibold text-[#09ed2d] transition hover:bg-[#09ed2d]/20"
+                  >
+                    <ShieldIcon className="h-3.5 w-3.5" />
+                    Admin
+                  </Link>
+                )}
                 <Link
                   href="/dashboard"
                   className="rounded-full px-4 py-2 text-sm font-semibold text-white/80 transition hover:text-white"
@@ -239,6 +267,16 @@ export function Navbar() {
           <div className="mt-3 flex flex-col gap-2 border-t border-white/10 pt-3">
             {isAuthenticated ? (
               <>
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setMenuOpen(false)}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#09ed2d]/30 bg-[#09ed2d]/10 px-4 py-2.5 text-center text-sm font-semibold text-[#09ed2d] transition hover:bg-[#09ed2d]/20"
+                  >
+                    <ShieldIcon className="h-3.5 w-3.5" />
+                    Admin-Bereich
+                  </Link>
+                )}
                 <Link
                   href="/dashboard"
                   onClick={() => setMenuOpen(false)}
@@ -285,5 +323,19 @@ export function Navbar() {
         </div>
       )}
     </header>
+  );
+}
+
+function ShieldIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
+      <path
+        d="M12 3 4.5 6v5.5c0 4.3 3.2 7.6 7.5 9 4.3-1.4 7.5-4.7 7.5-9V6L12 3Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }

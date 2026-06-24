@@ -202,6 +202,57 @@ body {
     box-shadow: 0 0 16px rgba(9, 237, 45, 0.20);
   }
 }
+
+/* Gamifizierter Live-Kosten-Zähler im Konfigurator */
+@keyframes cost-pop {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.13); }
+  100% { transform: scale(1); }
+}
+.animate-cost-pop {
+  animation: cost-pop 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes cost-glow {
+  0%, 100% {
+    box-shadow: 0 0 24px -8px rgba(9, 237, 45, 0.35),
+      inset 0 0 30px -22px rgba(9, 237, 45, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 50px -6px rgba(9, 237, 45, 0.6),
+      inset 0 0 42px -16px rgba(9, 237, 45, 0.7);
+  }
+}
+.animate-cost-glow {
+  animation: cost-glow 3.2s ease-in-out infinite;
+}
+
+@keyframes cost-sheen {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.animate-cost-sheen {
+  background-size: 200% auto;
+  animation: cost-sheen 3s linear infinite;
+}
+
+@keyframes spark-float {
+  0% { transform: translateY(0) scale(0.7); opacity: 0; }
+  25% { opacity: 0.9; }
+  100% { transform: translateY(-30px) scale(0.2); opacity: 0; }
+}
+.animate-spark {
+  animation: spark-float 2.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-cost-pop,
+  .animate-cost-glow,
+  .animate-cost-sheen,
+  .animate-spark {
+    animation: none;
+  }
+}
 /* Druckansicht für Dokumente (Rechnungen, Angebote, Konzepte).
    Blendet UI-Chrome (.no-print) aus und stellt das Belegblatt randlos dar. */
 @media print {

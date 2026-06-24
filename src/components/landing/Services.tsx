@@ -82,7 +82,7 @@ export function Services() {
           </h2>
           <p className="mt-4 text-base text-white/60">
             Die meisten Unternehmen verlieren online Kunden, ohne es zu merken.
-            Wir finden die Schwachstellen – und beheben sie. Zum fairen Festpreis,
+            Wir finden die Schwachstellen, und beheben sie. Zum fairsten Festpreis,
             der deutlich unter dem klassischer Agenturen liegt.
           </p>
         </header>

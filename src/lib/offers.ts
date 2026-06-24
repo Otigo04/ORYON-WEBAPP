@@ -16,6 +16,8 @@ export type Offer = {
   tax_rate: number;
   currency: string;
   content: string | null;
+  customer_comment: string | null;
+  responded_at: string | null;
 };
 
 export type OfferWithCustomer = Offer & {
@@ -30,7 +32,7 @@ function hasSupabaseEnv() {
 }
 
 const COLS =
-  "id, created_at, user_id, project_id, number, title, status, valid_until, items, tax_rate, currency, content";
+  "id, created_at, user_id, project_id, number, title, status, valid_until, items, tax_rate, currency, content, customer_comment, responded_at";
 
 /** Angebote des eingeloggten Kunden (RLS: ohne Entwürfe). */
 export async function getMyOffers(): Promise<Offer[]> {

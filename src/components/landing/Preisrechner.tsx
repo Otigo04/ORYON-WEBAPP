@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { RainbowButton } from "@/components/ui/rainbow-button";
+import { BRIEF_STORAGE_KEY, emptyDraft, type BriefDraft } from "@/lib/brief";
 import {
   PRICING,
   PROJECT_TYPES,
@@ -28,6 +31,7 @@ import { saveQuoteLead, type SaveQuoteState } from "@/lib/actions/leads";
  * in der Server Action `saveQuoteLead`.
  */
 export function Preisrechner() {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [state, setState] = useState<SaveQuoteState | null>(null);
 
@@ -37,6 +41,7 @@ export function Preisrechner() {
     control,
     setValue,
     setError,
+    getValues,
     formState: { errors },
   } = useForm<QuoteLeadInput>({
     resolver: zodResolver(quoteLeadSchema),
@@ -78,6 +83,49 @@ export function Preisrechner() {
   const setLanguages = (n: number) => {
     const clamped = Math.max(0, Math.min(PRICING.extraLanguage.max, n));
     setValue("extraLanguages", clamped, { shouldValidate: true });
+  };
+
+  /**
+   * Übergibt die aktuelle Auswahl an den detaillierten Konfigurator: schreibt
+   * sie in denselben Entwurfs-Speicher (localStorage), den der Konfigurator
+   * liest, und navigiert dann dorthin. Vorhandene Detail-Eingaben bleiben
+   * erhalten – nur Zusammenfassung & Kontakt werden aktualisiert.
+   */
+  const goToConfigurator = () => {
+    const values = getValues();
+    let existing: BriefDraft = emptyDraft();
+    try {
+      const raw = localStorage.getItem(BRIEF_STORAGE_KEY);
+      if (raw) existing = { ...existing, ...(JSON.parse(raw) as BriefDraft) };
+    } catch {
+      /* kein/defekter Entwurf – mit leerem starten */
+    }
+
+    const next: BriefDraft = {
+      data: existing.data ?? {},
+      contact: {
+        name: values.name || existing.contact?.name || "",
+        email: values.email || existing.contact?.email || "",
+        phone: values.phone || existing.contact?.phone || "",
+        company: values.company || existing.contact?.company || "",
+      },
+      summary: {
+        projectType: values.projectType,
+        design: values.design,
+        features: values.features,
+        extraLanguages: values.extraLanguages,
+        maintenance: values.maintenance,
+        priceMin: price.oneTimeMin,
+        priceMax: price.oneTimeMax,
+      },
+    };
+
+    try {
+      localStorage.setItem(BRIEF_STORAGE_KEY, JSON.stringify(next));
+    } catch {
+      /* Speicher nicht verfügbar – Konfigurator startet dann leer */
+    }
+    router.push("/konfigurator");
   };
 
   const onSubmit = handleSubmit((values) => {
@@ -332,10 +380,27 @@ export function Preisrechner() {
             </p>
           )}
 
+          {/* Detaillierte Konfiguration (Rainbow-CTA) */}
+          <div className="mt-6 border-t border-white/10 pt-6">
+            <h3 className="text-sm font-semibold text-white">Lieber alles ganz genau angeben?</h3>
+            <p className="mt-1 text-xs text-white/50">
+              Konfiguriere dein Projekt Schritt für Schritt – Firmenname, Domain,
+              Funktionen, Stil und mehr. Für ein noch präziseres Angebot.
+            </p>
+            <RainbowButton
+              type="button"
+              onClick={goToConfigurator}
+              size="lg"
+              className="mt-4 w-full"
+            >
+              Weiter konfigurieren →
+            </RainbowButton>
+          </div>
+
           {/* Kontaktformular (Pflicht zum Absenden) */}
           <div className="mt-6 border-t border-white/10 pt-6">
             <h3 className="text-sm font-semibold text-white">
-              Unverbindliches Angebot anfordern
+              Oder direkt ein unverbindliches Angebot anfordern
             </h3>
             <p className="mt-1 text-xs text-white/50">
               Wir melden uns innerhalb von 24 Stunden.

@@ -3,9 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DocumentView } from "@/components/documents/DocumentView";
 import { PrintButton } from "@/components/documents/PrintButton";
+import { PaymentBox } from "@/components/dashboard/PaymentBox";
 import { getInvoice } from "@/lib/invoices";
 import { getMyProfile } from "@/lib/profile";
-import { INVOICE_STATUS_LABELS } from "@/lib/documents";
+import { INVOICE_STATUS_LABELS, computeTotals } from "@/lib/documents";
 
 export const metadata: Metadata = {
   title: "Rechnung – TAS Webworks",
@@ -55,6 +56,18 @@ export default async function CustomerInvoicePage({
           notes={invoice.notes}
         />
       </div>
+
+      {invoice.status === "sent" && (
+        <div className="no-print mx-auto mt-6 max-w-3xl px-6">
+          <PaymentBox
+            amount={computeTotals(invoice.items, invoice.tax_rate).gross}
+            currency={invoice.currency}
+            reference={`Rechnung ${invoice.number}`}
+            heading="Offener Betrag"
+            subline={invoice.due_date ? `Fällig bis ${df.format(new Date(invoice.due_date))}` : undefined}
+          />
+        </div>
+      )}
     </main>
   );
 }
