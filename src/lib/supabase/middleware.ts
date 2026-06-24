@@ -46,17 +46,35 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const path = request.nextUrl.pathname;
-  const isProtected = path.startsWith("/dashboard");
+  const isAdminArea = path.startsWith("/admin");
+  const isProtected = path.startsWith("/dashboard") || isAdminArea;
   const isAuthPage = path === "/login" || path === "/register";
+
+  // Hilfsfunktion: Redirect mit übertragenen Auth-Cookies.
+  const redirectTo = (pathname: string) => {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = pathname;
+    const redirect = NextResponse.redirect(redirectUrl);
+    supabaseResponse.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
+    return redirect;
+  };
 
   // Geschützte Route ohne Login → zur Anmeldung.
   if (!user && isProtected) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/login";
-    const redirect = NextResponse.redirect(redirectUrl);
-    // Aktualisierte Auth-Cookies auf die Redirect-Antwort übertragen.
-    supabaseResponse.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
-    return redirect;
+    return redirectTo("/login");
+  }
+
+  // Admin-Bereich: nur für Nutzer mit Rolle 'admin'. Andernfalls ins Kundenportal.
+  if (user && isAdminArea) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (profile?.role !== "admin") {
+      return redirectTo("/dashboard");
+    }
   }
 
   // Bereits eingeloggt, aber auf Login/Register → ins Dashboard.

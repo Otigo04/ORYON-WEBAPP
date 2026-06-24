@@ -5,6 +5,8 @@ import Link from "next/link";
 import { LogoMark } from "@/components/Logo";
 import { ServicesMenu } from "@/components/landing/ServicesMenu";
 import { branches } from "@/lib/branches";
+import { signOutAction } from "@/lib/actions/auth";
+import { createClient } from "@/lib/supabase/client";
 
 const navLinks = [
   { label: "Referenzen", href: "#referenzen" },
@@ -24,12 +26,40 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Auth-Status client-seitig ermitteln, damit die öffentlichen Seiten statisch
+  // (SEO-optimal) bleiben. Reagiert live auf Login/Logout in anderen Tabs.
+  useEffect(() => {
+    const hasSupabaseEnv =
+      !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      !!process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+    if (!hasSupabaseEnv) return;
+
+    const supabase = createClient();
+    let active = true;
+
+    supabase.auth.getUser().then(({ data }) => {
+      if (active) setIsAuthenticated(!!data.user);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session?.user);
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   return (
@@ -72,18 +102,39 @@ export function Navbar() {
           <span aria-hidden="true" className="h-5 w-px bg-white/15" />
 
           <div className="flex items-center gap-2">
-            <Link
-              href="/login"
-              className="rounded-full px-4 py-2 text-sm font-semibold text-white/80 transition hover:text-white"
-            >
-              Anmelden
-            </Link>
-            <Link
-              href="/register"
-              className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/25 hover:bg-white/10"
-            >
-              Registrieren
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="rounded-full px-4 py-2 text-sm font-semibold text-white/80 transition hover:text-white"
+                >
+                  Dashboard
+                </Link>
+                <form action={signOutAction}>
+                  <button
+                    type="submit"
+                    className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/25 hover:bg-white/10"
+                  >
+                    Abmelden
+                  </button>
+                </form>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="rounded-full px-4 py-2 text-sm font-semibold text-white/80 transition hover:text-white"
+                >
+                  Anmelden
+                </Link>
+                <Link
+                  href="/register"
+                  className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/25 hover:bg-white/10"
+                >
+                  Registrieren
+                </Link>
+              </>
+            )}
             <a
               href="#kontakt"
               className="rounded-full bg-[#09ed2d] px-4 py-2 text-sm font-semibold text-black shadow-[0_0_20px_-4px_rgba(9,237,45,0.6)] transition hover:bg-[#09ed2d]/90"
@@ -186,20 +237,43 @@ export function Navbar() {
             ))}
           </ul>
           <div className="mt-3 flex flex-col gap-2 border-t border-white/10 pt-3">
-            <Link
-              href="/login"
-              onClick={() => setMenuOpen(false)}
-              className="rounded-full px-4 py-2.5 text-center text-sm font-semibold text-white/80 transition hover:text-white"
-            >
-              Anmelden
-            </Link>
-            <Link
-              href="/register"
-              onClick={() => setMenuOpen(false)}
-              className="rounded-full border border-white/15 bg-white/5 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              Registrieren
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-full px-4 py-2.5 text-center text-sm font-semibold text-white/80 transition hover:text-white"
+                >
+                  Dashboard
+                </Link>
+                <form action={signOutAction} className="contents">
+                  <button
+                    type="submit"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-full border border-white/15 bg-white/5 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-white/10"
+                  >
+                    Abmelden
+                  </button>
+                </form>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-full px-4 py-2.5 text-center text-sm font-semibold text-white/80 transition hover:text-white"
+                >
+                  Anmelden
+                </Link>
+                <Link
+                  href="/register"
+                  onClick={() => setMenuOpen(false)}
+                  className="rounded-full border border-white/15 bg-white/5 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-white/10"
+                >
+                  Registrieren
+                </Link>
+              </>
+            )}
             <a
               href="#kontakt"
               onClick={() => setMenuOpen(false)}

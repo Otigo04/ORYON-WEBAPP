@@ -202,3 +202,20 @@ body {
     box-shadow: 0 0 16px rgba(9, 237, 45, 0.20);
   }
 }
+/* Druckansicht für Dokumente (Rechnungen, Angebote, Konzepte).
+   Blendet UI-Chrome (.no-print) aus und stellt das Belegblatt randlos dar. */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+  }
+  .doc-sheet {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}

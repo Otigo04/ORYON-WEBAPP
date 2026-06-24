@@ -25,10 +25,9 @@ export function Hero() {
         </h1>
 
         <p className="mt-6 max-w-xl text-pretty text-base text-white/70 sm:text-lg">
-          TAS Webworks ist dein strategischer Tech-Partner aus Berlin.
-          Wir entwickeln rasante, SEO-optimierte Plattformen, 
-          Online-Shops und Landingpages – Performance, 
-          Design und messbare Ergebnisse aus einer Hand.
+          Als strategischer Tech-Partner aus Berlin entwickeln wir rasante, 
+          SEO-optimierte Plattformen und Online-Shops – für 
+          messbare Ergebnisse aus einer Hand.
         </p>
 
         <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">

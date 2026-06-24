@@ -19,6 +19,7 @@ export function LogoMark({ className, src = "/logo/tas_mark.svg" }: LogoProps) {
       priority
       unoptimized={isSvg(src)}
       className={className}
+      style={{ width: "auto" }}
     />
   );
 }
