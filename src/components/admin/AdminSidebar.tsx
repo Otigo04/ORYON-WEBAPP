@@ -11,6 +11,7 @@ const NAV = [
   { href: "/admin/rechnungen", label: "Rechnungen" },
   { href: "/admin/angebote", label: "Angebote" },
   { href: "/admin/konzepte", label: "Konzepte" },
+  { href: "/admin/abos", label: "Abonnements" },
 ];
 
 export function AdminSidebar() {

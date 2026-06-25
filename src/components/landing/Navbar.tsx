@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { LogoMark } from "@/components/Logo";
 import { ServicesMenu } from "@/components/landing/ServicesMenu";
-import { branches } from "@/lib/branches";
+import { ProductsMenu, navProducts } from "@/components/landing/ProductsMenu";
+import { branches, brancheHref } from "@/lib/branches";
 import { signOutAction } from "@/lib/actions/auth";
 import { createClient } from "@/lib/supabase/client";
 
@@ -26,6 +27,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -108,6 +110,9 @@ export function Navbar() {
           <ul className="flex items-center gap-7 text-sm text-white/70">
             <li>
               <ServicesMenu />
+            </li>
+            <li>
+              <ProductsMenu />
             </li>
             {navLinks.map((link) => (
               <li key={link.href}>
@@ -238,7 +243,7 @@ export function Navbar() {
                   {branches.map((branche) => (
                     <li key={branche.slug}>
                       <Link
-                        href={`/branchen/${branche.slug}`}
+                        href={brancheHref(branche)}
                         onClick={() => setMenuOpen(false)}
                         className="block rounded-lg px-3 py-2 transition hover:bg-white/5 hover:text-white"
                       >
@@ -246,6 +251,50 @@ export function Navbar() {
                           {branche.industry}
                         </span>
                         <span className="text-sm text-white/80">{branche.solution}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+            <li>
+              <button
+                type="button"
+                onClick={() => setMobileProductsOpen((open) => !open)}
+                aria-expanded={mobileProductsOpen}
+                className="flex w-full items-center justify-between rounded-lg px-3 py-2 transition hover:bg-white/5 hover:text-white"
+              >
+                Produkte
+                <svg
+                  viewBox="0 0 16 16"
+                  aria-hidden="true"
+                  className={`h-3.5 w-3.5 transition-transform duration-300 ${
+                    mobileProductsOpen ? "rotate-180" : ""
+                  }`}
+                >
+                  <path
+                    d="m4 6 4 4 4-4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.75"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+              {mobileProductsOpen && (
+                <ul className="mb-1 ml-2 flex flex-col gap-1 border-l border-white/10 pl-2">
+                  {navProducts.map((product) => (
+                    <li key={product.slug}>
+                      <Link
+                        href={product.href}
+                        onClick={() => setMenuOpen(false)}
+                        className="block rounded-lg px-3 py-2 transition hover:bg-white/5 hover:text-white"
+                      >
+                        <span className="block text-[0.7rem] font-medium uppercase tracking-wider text-[#22d3ee]">
+                          {product.eyebrow}
+                        </span>
+                        <span className="text-sm text-white/80">{product.name}</span>
                       </Link>
                     </li>
                   ))}

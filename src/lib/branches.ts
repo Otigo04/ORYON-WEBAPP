@@ -20,6 +20,13 @@ export type Branche = {
   intro: string;
   /** Kernleistungen / Bullet-Points der Branchenseite. */
   features: string[];
+  /**
+   * Optionales Ziel-Link-Override. Ist gesetzt, verlinkt das Leistungen-Menü
+   * dorthin statt auf die generische `/branchen/<slug>`-Seite – und es wird
+   * keine generische Branchenseite generiert (vermeidet doppelten Content).
+   * Genutzt für TAS-FLEET, das eine eigene Produktseite besitzt.
+   */
+  href?: string;
 };
 
 export const branches: Branche[] = [
@@ -38,6 +45,7 @@ export const branches: Branche[] = [
       "Tourenplanung in Echtzeit",
       "Kundenportal mit Rechnungen & Belegen",
     ],
+    href: "/leistungen/tas-fleet",
   },
   {
     slug: "handel",
@@ -75,4 +83,9 @@ export const branches: Branche[] = [
 
 export function getBranche(slug: string): Branche | undefined {
   return branches.find((b) => b.slug === slug);
+}
+
+/** Ziel-URL eines Leistungs-Eintrags – eigener `href` oder generische Seite. */
+export function brancheHref(branche: Branche): string {
+  return branche.href ?? `/branchen/${branche.slug}`;
 }

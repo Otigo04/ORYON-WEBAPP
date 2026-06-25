@@ -66,4 +66,19 @@ export const pricingConfig = {
 
   /** Beträge werden auf diesen Wert gerundet (saubere Zahlen). 0 = kein Runden. */
   roundTo: 0,
+
+  /**
+   * ──────────────────────────────────────────────────────────────────────
+   *  TAS-FLEET (SaaS-Abo) – monatliche Tarifpreise in €/Monat.
+   * ──────────────────────────────────────────────────────────────────────
+   *  `monthly` = bei monatlicher Zahlung, `yearly` = bei jährlicher Zahlung
+   *  (bereits rabattierter Monatspreis). Nur die Zahlen ändern.
+   *  Die Tarif-Inhalte (Features, Limits, Texte) stehen in
+   *  `src/lib/tas-fleet.ts`.
+   */
+  tasFleet: {
+    starter:      { monthly: 49,  yearly: 39  },
+    professional: { monthly: 149, yearly: 119 },
+    enterprise:   { monthly: 399, yearly: 319 },
+  },
 } as const;

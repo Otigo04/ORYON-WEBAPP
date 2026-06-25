@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { JsonLd } from "@/components/JsonLd";
@@ -9,9 +9,13 @@ import { breadcrumbSchema } from "@/lib/structured-data";
 
 type Params = { slug: string };
 
-/** Statisch alle Branchen-Routen vorgenerieren (beste SEO-Performance). */
+/**
+ * Statisch alle generischen Branchen-Routen vorgenerieren (beste
+ * SEO-Performance). Einträge mit eigenem `href` (z.B. TAS-FLEET → eigene
+ * Produktseite) werden übersprungen, um doppelten Content zu vermeiden.
+ */
 export function generateStaticParams() {
-  return branches.map((branche) => ({ slug: branche.slug }));
+  return branches.filter((b) => !b.href).map((branche) => ({ slug: branche.slug }));
 }
 
 export async function generateMetadata({
@@ -41,6 +45,8 @@ export default async function BranchePage({ params }: { params: Promise<Params> 
   const { slug } = await params;
   const branche = getBranche(slug);
   if (!branche) notFound();
+  // Einträge mit eigener Produktseite (z.B. TAS-FLEET) dorthin weiterleiten.
+  if (branche.href) redirect(branche.href);
 
   return (
     <>

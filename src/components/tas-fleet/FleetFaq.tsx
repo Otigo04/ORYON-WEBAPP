@@ -6,17 +6,15 @@ import {
   AccordionButton,
   AccordionPanel,
 } from "@/components/animate-ui/components/headless/accordion";
-import { faqs } from "@/lib/faq";
+import { FLEET_FAQS } from "@/lib/tas-fleet";
 
 /**
- * FAQ-Sektion – animiertes Accordion (Animate UI, Headless UI + Motion) im
- * minimalistischen Stil: schlichte Trennlinien, Chevron im Smaragd-Akzent der
- * Marke. Inhaltlich auf Long-Tail-SEO und den Preisvorteil ausgerichtet;
- * korrespondiert 1:1 mit dem FAQ-JSON-LD auf der Startseite (Voraussetzung für
- * FAQ-Rich-Results). Die Antworten bleiben dank `keepRendered` immer im DOM –
- * also auch im SSR-HTML für die Indexierung.
+ * FAQ der TAS-FLEET-Seite – animiertes Accordion (Animate UI) im
+ * minimalistischen Stil mit Chevron im Cyan-Akzent der Fleet-Marke.
+ * Korrespondiert mit dem FAQ-JSON-LD der Seite (Rich-Results); die Antworten
+ * bleiben dank `keepRendered` immer im DOM (auch im SSR-HTML).
  */
-export function Faq() {
+export function FleetFaq() {
   return (
     <section
       id="faq"
@@ -24,22 +22,18 @@ export function Faq() {
     >
       <div className="mx-auto max-w-3xl">
         <header className="mb-12 text-center">
-          <span className="text-sm font-medium uppercase tracking-[0.2em] text-[#09ed2d]">
+          <span className="text-sm font-medium uppercase tracking-[0.2em] text-[#22d3ee]">
             FAQ
           </span>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            Häufige Fragen
+            Häufige Fragen zu TAS-FLEET
           </h2>
-          <p className="mt-4 text-base text-white/60">
-            Alles Wichtige zu Preisen, Ablauf und unserer Arbeit als Berliner
-            Webagentur – kurz und transparent beantwortet.
-          </p>
         </header>
 
         <Accordion className="w-full">
-          {faqs.map((faq) => (
+          {FLEET_FAQS.map((faq) => (
             <AccordionItem key={faq.question} className="border-white/10 last:border-b">
-              <AccordionButton className="py-5 text-base text-white hover:no-underline [&>svg]:size-5 [&>svg]:text-[#09ed2d]">
+              <AccordionButton className="py-5 text-base text-white hover:no-underline [&>svg]:size-5 [&>svg]:text-[#22d3ee]">
                 {faq.question}
               </AccordionButton>
               <AccordionPanel

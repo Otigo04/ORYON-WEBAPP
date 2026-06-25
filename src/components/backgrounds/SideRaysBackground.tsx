@@ -20,16 +20,16 @@ export default function SideRaysBackground({ className = "" }: Props) {
   return (
     <div className={`pointer-events-none absolute inset-0 -z-10 ${className}`} aria-hidden="true">
       <SideRays
-        speed={0.8}
+        speed={0.9}
         rayColor1="#00ff1a"
         rayColor2="#ffffff"
         intensity={0.95}
-        spread={2.8}
+        spread={3}
         origin="top-right"
         tilt={0}
-        saturation={1.3}
+        saturation={8}
         blend={0.59}
-        falloff={2.1}
+        falloff={3}
         opacity={0.38}
       />
     </div>
