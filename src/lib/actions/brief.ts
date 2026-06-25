@@ -61,6 +61,10 @@ export async function saveBrief(input: unknown): Promise<SaveBriefState> {
     });
 
     if (error) {
+      // Häufigste Ursache hier: Migration 0004 (Tabelle `briefs`) ist noch nicht
+      // auf die Supabase-Datenbank angewendet. Den echten Fehler serverseitig
+      // loggen, damit das schnell auffällt.
+      console.error("[saveBrief] insert failed:", error.message, error.details ?? "");
       return {
         ok: false,
         error: "Konfiguration konnte nicht gespeichert werden. Bitte versuche es erneut.",

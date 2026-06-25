@@ -11,8 +11,11 @@ import {
   invoiceTone,
   offerTone,
   conceptTone,
+  leadTone,
 } from "@/components/ui/StatusBadge";
 import { getMyLeads, projectTypeLabel } from "@/lib/leads";
+import { getMyBriefs, BRIEF_STATUS_LABELS } from "@/lib/briefs";
+import type { ProjectType } from "@/lib/pricing";
 import { getMyProfile, firstNameOf } from "@/lib/profile";
 import { getMyProjects } from "@/lib/projects";
 import { getMyInvoices } from "@/lib/invoices";
@@ -51,8 +54,9 @@ type NextStep = {
 };
 
 export default async function DashboardPage() {
-  const [leads, profile, projects, invoices, offers, concepts, admin] = await Promise.all([
+  const [leads, briefs, profile, projects, invoices, offers, concepts, admin] = await Promise.all([
     getMyLeads(),
+    getMyBriefs(),
     getMyProfile(),
     getMyProjects(),
     getMyInvoices(),
@@ -155,6 +159,7 @@ export default async function DashboardPage() {
     offers.length === 0 &&
     invoices.length === 0 &&
     concepts.length === 0 &&
+    briefs.length === 0 &&
     leads.length === 0;
 
   return (
@@ -329,6 +334,33 @@ export default async function DashboardPage() {
                 </DocList>
               )}
             </Section>
+
+            {/* Detaillierte Konfigurator-Anfragen */}
+            {briefs.length > 0 && (
+              <Section title="Deine Konfigurations-Anfragen" icon="🧩">
+                <DocList>
+                  {briefs.map((b) => (
+                    <DocRow
+                      key={b.id}
+                      title={
+                        b.project_type
+                          ? projectTypeLabel(b.project_type as ProjectType)
+                          : "Projekt-Konfiguration"
+                      }
+                      sub={dateFormatter.format(new Date(b.created_at))}
+                      amount={
+                        typeof b.price_min === "number" && typeof b.price_max === "number"
+                          ? `${formatEuro(b.price_min)} – ${formatEuro(b.price_max)}`
+                          : undefined
+                      }
+                      badge={
+                        <StatusBadge label={BRIEF_STATUS_LABELS[b.status]} tone={leadTone(b.status)} />
+                      }
+                    />
+                  ))}
+                </DocList>
+              </Section>
+            )}
 
             {/* Berechnete Angebote aus dem Preisrechner */}
             {leads.length > 0 && (

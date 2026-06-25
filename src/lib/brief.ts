@@ -197,19 +197,17 @@ export const BRIEF_STEPS: BriefStep[] = [
       },
       {
         name: "pages",
-        label: "Gewünschte Seiten",
+        label: "Gewünschte Seiten (Unterseiten)",
         type: "multi",
-        hint: "Startseite ist inklusive – jede weitere Unterseite mit Aufpreis.",
+        hint: "Welche Unterseiten soll die Website haben? Startseite ist inklusive – jede weitere mit Aufpreis. Shop & Blog wählst du im nächsten Schritt unter „Funktionen“.",
         options: [
           "Startseite",
           "Über uns",
           "Leistungen / Produkte",
           "Portfolio / Referenzen",
-          "Blog / News",
           "Kontakt",
           "FAQ",
           "Team",
-          "Shop",
           "Karriere / Jobs",
           "Preise",
         ],
@@ -217,11 +215,9 @@ export const BRIEF_STEPS: BriefStep[] = [
           "Über uns": 39,
           "Leistungen / Produkte": 39,
           "Portfolio / Referenzen": 250,
-          "Blog / News": 150,
           Kontakt: 39,
           FAQ: 39,
           Team: 39,
-          Shop: 1500,
           "Karriere / Jobs": 39,
           Preise: 39,
         },
@@ -230,11 +226,9 @@ export const BRIEF_STEPS: BriefStep[] = [
           "Über uns": "Wer ihr seid, eure Geschichte.",
           "Leistungen / Produkte": "Was ihr anbietet, im Überblick.",
           "Portfolio / Referenzen": "Beispiele eurer Arbeit / Projekte.",
-          "Blog / News": "Aktuelles & Beiträge zum Selbstpflegen.",
-          Kontakt: "Kontaktdaten & Formular.",
+          Kontakt: "Eigene Kontaktseite mit Adresse & Anfahrt. Das Formular selbst wählst du unter „Funktionen“.",
           FAQ: "Häufige Fragen & Antworten.",
           Team: "Vorstellung eures Teams.",
-          Shop: "Onlineshop mit Produkten.",
           "Karriere / Jobs": "Stellenangebote & Bewerbung.",
           Preise: "Preisübersicht eurer Angebote.",
         },
@@ -247,13 +241,10 @@ export const BRIEF_STEPS: BriefStep[] = [
             "Übersichtliche Darstellung eurer Angebote mit Beschreibung, Vorteilen und je einem Call-to-Action pro Leistung – ideal als einzelne Karten oder Abschnitte.",
           "Portfolio / Referenzen":
             "Galerie eurer besten Projekte mit Bildern, kurzer Beschreibung und optional Kundenstimmen. Belegt eure Qualität sichtbar.",
-          "Blog / News":
-            "Übersichtsseite plus Detailseiten für Beiträge, Kategorien/Tags und ein Redaktionssystem zum Selbstpflegen – gut für SEO.",
           Kontakt:
-            "Kontaktformular, Adresse, Öffnungszeiten, optional eine eingebettete Karte und alle Kontaktwege auf einen Blick.",
+            "Eigene Kontaktseite mit Adresse, Öffnungszeiten und allen Kontaktwegen auf einen Blick. Das interaktive Kontaktformular und die Karte fügst du als Funktion hinzu.",
           FAQ: "Häufige Fragen in sauber aufklappbaren Abschnitten (Akkordeon) – reduziert Rückfragen und schafft Klarheit.",
           Team: "Vorstellung der Teammitglieder mit Foto, Position und kurzer Beschreibung – persönlich und sympathisch.",
-          Shop: "Produktübersicht mit Filtern, Detailseiten, Warenkorb und sicherer Bezahlung. Umfang abhängig vom Sortiment.",
           "Karriere / Jobs":
             "Stellenangebote, Infos zu euch als Arbeitgeber und ein Bewerbungsformular mit Datei-Upload.",
           Preise:
@@ -293,6 +284,7 @@ export const BRIEF_STEPS: BriefStep[] = [
         name: "features",
         label: "Gewünschte Funktionen",
         type: "multi",
+        hint: "Interaktive Funktionen deiner Website (nicht zu verwechseln mit den Seiten aus dem vorherigen Schritt). Shop und Blog gehören hierher.",
         options: [
           "Kontaktformular",
           "Terminbuchung",
@@ -608,7 +600,11 @@ export type BriefEstimate = {
   addOns: number;
   /** Gesamter einmaliger Richtwert. */
   oneTime: number;
-  /** Monatlicher Richtwert (Hosting/Wartung). */
+  /** Monatliches Hosting (genau einmal gezählt – nie doppelt). */
+  hosting: number;
+  /** Monatliche Wartung & Pflege (optional, aus dem Preisrechner). */
+  maintenance: number;
+  /** Monatlicher Gesamt-Richtwert (Hosting + Wartung). */
   monthly: number;
 };
 
@@ -633,7 +629,9 @@ export function computeBriefEstimate(data: BriefData, summary: BriefSummary): Br
   const base = baseForProjectType(summary.projectType);
 
   let addOns = 0;
-  let monthly = 0;
+  // Hosting kommt ausschließlich aus der Hosting-Frage (monthlyPrices) und wird so
+  // genau einmal gezählt – nicht doppelt zur Wartung & Pflege addiert.
+  let hosting = 0;
 
   for (const step of BRIEF_STEPS) {
     for (const field of step.fields) {
@@ -642,15 +640,16 @@ export function computeBriefEstimate(data: BriefData, summary: BriefSummary): Br
       const selected = Array.isArray(value) ? value : value ? [value] : [];
       for (const opt of selected) {
         if (field.prices) addOns += field.prices[opt] ?? 0;
-        if (field.monthlyPrices) monthly += field.monthlyPrices[opt] ?? 0;
+        if (field.monthlyPrices) hosting += field.monthlyPrices[opt] ?? 0;
       }
     }
   }
 
-  // Optionale Wartung aus dem Preisrechner ergänzt den monatlichen Richtwert.
+  // Optionale Wartung aus dem Preisrechner – als eigener, klar getrennter Posten.
+  let maintenance = 0;
   if (summary.maintenance && summary.projectType && summary.projectType in PRICING.projectTypes) {
-    monthly += maintenanceRangeFor(summary.projectType as keyof typeof PRICING.projectTypes)[0];
+    maintenance = maintenanceRangeFor(summary.projectType as keyof typeof PRICING.projectTypes)[0];
   }
 
-  return { base, addOns, oneTime: base + addOns, monthly };
+  return { base, addOns, oneTime: base + addOns, hosting, maintenance, monthly: hosting + maintenance };
 }

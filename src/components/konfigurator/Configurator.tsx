@@ -633,10 +633,16 @@ function Summary({ draft }: { draft: BriefDraft }) {
             ca. {formatEuro(estimate.oneTime)}
           </span>
         </div>
-        {estimate.monthly > 0 && (
+        {estimate.hosting > 0 && (
           <div className="mt-1 flex items-baseline justify-between gap-3 text-xs text-white/55">
-            <span>monatlich (Hosting/Wartung)</span>
-            <span className="tabular-nums">+ {formatEuro(estimate.monthly)}/Monat</span>
+            <span>Hosting</span>
+            <span className="tabular-nums">+ {formatEuro(estimate.hosting)}/Monat</span>
+          </div>
+        )}
+        {estimate.maintenance > 0 && (
+          <div className="mt-1 flex items-baseline justify-between gap-3 text-xs text-white/55">
+            <span>Wartung &amp; Pflege</span>
+            <span className="tabular-nums">+ {formatEuro(estimate.maintenance)}/Monat</span>
           </div>
         )}
       </div>
@@ -777,7 +783,7 @@ function CostCounter({ draft }: { draft: BriefDraft }) {
         {estimate.monthly > 0 && (
           <p className="mt-2 text-sm text-white/60">
             + <span className="font-semibold text-white/85">{formatEuro(estimate.monthly)}</span>
-            /Monat <span className="text-white/40">· Hosting/Wartung</span>
+            /Monat <span className="text-white/40">· laufend</span>
           </p>
         )}
       </div>
@@ -808,10 +814,16 @@ function CostCounter({ draft }: { draft: BriefDraft }) {
           <dt className="text-white/50">Zusatz-Optionen</dt>
           <dd className="tabular-nums text-white/80">+ {formatEuro(estimate.addOns)}</dd>
         </div>
-        {estimate.monthly > 0 && (
+        {estimate.hosting > 0 && (
           <div className="flex items-center justify-between gap-2">
-            <dt className="text-white/50">Monatlich</dt>
-            <dd className="tabular-nums text-white/80">{formatEuro(estimate.monthly)}/Mt.</dd>
+            <dt className="text-white/50">Hosting</dt>
+            <dd className="tabular-nums text-white/80">{formatEuro(estimate.hosting)}/Mt.</dd>
+          </div>
+        )}
+        {estimate.maintenance > 0 && (
+          <div className="flex items-center justify-between gap-2">
+            <dt className="text-white/50">Wartung &amp; Pflege</dt>
+            <dd className="tabular-nums text-white/80">{formatEuro(estimate.maintenance)}/Mt.</dd>
           </div>
         )}
       </dl>

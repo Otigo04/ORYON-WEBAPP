@@ -123,7 +123,10 @@ export function Services() {
               <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white">
                 Agentur-Qualität zum fairen Festpreis – schon ab{" "}
                 <span className="text-[#09ed2d]">
-                  {formatEuro(PRICING.projectTypes.onepager.base[0])}
+                  {formatEuro(
+                    PRICING.projectTypes.onepager.base[0] *
+                      PRICING.designMultiplier.template,
+                  )}
                 </span>
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-white/60">

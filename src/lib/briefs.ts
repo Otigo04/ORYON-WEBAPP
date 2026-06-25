@@ -46,6 +46,32 @@ export async function getAllBriefs(): Promise<Brief[]> {
   }
 }
 
+/**
+ * Die detaillierten Konfigurationen des aktuell eingeloggten Nutzers.
+ * RLS (`briefs_select_own`) liefert ohnehin nur eigene Zeilen; der zusätzliche
+ * user_id-Filter macht die Absicht explizit und schließt anonyme Briefs aus.
+ */
+export async function getMyBriefs(): Promise<Brief[]> {
+  if (!hasSupabaseEnv()) return [];
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return [];
+
+    const { data, error } = await supabase
+      .from("briefs")
+      .select(COLS)
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+    if (error || !data) return [];
+    return data as Brief[];
+  } catch {
+    return [];
+  }
+}
+
 export async function getBrief(id: string): Promise<Brief | null> {
   if (!hasSupabaseEnv()) return null;
   try {
