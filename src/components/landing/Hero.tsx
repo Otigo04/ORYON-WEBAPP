@@ -12,6 +12,10 @@ export function Hero() {
       />
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center px-6 py-28 text-center">
+        <p className="mb-5 text-sm font-semibold uppercase tracking-[0.35em] text-[#09ed2d] sm:text-base">
+          TAS Webworks
+        </p>
+
         <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm">
           <span className="rounded-full bg-[#09ed2d] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-black">
             Neu
@@ -20,6 +24,7 @@ export function Hero() {
         </span>
 
         <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-6xl">
+          <span className="sr-only">TAS Webworks – </span>
           Smarte Web-Lösungen, die dein Unternehmen
           <span className="text-[#09ed2d]"> wachsen lassen.</span>
         </h1>
