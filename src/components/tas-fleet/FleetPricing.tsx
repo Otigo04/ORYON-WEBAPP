@@ -59,13 +59,20 @@ export function FleetPricing() {
             const href = tier.id === "enterprise" ? "/#kontakt" : FLEET_APP_URL;
             const external = tier.id !== "enterprise";
 
+            const isEnterprise = tier.id === "enterprise";
+
             return (
               <div
                 key={tier.id}
-                className={`relative flex flex-col rounded-2xl border p-7 ${
-                  tier.featured
-                    ? "border-[#09ed2d]/40 bg-gradient-to-b from-[#09ed2d]/[0.08] to-transparent shadow-[0_0_50px_-12px_rgba(9,237,45,0.4)]"
-                    : "border-white/10 bg-white/[0.03]"
+                className={`relative flex flex-col rounded-2xl p-7 ${
+                  isEnterprise
+                    ? // Animierter Rainbow-Rahmen: dunkle Füllung auf padding-box,
+                      // Regenbogen-Verlauf auf border-box – gleiche Technik wie der
+                      // RainbowButton, nur als Karten-Rahmen statt Button.
+                      "animate-rainbow border-2 border-transparent bg-[linear-gradient(#0a0a0a,#0a0a0a),linear-gradient(90deg,var(--color-1),var(--color-5),var(--color-3),var(--color-4),var(--color-2))] bg-[length:200%] [background-clip:padding-box,border-box] [background-origin:border-box] shadow-[0_0_50px_-12px_rgba(147,51,234,0.45)]"
+                    : tier.featured
+                      ? "border-2 border-[#09ed2d]/40 bg-gradient-to-b from-[#09ed2d]/[0.08] to-transparent shadow-[0_0_50px_-12px_rgba(9,237,45,0.4)]"
+                      : "border-2 border-white/10 bg-white/[0.03]"
                 }`}
               >
                 {tier.featured && (
