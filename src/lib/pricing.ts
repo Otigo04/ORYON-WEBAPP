@@ -140,3 +140,13 @@ const euroFormatter = new Intl.NumberFormat("de-DE", {
 export function formatEuro(value: number): string {
   return euroFormatter.format(value);
 }
+
+/**
+ * Formatiert eine Preisspanne. Sind Min und Max gleich (z. B. wenn keine
+ * Spanne nötig ist), wird nur ein einzelner Betrag ausgegeben – sonst die
+ * Spanne „min – max". Zentral, damit alle Anzeigen einheitlich mit Ranges
+ * arbeiten.
+ */
+export function formatRange(min: number, max: number): string {
+  return min === max ? formatEuro(min) : `${formatEuro(min)} – ${formatEuro(max)}`;
+}

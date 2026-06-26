@@ -1,4 +1,5 @@
 import BeamsBackground from "@/components/BeamsBackground";
+import { LogoMark } from "@/components/Logo";
 
 export function Hero() {
   return (
@@ -12,9 +13,10 @@ export function Hero() {
       />
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center px-6 py-28 text-center">
-        <p className="mb-5 text-sm font-semibold uppercase tracking-[0.35em] text-[#09ed2d] sm:text-base">
-          TAS Webworks
-        </p>
+        <div className="mb-6 flex items-center gap-2.5 text-white/70">
+          <LogoMark className="h-5 w-auto" />
+          <span className="text-[13px] font-medium tracking-[0.28em]">TAS WEBWORKS</span>
+        </div>
 
         <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm">
           <span className="rounded-full bg-[#09ed2d] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-black">

@@ -16,9 +16,20 @@ import {
   type BriefField,
   type BriefValue,
 } from "@/lib/brief";
-import { PRICING, formatEuro } from "@/lib/pricing";
+import {
+  PRICING,
+  PROJECT_TYPES,
+  FEATURE_KEYS,
+  formatEuro,
+  formatRange,
+  maintenanceRangeFor,
+  type ProjectType,
+  type DesignType,
+  type FeatureKey,
+} from "@/lib/pricing";
 
-const TOTAL = BRIEF_STEPS.length + 1; // + Kontakt/Absenden
+// Schritt 0 = Paket-Vorauswahl, dann die Brief-Schritte, zuletzt Kontakt.
+const TOTAL = BRIEF_STEPS.length + 2;
 
 function hasSupabaseEnv() {
   return (
@@ -70,6 +81,13 @@ export function Configurator() {
           /* offline / kein Backend – lokaler Entwurf genügt */
         }
       }
+
+      // Paket-Vorauswahl mit sinnvollen Defaults absichern, damit der erste
+      // Schritt (und die Live-Kalkulation) auch ohne Preisrechner-Vorlauf greift.
+      base = {
+        ...base,
+        summary: { projectType: "onepager", design: "custom", ...base.summary },
+      };
 
       if (active) {
         setDraft(base);
@@ -125,6 +143,9 @@ export function Configurator() {
   const setContact = (key: keyof BriefDraft["contact"], value: string) =>
     update((d) => ({ ...d, contact: { ...d.contact, [key]: value } }));
 
+  const setSummary = (patch: Partial<BriefDraft["summary"]>) =>
+    update((d) => ({ ...d, summary: { ...d.summary, ...patch } }));
+
   const goTo = (i: number) => {
     setStep(Math.max(0, Math.min(TOTAL - 1, i)));
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
@@ -161,8 +182,9 @@ export function Configurator() {
 
   if (done) return <SuccessScreen draft={draft} />;
 
-  const isContactStep = step === BRIEF_STEPS.length;
-  const current = BRIEF_STEPS[step];
+  const isPackageStep = step === 0;
+  const isContactStep = step === BRIEF_STEPS.length + 1;
+  const current = !isPackageStep && !isContactStep ? BRIEF_STEPS[step - 1] : null;
 
   return (
     <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-20 pt-5 sm:px-6">
@@ -204,9 +226,11 @@ export function Configurator() {
           <div className="rounded-3xl border border-white/10 bg-black p-6 shadow-[0_20px_60px_-25px_rgba(0,0,0,0.95)] sm:p-8">
             {!loaded ? (
               <div className="py-16 text-center text-sm text-white/40">Lädt …</div>
+            ) : isPackageStep ? (
+              <PackageStep summary={draft.summary} onChange={setSummary} />
             ) : isContactStep ? (
               <ContactStep draft={draft} errors={errors} onChange={setContact} />
-            ) : (
+            ) : current ? (
               <fieldset className="flex flex-col gap-6">
                 <legend className="mb-2">
                   <h2 className="text-xl font-semibold text-white">{current.title}</h2>
@@ -223,7 +247,7 @@ export function Configurator() {
                     />
                   ))}
               </fieldset>
-            )}
+            ) : null}
 
             {isContactStep && submitError && (
               <p className="mt-4 rounded-lg border border-red-400/30 bg-red-400/10 px-3 py-2 text-xs text-red-200">
@@ -282,7 +306,7 @@ export function Configurator() {
 // =========================================================================
 
 function Stepper({ step, onJump }: { step: number; onJump: (i: number) => void }) {
-  const labels = [...BRIEF_STEPS.map((s) => s.title), "Kontakt"];
+  const labels = ["Paket", ...BRIEF_STEPS.map((s) => s.title), "Kontakt"];
   return (
     <nav aria-label="Fortschritt" className="mt-8">
       <div className="flex items-center justify-between gap-1">
@@ -405,9 +429,9 @@ function FieldRenderer({
       <div className="flex flex-wrap gap-2">
         {field.options?.map((opt) => {
           const active = selected.includes(opt);
-          const price = field.prices?.[opt];
-          const monthly = field.monthlyPrices?.[opt];
           const help = field.optionHelp?.[opt];
+          // Einzelpreise werden bewusst nicht mehr ausgewiesen – der Gesamtwert
+          // bleibt eine Spanne (siehe CostCounter). So bleibt die Auswahl clean.
           return (
             <button
               key={opt}
@@ -422,24 +446,6 @@ function FieldRenderer({
             >
               {active && isMulti && <span>✓</span>}
               <span>{opt}</span>
-              {typeof price === "number" && price > 0 && (
-                <span
-                  className={`rounded-full px-1.5 py-0.5 text-[11px] font-semibold tabular-nums ${
-                    active ? "bg-[#09ed2d]/20 text-[#09ed2d]" : "bg-white/10 text-white/55"
-                  }`}
-                >
-                  +{formatEuro(price)}
-                </span>
-              )}
-              {typeof monthly === "number" && monthly > 0 && (
-                <span
-                  className={`rounded-full px-1.5 py-0.5 text-[11px] font-semibold tabular-nums ${
-                    active ? "bg-[#09ed2d]/20 text-[#09ed2d]" : "bg-white/10 text-white/55"
-                  }`}
-                >
-                  {formatEuro(monthly)}/Mt.
-                </span>
-              )}
               {help && <ChipHelp text={help} />}
             </button>
           );
@@ -506,6 +512,202 @@ function ChipHelp({ text }: { text: string }) {
         {text}
       </span>
     </span>
+  );
+}
+
+// =========================================================================
+// Paket-Schritt – die aus dem Preisrechner übernommene Vorauswahl,
+// hier sichtbar und jederzeit anpassbar.
+// =========================================================================
+
+function PackageStep({
+  summary,
+  onChange,
+}: {
+  summary: BriefDraft["summary"];
+  onChange: (patch: Partial<BriefDraft["summary"]>) => void;
+}) {
+  const projectType = (summary.projectType ?? "onepager") as ProjectType;
+  const design = (summary.design ?? "custom") as DesignType;
+  const selectedFeatures = (summary.features ?? []) as FeatureKey[];
+  const extraLanguages = summary.extraLanguages ?? 0;
+  const maintenance = summary.maintenance ?? false;
+  const maintenanceRange = maintenanceRangeFor(projectType);
+
+  const setLanguages = (n: number) =>
+    onChange({ extraLanguages: Math.max(0, Math.min(PRICING.extraLanguage.max, n)) });
+
+  const toggleFeature = (key: FeatureKey) =>
+    onChange({
+      features: selectedFeatures.includes(key)
+        ? selectedFeatures.filter((f) => f !== key)
+        : [...selectedFeatures, key],
+    });
+
+  return (
+    <div className="flex flex-col gap-7">
+      <div>
+        <h2 className="text-xl font-semibold text-white">Dein Paket</h2>
+        <p className="mt-1 text-sm text-white/55">
+          Das hast du im Preisrechner gewählt. Du kannst hier alles anpassen –
+          die Kalkulation rechts aktualisiert sich sofort.
+        </p>
+      </div>
+
+      {/* Projektart */}
+      <div className="flex flex-col gap-3">
+        <span className="text-sm font-semibold uppercase tracking-wider text-[#09ed2d]">
+          Projektart
+        </span>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {PROJECT_TYPES.map((key) => {
+            const pt = PRICING.projectTypes[key];
+            const active = projectType === key;
+            return (
+              <PackageCard key={key} active={active} onSelect={() => onChange({ projectType: key })}>
+                <span className="font-medium text-white">{pt.label}</span>
+                <span className="text-xs text-white/50">
+                  {pt.complex ? "Individuelle Planung" : `ab ${formatEuro(pt.base[0])}`}
+                </span>
+              </PackageCard>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Design */}
+      <div className="flex flex-col gap-3">
+        <span className="text-sm font-semibold uppercase tracking-wider text-[#09ed2d]">
+          Design
+        </span>
+        <div className="grid grid-cols-2 gap-3">
+          {(["custom", "template"] as const).map((key) => {
+            const active = design === key;
+            return (
+              <PackageCard key={key} active={active} onSelect={() => onChange({ design: key })}>
+                <span className="font-medium text-white">{PRICING.designLabel[key]}</span>
+                <span className="text-xs text-white/50">
+                  {key === "template" ? "günstiger (−20 %)" : "voller Funktionsumfang"}
+                </span>
+              </PackageCard>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Features */}
+      <div className="flex flex-col gap-3">
+        <span className="text-sm font-semibold uppercase tracking-wider text-[#09ed2d]">
+          Features
+        </span>
+        <div className="flex flex-wrap gap-2">
+          {FEATURE_KEYS.map((key) => {
+            const feature = PRICING.features[key];
+            const active = selectedFeatures.includes(key);
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => toggleFeature(key)}
+                aria-pressed={active}
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm transition ${
+                  active
+                    ? "border-[#09ed2d] bg-[#09ed2d]/15 text-[#09ed2d]"
+                    : "border-white/15 bg-white/5 text-white/70 hover:border-white/30 hover:text-white"
+                }`}
+              >
+                {active && <span>✓</span>}
+                <span>{feature.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Weitere Sprachen */}
+      <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4">
+        <div className="flex flex-col gap-0.5">
+          <span className="font-medium text-white">Weitere Sprachen</span>
+          <span className="text-xs text-white/50">Mehrsprachigkeit – je Sprache mit Aufpreis</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            aria-label="Weniger Sprachen"
+            disabled={extraLanguages <= 0}
+            onClick={() => setLanguages(extraLanguages - 1)}
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-lg leading-none text-white transition hover:border-[#09ed2d]/50 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            −
+          </button>
+          <span className="w-6 text-center font-semibold text-white">{extraLanguages}</span>
+          <button
+            type="button"
+            aria-label="Mehr Sprachen"
+            disabled={extraLanguages >= PRICING.extraLanguage.max}
+            onClick={() => setLanguages(extraLanguages + 1)}
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-lg leading-none text-white transition hover:border-[#09ed2d]/50 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            +
+          </button>
+        </div>
+      </div>
+
+      {/* Wartung & Pflege */}
+      <button
+        type="button"
+        onClick={() => onChange({ maintenance: !maintenance })}
+        aria-pressed={maintenance}
+        className={`flex items-center justify-between gap-3 rounded-xl border p-4 text-left transition ${
+          maintenance
+            ? "border-[#09ed2d] bg-[#09ed2d]/10"
+            : "border-white/10 bg-white/5 hover:border-white/25"
+        }`}
+      >
+        <span className="flex flex-col gap-0.5">
+          <span className="font-medium text-white">{PRICING.maintenance.label}</span>
+          <span className="text-xs text-white/50">
+            Monatlich · ab {formatEuro(maintenanceRange[0])}/Monat
+          </span>
+        </span>
+        <span
+          className={`relative h-6 w-11 flex-shrink-0 rounded-full transition ${
+            maintenance ? "bg-[#09ed2d]" : "bg-white/15"
+          }`}
+        >
+          <span
+            className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all ${
+              maintenance ? "left-[1.375rem]" : "left-0.5"
+            }`}
+          />
+        </span>
+      </button>
+    </div>
+  );
+}
+
+function PackageCard({
+  active,
+  onSelect,
+  children,
+}: {
+  active: boolean;
+  onSelect: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-pressed={active}
+      className={`flex flex-col gap-1 rounded-xl border p-4 text-left transition ${
+        active
+          ? "border-[#09ed2d] bg-[#09ed2d]/10"
+          : "border-white/10 bg-white/5 hover:border-white/25"
+      }`}
+    >
+      {children}
+    </button>
   );
 }
 
@@ -630,7 +832,7 @@ function Summary({ draft }: { draft: BriefDraft }) {
         <div className="flex items-baseline justify-between gap-3">
           <span className="text-sm text-white/70">Geschätzte Gesamtkosten (mit Detailauswahl)</span>
           <span className="text-xl font-semibold tabular-nums text-[#09ed2d]">
-            ca. {formatEuro(estimate.oneTime)}
+            ca. {formatRange(estimate.oneTimeMin, estimate.oneTimeMax)}
           </span>
         </div>
         {estimate.hosting > 0 && (
@@ -639,10 +841,12 @@ function Summary({ draft }: { draft: BriefDraft }) {
             <span className="tabular-nums">+ {formatEuro(estimate.hosting)}/Monat</span>
           </div>
         )}
-        {estimate.maintenance > 0 && (
+        {estimate.maintenanceMax > 0 && (
           <div className="mt-1 flex items-baseline justify-between gap-3 text-xs text-white/55">
             <span>Wartung &amp; Pflege</span>
-            <span className="tabular-nums">+ {formatEuro(estimate.maintenance)}/Monat</span>
+            <span className="tabular-nums">
+              + {formatRange(estimate.maintenanceMin, estimate.maintenanceMax)}/Monat
+            </span>
           </div>
         )}
       </div>
@@ -755,7 +959,8 @@ function CostCounter({ draft }: { draft: BriefDraft }) {
       ? PRICING.projectTypes[pt as keyof typeof PRICING.projectTypes].label
       : "—";
 
-  const level = projectLevel(estimate.oneTime);
+  const midpoint = Math.round((estimate.oneTimeMin + estimate.oneTimeMax) / 2);
+  const level = projectLevel(midpoint);
   const { chosen, total } = countPricedOptions(draft.data);
   const fill = total > 0 ? Math.round((chosen / total) * 100) : 0;
 
@@ -772,17 +977,23 @@ function CostCounter({ draft }: { draft: BriefDraft }) {
         </span>
       </div>
 
-      {/* Summe */}
+      {/* Summe – immer als unverbindliche Spanne */}
       <div className="mt-4">
         <span className="text-xs text-white/45">geschätzt, einmalig</span>
-        <div key={estimate.oneTime} className="animate-cost-pop mt-0.5 origin-left">
-          <span className="text-[2.6rem] font-bold leading-none tabular-nums text-[#09ed2d] drop-shadow-[0_0_18px_rgba(9,237,45,0.35)] sm:text-5xl">
-            ca. <AnimatedEuro value={estimate.oneTime} />
+        <div key={`${estimate.oneTimeMin}-${estimate.oneTimeMax}`} className="animate-cost-pop mt-0.5 origin-left">
+          <span className="text-[2rem] font-bold leading-none tabular-nums text-[#09ed2d] drop-shadow-[0_0_18px_rgba(9,237,45,0.35)] sm:text-[2.4rem]">
+            ca. <AnimatedEuro value={estimate.oneTimeMin} />
+            {estimate.oneTimeMax !== estimate.oneTimeMin && (
+              <> – <AnimatedEuro value={estimate.oneTimeMax} /></>
+            )}
           </span>
         </div>
-        {estimate.monthly > 0 && (
+        {estimate.monthlyMax > 0 && (
           <p className="mt-2 text-sm text-white/60">
-            + <span className="font-semibold text-white/85">{formatEuro(estimate.monthly)}</span>
+            +{" "}
+            <span className="font-semibold text-white/85">
+              {formatRange(estimate.monthlyMin, estimate.monthlyMax)}
+            </span>
             /Monat <span className="text-white/40">· laufend</span>
           </p>
         )}
@@ -808,22 +1019,30 @@ function CostCounter({ draft }: { draft: BriefDraft }) {
       <dl className="mt-5 flex flex-col gap-2 border-t border-white/10 pt-4 text-sm">
         <div className="flex items-center justify-between gap-2">
           <dt className="text-white/50">Basis ({ptLabel})</dt>
-          <dd className="tabular-nums text-white/80">{formatEuro(estimate.base)}</dd>
+          <dd className="tabular-nums text-white/80">
+            {formatRange(estimate.baseMin, estimate.baseMax)}
+          </dd>
         </div>
-        <div className="flex items-center justify-between gap-2">
-          <dt className="text-white/50">Zusatz-Optionen</dt>
-          <dd className="tabular-nums text-white/80">+ {formatEuro(estimate.addOns)}</dd>
-        </div>
+        {estimate.addOnsMax > 0 && (
+          <div className="flex items-center justify-between gap-2">
+            <dt className="text-white/50">Zusatz-Optionen</dt>
+            <dd className="tabular-nums text-white/80">
+              + {formatRange(estimate.addOnsMin, estimate.addOnsMax)}
+            </dd>
+          </div>
+        )}
         {estimate.hosting > 0 && (
           <div className="flex items-center justify-between gap-2">
             <dt className="text-white/50">Hosting</dt>
             <dd className="tabular-nums text-white/80">{formatEuro(estimate.hosting)}/Mt.</dd>
           </div>
         )}
-        {estimate.maintenance > 0 && (
+        {estimate.maintenanceMax > 0 && (
           <div className="flex items-center justify-between gap-2">
             <dt className="text-white/50">Wartung &amp; Pflege</dt>
-            <dd className="tabular-nums text-white/80">{formatEuro(estimate.maintenance)}/Mt.</dd>
+            <dd className="tabular-nums text-white/80">
+              {formatRange(estimate.maintenanceMin, estimate.maintenanceMax)}/Mt.
+            </dd>
           </div>
         )}
       </dl>

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PRICING, maintenanceRangeFor } from "@/lib/pricing";
+import { PRICING, maintenanceRangeFor, type DesignType, type FeatureKey } from "@/lib/pricing";
 
 /**
  * Datenmodell des detaillierten Projekt-Konfigurators.
@@ -355,7 +355,7 @@ export const BRIEF_STEPS: BriefStep[] = [
         label: "Welche Sprachen? (falls mehrsprachig)",
         type: "text",
         placeholder: "z. B. Deutsch, Englisch, Türkisch",
-        hint: "Je zusätzlicher Sprache 39 €.",
+        hint: "Je zusätzlicher Sprache fällt ein kleiner Aufpreis an.",
         optional: true,
       },
       {
@@ -366,7 +366,7 @@ export const BRIEF_STEPS: BriefStep[] = [
         monthlyPrices: { "Nein, bitte übernehmen": 14 },
         optionHelp: {
           "Ja, vorhanden": "Du hast bereits Webspace / Hosting.",
-          "Nein, bitte übernehmen": "Wir hosten deine Seite – 14 €/Monat.",
+          "Nein, bitte übernehmen": "Wir übernehmen das Hosting deiner Seite.",
           "Noch unklar": "Unsicher? Wir empfehlen dir das Passende.",
         },
         optional: true,
@@ -594,41 +594,57 @@ export function displayValue(value: BriefValue | undefined): string {
 // ---- Live-Kostenschätzung ---------------------------------------------
 
 export type BriefEstimate = {
-  /** Startwert aus der Projektart (Preisrechner). */
-  base: number;
-  /** Summe aller gewählten einmaligen Aufpreis-Optionen. */
-  addOns: number;
-  /** Gesamter einmaliger Richtwert. */
-  oneTime: number;
+  /** Basis-Spanne aus Projektart × Design-Faktor (einmalig). */
+  baseMin: number;
+  baseMax: number;
+  /** Spanne aller gewählten Aufpreis-Optionen (einmalig). */
+  addOnsMin: number;
+  addOnsMax: number;
+  /** Gesamte einmalige Richtwert-Spanne. */
+  oneTimeMin: number;
+  oneTimeMax: number;
   /** Monatliches Hosting (genau einmal gezählt – nie doppelt). */
   hosting: number;
-  /** Monatliche Wartung & Pflege (optional, aus dem Preisrechner). */
-  maintenance: number;
-  /** Monatlicher Gesamt-Richtwert (Hosting + Wartung). */
-  monthly: number;
+  /** Monatliche Wartung & Pflege als Spanne (optional, aus dem Preisrechner). */
+  maintenanceMin: number;
+  maintenanceMax: number;
+  /** Monatliche Gesamt-Spanne (Hosting + Wartung). */
+  monthlyMin: number;
+  monthlyMax: number;
 };
 
 /**
- * Liefert den Basispreis (einmalig) für eine Projektart aus der zentralen
- * Preis-Konfiguration. Unbekannt → 0.
+ * Liefert die Basis-Preisspanne für eine Projektart aus der zentralen
+ * Preis-Konfiguration. Unbekannt → [0, 0].
  */
-export function baseForProjectType(projectType: string | undefined): number {
+export function baseRangeForProjectType(projectType: string | undefined): [number, number] {
   if (projectType && projectType in PRICING.projectTypes) {
-    return PRICING.projectTypes[projectType as keyof typeof PRICING.projectTypes].base[0];
+    const base = PRICING.projectTypes[projectType as keyof typeof PRICING.projectTypes].base;
+    return [base[0], base[1]];
   }
-  return 0;
+  return [0, 0];
 }
 
+const roundEuro = (value: number) => Math.round(value);
+
 /**
- * Berechnet den aktuellen Richtwert aus Projektart (Basis) plus allen gewählten
- * Aufpreis-Optionen des Konfigurators – einmalig und monatlich. Versteckte
- * Felder (showIf nicht erfüllt) zählen nicht mit. Bewusst eine schlichte Summe:
- * transparenter, unverbindlicher Live-Wert.
+ * Berechnet den aktuellen Richtwert als Preisspanne: Basis (Projektart ×
+ * Design-Faktor) plus allen gewählten Aufpreis-Optionen des Konfigurators –
+ * einmalig und monatlich. Versteckte Felder (showIf nicht erfüllt) zählen nicht
+ * mit. Bewusst transparent: Einzelpreise werden in der UI nicht ausgewiesen, der
+ * Gesamtwert bleibt aber stets eine unverbindliche Spanne.
  */
 export function computeBriefEstimate(data: BriefData, summary: BriefSummary): BriefEstimate {
-  const base = baseForProjectType(summary.projectType);
+  const [baseLow, baseHigh] = baseRangeForProjectType(summary.projectType);
+  const factor =
+    summary.design && summary.design in PRICING.designMultiplier
+      ? PRICING.designMultiplier[summary.design as DesignType]
+      : 1;
+  const baseMin = roundEuro(baseLow * factor);
+  const baseMax = roundEuro(baseHigh * factor);
 
-  let addOns = 0;
+  let addOnsMin = 0;
+  let addOnsMax = 0;
   // Hosting kommt ausschließlich aus der Hosting-Frage (monthlyPrices) und wird so
   // genau einmal gezählt – nicht doppelt zur Wartung & Pflege addiert.
   let hosting = 0;
@@ -639,17 +655,51 @@ export function computeBriefEstimate(data: BriefData, summary: BriefSummary): Br
       const value = data[field.name];
       const selected = Array.isArray(value) ? value : value ? [value] : [];
       for (const opt of selected) {
-        if (field.prices) addOns += field.prices[opt] ?? 0;
+        if (field.prices) {
+          const p = field.prices[opt] ?? 0;
+          addOnsMin += p;
+          addOnsMax += p;
+        }
         if (field.monthlyPrices) hosting += field.monthlyPrices[opt] ?? 0;
       }
     }
   }
 
-  // Optionale Wartung aus dem Preisrechner – als eigener, klar getrennter Posten.
-  let maintenance = 0;
-  if (summary.maintenance && summary.projectType && summary.projectType in PRICING.projectTypes) {
-    maintenance = maintenanceRangeFor(summary.projectType as keyof typeof PRICING.projectTypes)[0];
+  // Features aus der Paket-Vorauswahl (Content, Terminbuchung, Blog, Branding)
+  // – jeweils als eigene Aufpreis-Spanne (flach, ohne Design-Faktor).
+  for (const f of summary.features ?? []) {
+    if (f in PRICING.features) {
+      const [fMin, fMax] = PRICING.features[f as FeatureKey].price;
+      addOnsMin += fMin;
+      addOnsMax += fMax;
+    }
   }
 
-  return { base, addOns, oneTime: base + addOns, hosting, maintenance, monthly: hosting + maintenance };
+  // Weitere Sprachen (aus der Paket-Vorauswahl) – als Spanne je Sprache.
+  const langs = summary.extraLanguages ?? 0;
+  addOnsMin += langs * PRICING.extraLanguage.price[0];
+  addOnsMax += langs * PRICING.extraLanguage.price[1];
+
+  // Optionale Wartung aus dem Preisrechner – als eigener, klar getrennter Posten.
+  let maintenanceMin = 0;
+  let maintenanceMax = 0;
+  if (summary.maintenance && summary.projectType && summary.projectType in PRICING.projectTypes) {
+    const m = maintenanceRangeFor(summary.projectType as keyof typeof PRICING.projectTypes);
+    maintenanceMin = m[0];
+    maintenanceMax = m[1];
+  }
+
+  return {
+    baseMin,
+    baseMax,
+    addOnsMin,
+    addOnsMax,
+    oneTimeMin: baseMin + addOnsMin,
+    oneTimeMax: baseMax + addOnsMax,
+    hosting,
+    maintenanceMin,
+    maintenanceMax,
+    monthlyMin: hosting + maintenanceMin,
+    monthlyMax: hosting + maintenanceMax,
+  };
 }
