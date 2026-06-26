@@ -4,6 +4,8 @@ import { Card } from "@/components/admin/PageHeader";
 import { StatusBadge, leadTone } from "@/components/ui/StatusBadge";
 import { getBrief, BRIEF_STATUS_LABELS } from "@/lib/briefs";
 import { BRIEF_STEPS, displayValue } from "@/lib/brief";
+import { buildBriefPrompt } from "@/lib/brief-prompt";
+import { BriefPromptActions } from "@/components/admin/BriefPromptActions";
 import { formatEuro } from "@/lib/pricing";
 
 const dateFormatter = new Intl.DateTimeFormat("de-DE", {
@@ -24,6 +26,14 @@ export default async function AdminBriefDetailPage({
   if (!brief) notFound();
 
   const summary = brief.data?._summary;
+
+  const prompt = buildBriefPrompt(brief);
+  const slug =
+    (brief.company || brief.name || "konfiguration")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "konfiguration";
+  const promptFilename = `briefing-${slug}.md`;
 
   return (
     <>
@@ -54,6 +64,22 @@ export default async function AdminBriefDetailPage({
       </div>
 
       <div className="flex flex-col gap-4">
+        {/* Claude-Prompt: Kundenkonfiguration kopieren oder als Datei laden */}
+        <Card>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-[#09ed2d]">
+                Für Claude aufbereiten
+              </h2>
+              <p className="mt-1 text-sm text-white/50">
+                Die komplette Konfiguration als fertigen Prompt – kopieren oder als
+                .md-Datei laden und direkt bei Claude einfügen/hochladen.
+              </p>
+            </div>
+            <BriefPromptActions prompt={prompt} filename={promptFilename} />
+          </div>
+        </Card>
+
         {/* Kontakt */}
         <Card>
           <h2 className="text-sm font-semibold uppercase tracking-wide text-[#09ed2d]">Kontakt</h2>

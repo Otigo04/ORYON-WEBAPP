@@ -8,7 +8,7 @@ import {
 } from "@/lib/actions/admin/subscriptions";
 import { Select, Field, SubmitButton, FormError, FormSuccess } from "@/components/admin/Fields";
 import { FLEET_TIERS } from "@/lib/tas-fleet";
-import { SUBSCRIPTION_STATUS_LABELS, BILLING_INTERVAL_LABELS } from "@/lib/subscription";
+import { SUBSCRIPTION_STATUS_LABELS, BILLING_INTERVAL_LABELS } from "@/lib/subscription-labels";
 import type { CustomerSubscription } from "@/lib/admin/subscriptions";
 
 const PLAN_OPTIONS = FLEET_TIERS.map((t) => ({ value: t.id, label: t.name }));

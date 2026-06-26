@@ -65,6 +65,7 @@ export default async function CustomerInvoicePage({
             reference={`Rechnung ${invoice.number}`}
             heading="Offener Betrag"
             subline={invoice.due_date ? `Fällig bis ${df.format(new Date(invoice.due_date))}` : undefined}
+            checkout={{ kind: "invoice", id: invoice.id }}
           />
         </div>
       )}

@@ -23,6 +23,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     })),
     {
+      url: `${siteConfig.url}/ueber-uns`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
       url: `${siteConfig.url}/impressum`,
       lastModified: now,
       changeFrequency: "yearly",
@@ -30,6 +36,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${siteConfig.url}/datenschutz`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${siteConfig.url}/agb`,
       lastModified: now,
       changeFrequency: "yearly",
       priority: 0.3,

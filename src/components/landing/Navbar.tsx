@@ -9,10 +9,12 @@ import { branches, brancheHref } from "@/lib/branches";
 import { signOutAction } from "@/lib/actions/auth";
 import { createClient } from "@/lib/supabase/client";
 
+// Absolute Anker (/#...) statt reiner Hashes, damit die Links auch von
+// Unterseiten wie /ueber-uns oder /agb korrekt zur Startseite springen.
 const navLinks = [
-  { label: "Referenzen", href: "#referenzen" },
-  { label: "Preisrechner", href: "#preisrechner" },
-  { label: "Kontakt", href: "#kontakt" },
+  { label: "Über uns", href: "/ueber-uns" },
+  { label: "Preisrechner", href: "/#preisrechner" },
+  { label: "Kontakt", href: "/#kontakt" },
 ];
 
 /**
@@ -169,7 +171,7 @@ export function Navbar() {
               </>
             )}
             <a
-              href="#kontakt"
+              href="/#kontakt"
               className="rounded-full bg-[#09ed2d] px-4 py-2 text-sm font-semibold text-black shadow-[0_0_20px_-4px_rgba(9,237,45,0.6)] transition hover:bg-[#09ed2d]/90"
             >
               Projekt starten
@@ -362,7 +364,7 @@ export function Navbar() {
               </>
             )}
             <a
-              href="#kontakt"
+              href="/#kontakt"
               onClick={() => setMenuOpen(false)}
               className="rounded-full bg-[#09ed2d] px-4 py-2.5 text-center text-sm font-semibold text-black transition hover:bg-[#09ed2d]/90"
             >

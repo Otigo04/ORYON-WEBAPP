@@ -129,6 +129,34 @@ export function Select({
   );
 }
 
+export function Checkbox({
+  name,
+  label,
+  defaultChecked,
+  hint,
+}: {
+  name: string;
+  label: string;
+  defaultChecked?: boolean;
+  hint?: string;
+}) {
+  return (
+    <label htmlFor={name} className="flex items-start gap-3 rounded-xl border border-white/12 bg-black/40 px-3.5 py-3 text-sm">
+      <input
+        id={name}
+        name={name}
+        type="checkbox"
+        defaultChecked={defaultChecked}
+        className="mt-0.5 h-4 w-4 accent-[#09ed2d]"
+      />
+      <span>
+        <span className="font-medium text-white">{label}</span>
+        {hint && <span className="mt-0.5 block text-xs text-white/40">{hint}</span>}
+      </span>
+    </label>
+  );
+}
+
 export function FormError({ message }: { message?: string }) {
   if (!message) return null;
   return (

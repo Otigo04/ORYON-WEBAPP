@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { calculatePrice, quoteLeadSchema } from "@/lib/pricing";
+import { notifyNewLead } from "@/lib/notify";
 
 export type SaveQuoteState = {
   ok: boolean;
@@ -76,6 +77,19 @@ export async function saveQuoteLead(input: unknown): Promise<SaveQuoteState> {
         error: "Anfrage konnte nicht gespeichert werden. Bitte versuche es erneut.",
       };
     }
+
+    // Benachrichtigung an das Team – fire-and-forget, darf den Lead nie scheitern lassen.
+    await notifyNewLead({
+      source: "Preisrechner",
+      name: data.name,
+      email: data.email,
+      phone: data.phone || null,
+      company: data.company || null,
+      message: data.message || null,
+      projectType: data.projectType,
+      priceMin: price.oneTimeMin,
+      priceMax: price.oneTimeMax,
+    });
 
     return { ok: true };
   } catch {

@@ -11,6 +11,8 @@ const NAV = [
   { href: "/admin/rechnungen", label: "Rechnungen" },
   { href: "/admin/angebote", label: "Angebote" },
   { href: "/admin/konzepte", label: "Konzepte" },
+  { href: "/admin/referenzen", label: "Referenzen" },
+  { href: "/admin/bewertungen", label: "Bewertungen" },
   { href: "/admin/abos", label: "Abonnements" },
 ];
 

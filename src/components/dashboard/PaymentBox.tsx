@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { BANK_DETAILS, ONLINE_PAYMENT_ENABLED } from "@/lib/payment";
 import { formatMoney } from "@/lib/documents";
+import { createCheckoutSession } from "@/lib/actions/payment";
+
+type CheckoutTarget = { kind: "invoice" | "offer_deposit"; id: string };
 
 /**
  * Zahlungs-Hinweis (vorbereitet).
@@ -18,15 +21,35 @@ export function PaymentBox({
   reference,
   heading = "Zahlung",
   subline,
+  checkout,
 }: {
   amount: number;
   currency?: string;
   reference: string;
   heading?: string;
   subline?: string;
+  /** Aktiviert den Online-Bezahlen-Button (Stripe), wenn freigeschaltet. */
+  checkout?: CheckoutTarget;
 }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [paying, setPaying] = useState(false);
+  const [payError, setPayError] = useState<string | null>(null);
+
+  const showOnlinePay = ONLINE_PAYMENT_ENABLED && !!checkout;
+
+  const startCheckout = async () => {
+    if (!checkout) return;
+    setPaying(true);
+    setPayError(null);
+    const res = await createCheckoutSession(checkout);
+    if (res.ok && res.url) {
+      window.location.href = res.url;
+      return;
+    }
+    setPayError(res.error ?? "Zahlung konnte nicht gestartet werden.");
+    setPaying(false);
+  };
 
   const copyIban = async () => {
     try {
@@ -50,14 +73,36 @@ export function PaymentBox({
           </p>
           {subline && <p className="mt-1 text-xs text-white/50">{subline}</p>}
         </div>
-        <button
-          type="button"
-          onClick={() => setOpen((o) => !o)}
-          className="rounded-full bg-[#09ed2d] px-5 py-2.5 text-sm font-semibold text-black shadow-[0_0_24px_-4px_rgba(9,237,45,0.6)] transition hover:bg-[#09ed2d]/90"
-        >
-          {open ? "Zahlungsdaten ausblenden" : "Jetzt zahlen"}
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          {showOnlinePay && (
+            <button
+              type="button"
+              onClick={startCheckout}
+              disabled={paying}
+              className="rounded-full bg-[#09ed2d] px-5 py-2.5 text-sm font-semibold text-black shadow-[0_0_24px_-4px_rgba(9,237,45,0.6)] transition hover:bg-[#09ed2d]/90 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {paying ? "Weiterleitung …" : "Online bezahlen"}
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            className={
+              showOnlinePay
+                ? "rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
+                : "rounded-full bg-[#09ed2d] px-5 py-2.5 text-sm font-semibold text-black shadow-[0_0_24px_-4px_rgba(9,237,45,0.6)] transition hover:bg-[#09ed2d]/90"
+            }
+          >
+            {open ? "Überweisung ausblenden" : showOnlinePay ? "Per Überweisung" : "Jetzt zahlen"}
+          </button>
+        </div>
       </div>
+
+      {payError && (
+        <p className="mt-3 rounded-lg border border-red-400/30 bg-red-400/10 px-3 py-2 text-xs text-red-200">
+          {payError}
+        </p>
+      )}
 
       {open && (
         <div className="mt-5 border-t border-white/10 pt-5">

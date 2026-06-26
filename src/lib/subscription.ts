@@ -1,15 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
 import type { FleetPlanId } from "@/lib/tas-fleet";
+import type { SubscriptionStatus, BillingInterval } from "@/lib/subscription-labels";
 
-/** Lebenszyklus-Status eines Abos (an Stripe angelehnt). */
-export type SubscriptionStatus =
-  | "incomplete"
-  | "trialing"
-  | "active"
-  | "past_due"
-  | "canceled";
-
-export type BillingInterval = "monthly" | "yearly";
+// Client-sichere Typen & Labels liegen in `subscription-labels.ts` und werden
+// hier zur Abwärtskompatibilität re-exportiert.
+export type { SubscriptionStatus, BillingInterval } from "@/lib/subscription-labels";
+export {
+  SUBSCRIPTION_STATUS_LABELS,
+  BILLING_INTERVAL_LABELS,
+} from "@/lib/subscription-labels";
 
 export type Subscription = {
   id: string;
@@ -31,20 +30,6 @@ export type Subscription = {
 /** Spalten, die das Kundenportal liest (Stripe-IDs bleiben außen vor). */
 const PUBLIC_COLUMNS =
   "id, user_id, plan, status, billing_interval, current_period_start, current_period_end, cancel_at_period_end, vehicle_limit, created_at, updated_at";
-
-/** Deutsche Beschriftungen der Abo-Status. */
-export const SUBSCRIPTION_STATUS_LABELS: Record<SubscriptionStatus, string> = {
-  incomplete: "Zahlung ausstehend",
-  trialing: "Testphase",
-  active: "Aktiv",
-  past_due: "Zahlung überfällig",
-  canceled: "Gekündigt",
-};
-
-export const BILLING_INTERVAL_LABELS: Record<BillingInterval, string> = {
-  monthly: "Monatlich",
-  yearly: "Jährlich",
-};
 
 /**
  * Gilt das Abo aktuell als nutzbar? Aktiv oder in Testphase – und (falls ein

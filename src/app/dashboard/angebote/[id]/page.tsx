@@ -84,6 +84,7 @@ export default async function CustomerOfferPage({
               reference={paymentReference(offer.number)}
               heading="Anzahlung (50 %) zum Projektstart"
               subline={`Restbetrag bei Fertigstellung · Gesamt ${new Intl.NumberFormat("de-DE", { style: "currency", currency: offer.currency }).format(gross)}`}
+              checkout={{ kind: "offer_deposit", id: offer.id }}
             />
           </>
         )}

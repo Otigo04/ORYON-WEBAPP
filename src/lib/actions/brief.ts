@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { briefSubmitSchema } from "@/lib/brief";
+import { notifyNewLead } from "@/lib/notify";
 
 export type SaveBriefState = {
   ok: boolean;
@@ -75,6 +76,18 @@ export async function saveBrief(input: unknown): Promise<SaveBriefState> {
     if (user) {
       await supabase.from("brief_drafts").delete().eq("user_id", user.id);
     }
+
+    // Benachrichtigung an das Team – darf den Brief nie scheitern lassen.
+    await notifyNewLead({
+      source: "Konfigurator",
+      name: contact.name,
+      email: contact.email,
+      phone: contact.phone || null,
+      company: contact.company || null,
+      projectType: summary.projectType ?? null,
+      priceMin: summary.priceMin ?? null,
+      priceMax: summary.priceMax ?? null,
+    });
 
     return { ok: true };
   } catch {

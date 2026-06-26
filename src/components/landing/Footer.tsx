@@ -2,10 +2,11 @@ import Link from "next/link";
 import { LogoWordmark } from "@/components/Logo";
 
 const footerNav = [
-  { label: "Leistungen", href: "#leistungen" },
-  { label: "Portfolio", href: "#portfolio" },
-  { label: "Referenzen", href: "#referenzen" },
-  { label: "Kontakt", href: "#kontakt" },
+  { label: "Leistungen", href: "/#leistungen" },
+  { label: "Portfolio", href: "/#portfolio" },
+  { label: "Referenzen", href: "/#referenzen" },
+  { label: "Über uns", href: "/ueber-uns" },
+  { label: "Kontakt", href: "/#kontakt" },
 ];
 
 export function Footer() {
@@ -72,6 +73,12 @@ export function Footer() {
             className="text-xs text-white/40 transition hover:text-white"
           >
             Datenschutz
+          </Link>
+          <Link
+            href="/agb"
+            className="text-xs text-white/40 transition hover:text-white"
+          >
+            AGB
           </Link>
         </nav>
       </div>
