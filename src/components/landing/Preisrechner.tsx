@@ -336,7 +336,7 @@ export function Preisrechner() {
           <div className="mt-6 border-t border-white/10 pt-6">
             <h3 className="text-sm font-semibold text-white">Jetzt genau kalkulieren</h3>
             <p className="mt-1 text-xs text-white/50">
-              Im Detail-Kalkulator gibst du dein Projekt Schritt für Schritt an –
+              Im Detail-Kalkulator gibst du dein Projekt Schritt für Schritt an,
               Firmenname, Domain, Seiten, Funktionen und mehr. Deine Auswahl von hier
               wird übernommen und bleibt anpassbar. Dort forderst du auch dein
               unverbindliches Angebot an.

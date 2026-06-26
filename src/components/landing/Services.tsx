@@ -81,9 +81,8 @@ export function Services() {
             Deine Herausforderung. Unsere Lösung.
           </h2>
           <p className="mt-4 text-base text-white/60">
-            Die meisten Unternehmen verlieren online Kunden, ohne es zu merken.
-            Wir finden die Schwachstellen, und beheben sie. Zum fairsten Festpreis,
-            der deutlich unter dem klassischer Agenturen liegt.
+            Viele Firmen lassen online unbemerkt Kunden liegen. Wir decken die Fehler auf deiner Website auf und beheben sie direkt. 
+            Das Ganze läuft komplett transparent zum fairen Festpreis, der weit unter den Preisen klassischer Agenturen liegt.
           </p>
         </header>
 
@@ -121,7 +120,7 @@ export function Services() {
                 Unschlagbar preiswert
               </span>
               <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white">
-                Agentur-Qualität zum fairen Festpreis – schon ab{" "}
+                Agentur-Qualität zum fairen Festpreis! schon ab{" "}
                 <span className="text-[#09ed2d]">
                   {formatEuro(
                     PRICING.projectTypes.onepager.base[0] *
@@ -130,9 +129,9 @@ export function Services() {
                 </span>
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-white/60">
-                Dank schlanker Prozesse und modernster Technik geben wir den
-                Kostenvorteil direkt an dich weiter. Kein Stundenchaos, keine
-                versteckten Kosten – nur ein transparenter Festpreis.
+                Schlanke Prozesse und modernste Technik machen es möglich: Wir geben unsere Kostenvorteile direkt 
+                an dich weiter. Das bedeutet für dich kein Chaos bei den Stunden und keine versteckten Kosten,
+                sondern absolut transparente Festpreise.
               </p>
             </div>
             <RainbowButton asChild>

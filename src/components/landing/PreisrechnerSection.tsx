@@ -26,9 +26,9 @@ export function PreisrechnerSection() {
             Was kostet dein Projekt?
           </h2>
           <p className="mt-4 text-base leading-relaxed text-white/60 sm:text-lg">
-            Stell dir dein Paket zusammen und sieh sofort eine grobe Preisspanne.
-            Mit „Weiter kalkulieren“ geht’s in den Detail-Kalkulator – deine Auswahl
-            wird übernommen und bleibt dort jederzeit anpassbar.
+            Klick dir dein Paket zusammen und sieh direkt, wo du preislich ungefähr liegst. 
+            Wenn du auf „Weiter kalkulieren“ klickst, kommst du zum Detail-Kalkulator. 
+            Deine Auswahl wandert automatisch mit und du kannst sie dort im Grunde jederzeit wieder anpassen.
           </p>
         </header>
 

@@ -24,7 +24,7 @@ export function Hero() {
           <span className="rounded-full bg-[#09ed2d] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-black">
             Neu
           </span>
-          Ungefähre Kosten direkt online berechnen – mit unserem neuen <span className="font-semibold text-white">Projekt-Kalkulator</span>
+          Agenturqualität schon ab <span className="font-semibold text-white">79€!</span>
         </span>
 
         <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-6xl">
