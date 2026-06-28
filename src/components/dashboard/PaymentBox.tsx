@@ -132,7 +132,7 @@ export function PaymentBox({
 
           {!ONLINE_PAYMENT_ENABLED && (
             <p className="mt-4 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/45">
-              💳 Online-Zahlung per Karte / SEPA folgt in Kürze. Bis dahin bequem
+              Online-Zahlung per Karte / SEPA folgt in Kürze. Bis dahin bequem
               per Überweisung.
             </p>
           )}

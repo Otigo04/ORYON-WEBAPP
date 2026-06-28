@@ -69,7 +69,7 @@ export function ServicesMenu() {
         aria-hidden={!open}
         aria-label="Leistungen nach Branche"
         style={{ transformOrigin: "top center" }}
-        className={`absolute left-1/2 top-[calc(100%+1.4rem)] z-50 w-[min(88vw,720px)] -translate-x-1/2 rounded-2xl border border-[#09ed2d]/20 bg-black/90 p-3 shadow-[0_24px_60px_-20px_rgba(9,237,45,0.45)] backdrop-blur-xl transition duration-200 ease-out ${
+        className={`absolute left-1/2 top-[calc(100%+1.4rem)] z-50 max-h-[calc(100vh-7rem)] w-[min(88vw,720px)] -translate-x-1/2 overflow-y-auto overscroll-contain rounded-2xl border border-[#09ed2d]/20 bg-black/90 p-3 shadow-[0_24px_60px_-20px_rgba(9,237,45,0.45)] backdrop-blur-xl transition duration-200 ease-out ${
           open
             ? "translate-y-0 scale-100 opacity-100"
             : "pointer-events-none -translate-y-2 scale-95 opacity-0"

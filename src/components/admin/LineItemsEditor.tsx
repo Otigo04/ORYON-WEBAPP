@@ -14,22 +14,33 @@ const inputBase =
 export function LineItemsEditor({
   defaultItems,
   taxRate,
+  value,
+  onChange,
 }: {
   defaultItems?: LineItem[];
   taxRate: number;
+  /** Optionaler kontrollierter Modus (z. B. für Import von außen). */
+  value?: LineItem[];
+  onChange?: (items: LineItem[]) => void;
 }) {
-  const [items, setItems] = useState<LineItem[]>(
+  const [internal, setInternal] = useState<LineItem[]>(
     defaultItems && defaultItems.length > 0
       ? defaultItems
       : [{ description: "", quantity: 1, unit_price: 0 }],
   );
 
-  const update = (i: number, patch: Partial<LineItem>) =>
-    setItems((prev) => prev.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
+  const controlled = value !== undefined;
+  const items = controlled ? value : internal;
+  const setItems = (next: LineItem[]) => {
+    if (!controlled) setInternal(next);
+    onChange?.(next);
+  };
 
-  const remove = (i: number) => setItems((prev) => prev.filter((_, idx) => idx !== i));
-  const add = () =>
-    setItems((prev) => [...prev, { description: "", quantity: 1, unit_price: 0 }]);
+  const update = (i: number, patch: Partial<LineItem>) =>
+    setItems(items.map((it, idx) => (idx === i ? { ...it, ...patch } : it)));
+
+  const remove = (i: number) => setItems(items.filter((_, idx) => idx !== i));
+  const add = () => setItems([...items, { description: "", quantity: 1, unit_price: 0 }]);
 
   const totals = computeTotals(items, taxRate);
 

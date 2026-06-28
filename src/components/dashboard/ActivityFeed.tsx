@@ -16,12 +16,12 @@ export type ActivityItem = {
 
 const SEEN_KEY = "tas-dash-seen";
 
-const KIND_META: Record<ActivityItem["kind"], { label: string; color: string; icon: string }> = {
-  offer: { label: "Angebot", color: "text-[#09ed2d]", icon: "📄" },
-  invoice: { label: "Rechnung", color: "text-sky-300", icon: "🧾" },
-  project: { label: "Projekt", color: "text-amber-300", icon: "🚧" },
-  concept: { label: "Konzept", color: "text-violet-300", icon: "💡" },
-  lead: { label: "Anfrage", color: "text-white/70", icon: "✉️" },
+const KIND_META: Record<ActivityItem["kind"], { label: string; color: string }> = {
+  offer: { label: "Angebot", color: "text-[#09ed2d]" },
+  invoice: { label: "Rechnung", color: "text-sky-300" },
+  project: { label: "Projekt", color: "text-amber-300" },
+  concept: { label: "Konzept", color: "text-violet-300" },
+  lead: { label: "Anfrage", color: "text-white/70" },
 };
 
 const dateFormatter = new Intl.DateTimeFormat("de-DE", {
@@ -73,8 +73,10 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
         const isNew = lastSeen !== null && new Date(it.date).getTime() > lastSeen;
         const inner = (
           <div className="flex items-start gap-3 py-3">
-            <span className="mt-0.5 flex h-8 w-8 flex-none items-center justify-center rounded-full border border-white/10 bg-white/5 text-sm">
-              {meta.icon}
+            <span
+              className={`mt-0.5 flex h-8 w-8 flex-none items-center justify-center rounded-full border border-white/10 bg-white/5 text-xs font-bold ${meta.color}`}
+            >
+              {meta.label.charAt(0)}
             </span>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">

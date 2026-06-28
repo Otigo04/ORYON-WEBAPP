@@ -70,9 +70,9 @@ export default async function DashboardPage() {
 
   const openInvoices = invoices.filter((i) => i.status === "sent");
   const stats = [
-    { label: "Aktive Projekte", value: projects.length || "—", hint: "In Betreuung", icon: "🚧" },
-    { label: "Angebote", value: offers.length || "—", hint: "Für dich erstellt", icon: "📄" },
-    { label: "Offene Rechnungen", value: openInvoices.length || "—", hint: "Zu begleichen", icon: "🧾" },
+    { label: "Aktive Projekte", value: projects.length || "—", hint: "In Betreuung" },
+    { label: "Angebote", value: offers.length || "—", hint: "Für dich erstellt" },
+    { label: "Offene Rechnungen", value: openInvoices.length || "—", hint: "Zu begleichen" },
   ];
 
   // --- Aktivitäts-Feed: alle Ereignisse zusammenführen, neueste zuerst -------
@@ -192,12 +192,7 @@ export default async function DashboardPage() {
                   key={stat.label}
                   className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md"
                 >
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-white/60">{stat.label}</p>
-                    <span aria-hidden="true" className="text-lg opacity-80">
-                      {stat.icon}
-                    </span>
-                  </div>
+                  <p className="text-sm text-white/60">{stat.label}</p>
                   <p className="mt-2 text-4xl font-semibold text-white">{stat.value}</p>
                   <p className="mt-1 text-xs text-white/40">{stat.hint}</p>
                 </article>
@@ -207,10 +202,10 @@ export default async function DashboardPage() {
             {/* Nächste Schritte + Was ist neu nebeneinander */}
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <section className="flex flex-col gap-4">
-                <SectionTitle icon="✅" title="Deine nächsten Schritte" />
+                <SectionTitle title="Deine nächsten Schritte" />
                 {nextSteps.length === 0 ? (
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-white/60 backdrop-blur-md">
-                    🎉 Alles erledigt – aktuell ist nichts zu tun. Wir melden uns, sobald es
+                    Alles erledigt – aktuell ist nichts zu tun. Wir melden uns, sobald es
                     Neuigkeiten gibt.
                   </div>
                 ) : (
@@ -236,7 +231,7 @@ export default async function DashboardPage() {
               </section>
 
               <section className="flex flex-col gap-4">
-                <SectionTitle icon="🔔" title="Was ist neu" />
+                <SectionTitle title="Was ist neu" />
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
                   {activity.length === 0 ? (
                     <p className="px-2 py-4 text-sm text-white/50">Noch keine Aktivität.</p>
@@ -248,7 +243,7 @@ export default async function DashboardPage() {
             </div>
 
             {/* Projekte mit Live-Fortschritt */}
-            <Section title="Deine Projekte" icon="🚧" hint="Live aktualisiert">
+            <Section title="Deine Projekte" hint="Live aktualisiert">
               {projects.length === 0 ? (
                 <Empty>
                   Aktuell läuft kein Projekt. Sobald wir gemeinsam starten, siehst du hier den
@@ -277,7 +272,7 @@ export default async function DashboardPage() {
             </Section>
 
             {/* Angebote */}
-            <Section title="Angebote" icon="📄">
+            <Section title="Angebote">
               {offers.length === 0 ? (
                 <Empty>Noch keine Angebote vorhanden.</Empty>
               ) : (
@@ -297,7 +292,7 @@ export default async function DashboardPage() {
             </Section>
 
             {/* Rechnungen */}
-            <Section title="Rechnungen" icon="🧾">
+            <Section title="Rechnungen">
               {invoices.length === 0 ? (
                 <Empty>Noch keine Rechnungen vorhanden.</Empty>
               ) : (
@@ -317,7 +312,7 @@ export default async function DashboardPage() {
             </Section>
 
             {/* Konzepte */}
-            <Section title="Konzepte" icon="💡">
+            <Section title="Konzepte">
               {concepts.length === 0 ? (
                 <Empty>Noch keine Konzepte geteilt.</Empty>
               ) : (
@@ -337,7 +332,7 @@ export default async function DashboardPage() {
 
             {/* Detaillierte Konfigurator-Anfragen */}
             {briefs.length > 0 && (
-              <Section title="Deine Konfigurations-Anfragen" icon="🧩">
+              <Section title="Deine Konfigurations-Anfragen">
                 <DocList>
                   {briefs.map((b) => (
                     <DocRow
@@ -364,7 +359,7 @@ export default async function DashboardPage() {
 
             {/* Berechnete Angebote aus dem Preisrechner */}
             {leads.length > 0 && (
-              <Section title="Deine Preisrechner-Anfragen" icon="🧮">
+              <Section title="Deine Preisrechner-Anfragen">
                 <DocList>
                   {leads.map((lead) => (
                     <DocRow
@@ -387,17 +382,14 @@ export default async function DashboardPage() {
 function Onboarding() {
   const steps = [
     {
-      icon: "🧮",
       title: "Preis berechnen",
       text: "Stelle dir dein Projekt im Preisrechner zusammen und erhalte sofort eine Richtpreis-Spanne.",
     },
     {
-      icon: "🧩",
       title: "Detailliert konfigurieren",
       text: "Gib im Konfigurator alle Wünsche an – Firma, Domain, Funktionen, Stil. Je genauer, desto besser.",
     },
     {
-      icon: "🚀",
       title: "Angebot & Projektstart",
       text: "Wir erstellen dein persönliches Angebot. Nach Annahme & Anzahlung starten wir dein Projekt.",
     },
@@ -405,7 +397,7 @@ function Onboarding() {
 
   return (
     <section className="rounded-3xl border border-[#09ed2d]/20 bg-gradient-to-br from-[#09ed2d]/10 via-white/[0.03] to-black p-8 backdrop-blur-md">
-      <h2 className="text-2xl font-semibold text-white">Willkommen bei TAS Webworks 👋</h2>
+      <h2 className="text-2xl font-semibold text-white">Willkommen bei TAS Webworks</h2>
       <p className="mt-2 max-w-2xl text-white/60">
         Hier ist noch nichts los – das ändern wir gemeinsam. So läuft dein Weg zur neuen Website:
       </p>
@@ -416,10 +408,9 @@ function Onboarding() {
             key={s.title}
             className="relative rounded-2xl border border-white/10 bg-white/[0.03] p-5"
           >
-            <span className="absolute right-4 top-4 text-xs font-bold text-white/20">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#09ed2d]/30 bg-[#09ed2d]/10 text-sm font-bold text-[#09ed2d]">
               {i + 1}
             </span>
-            <div className="text-2xl">{s.icon}</div>
             <h3 className="mt-3 font-semibold text-white">{s.title}</h3>
             <p className="mt-1 text-sm text-white/55">{s.text}</p>
           </li>
@@ -444,10 +435,10 @@ function Onboarding() {
   );
 }
 
-function SectionTitle({ icon, title }: { icon: string; title: string }) {
+function SectionTitle({ title }: { title: string }) {
   return (
     <div className="flex items-center gap-2">
-      <span aria-hidden="true">{icon}</span>
+      <span aria-hidden="true" className="h-4 w-1 rounded-full bg-[#09ed2d]" />
       <h2 className="text-lg font-semibold">{title}</h2>
     </div>
   );
@@ -455,12 +446,10 @@ function SectionTitle({ icon, title }: { icon: string; title: string }) {
 
 function Section({
   title,
-  icon,
   hint,
   children,
 }: {
   title: string;
-  icon?: string;
   hint?: string;
   children: React.ReactNode;
 }) {
@@ -468,7 +457,7 @@ function Section({
     <section className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          {icon && <span aria-hidden="true">{icon}</span>}
+          <span aria-hidden="true" className="h-4 w-1 rounded-full bg-[#09ed2d]" />
           <h2 className="text-lg font-semibold">{title}</h2>
         </div>
         {hint && (

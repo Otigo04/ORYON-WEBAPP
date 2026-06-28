@@ -39,6 +39,11 @@ export type BriefField = {
    * Option auf, sobald sie ausgewählt ist. Schlüssel = Options-Label.
    */
   optionDetails?: Record<string, string>;
+  /**
+   * Optionen, die immer ausgewählt sind und nicht abgewählt werden können
+   * (z. B. „Startseite" bei den Seiten – inklusive). Nur für multi-Felder.
+   */
+  lockedOptions?: string[];
   /** Feld nur anzeigen, wenn ein anderes Feld einen bestimmten Wert hat. */
   showIf?: { field: string; equals: string | string[] };
 };
@@ -163,6 +168,7 @@ export const BRIEF_STEPS: BriefStep[] = [
           "Seriös & klassisch",
           "Technisch & futuristisch",
           "Natürlich & warm",
+          "Sonstiges",
         ],
         optionHelp: {
           "Modern & minimalistisch": "Klar, reduziert, viel Weißraum.",
@@ -171,7 +177,16 @@ export const BRIEF_STEPS: BriefStep[] = [
           "Seriös & klassisch": "Vertrauenswürdig, zeitlos, solide.",
           "Technisch & futuristisch": "Modern-technisch, innovativ.",
           "Natürlich & warm": "Erdig, freundlich, einladend.",
+          Sonstiges: "Etwas anderes – beschreibe deinen Wunsch-Stil im Textfeld.",
         },
+        optional: true,
+      },
+      {
+        name: "styleOther",
+        label: "Dein Wunsch-Stil",
+        type: "textarea",
+        placeholder: "Beschreibe, wie deine Seite wirken soll …",
+        showIf: { field: "style", equals: "Sonstiges" },
         optional: true,
       },
       {
@@ -211,6 +226,7 @@ export const BRIEF_STEPS: BriefStep[] = [
           "Karriere / Jobs",
           "Preise",
         ],
+        lockedOptions: ["Startseite"],
         prices: {
           "Über uns": 39,
           "Leistungen / Produkte": 39,
@@ -316,7 +332,7 @@ export const BRIEF_STEPS: BriefStep[] = [
           Terminbuchung: "Kunden buchen Termine online über einen Kalender.",
           Onlineshop: "Produkte online verkaufen – mit Warenkorb & Bezahlung.",
           "Blog / CMS": "Beiträge & Inhalte selbst pflegen (Redaktionssystem).",
-          Mehrsprachigkeit: "Deine Seite in mehreren Sprachen (Preis je Sprache).",
+          Mehrsprachigkeit: "Deine Seite in mehreren Sprachen – Deutsch inklusive, Aufpreis je weiterer Sprache.",
           "Mitgliederbereich / Login": "Geschützter Bereich, in den sich Nutzer einloggen.",
           "Newsletter-Anmeldung": "Besucher tragen sich für deinen Newsletter ein.",
           "Live-Chat": "Sofort-Chat-Fenster für schnelle Fragen.",
@@ -334,7 +350,7 @@ export const BRIEF_STEPS: BriefStep[] = [
           "Blog / CMS":
             "Redaktionssystem, mit dem ihr Beiträge, Bilder und Seiten selbst pflegt – ganz ohne Technikkenntnisse.",
           Mehrsprachigkeit:
-            "Saubere Sprachumschaltung, übersetzte Inhalte und suchmaschinenfreundliche Sprachversionen (je Sprache abgerechnet).",
+            "Saubere Sprachumschaltung, übersetzte Inhalte und suchmaschinenfreundliche Sprachversionen. Deutsch ist inklusive – abgerechnet wird je zusätzlicher Sprache.",
           "Mitgliederbereich / Login":
             "Geschützter Bereich mit Registrierung, Login und individuell sichtbaren Inhalten je Nutzer.",
           "Newsletter-Anmeldung":
@@ -352,10 +368,11 @@ export const BRIEF_STEPS: BriefStep[] = [
       },
       {
         name: "languages",
-        label: "Welche Sprachen? (falls mehrsprachig)",
+        label: "Welche weiteren Sprachen? (falls mehrsprachig)",
         type: "text",
-        placeholder: "z. B. Deutsch, Englisch, Türkisch",
-        hint: "Je zusätzlicher Sprache fällt ein kleiner Aufpreis an.",
+        placeholder: "z. B. Englisch, Türkisch",
+        hint: "Deutsch ist immer inklusive. Trag hier nur zusätzliche Sprachen ein – je weiterer Sprache fällt ein kleiner Aufpreis an. Nur relevant, wenn „Mehrsprachigkeit“ als Funktion gewählt ist.",
+        showIf: { field: "features", equals: "Mehrsprachigkeit" },
         optional: true,
       },
       {
@@ -514,6 +531,8 @@ export type BriefSummary = {
   features?: string[];
   extraLanguages?: number;
   maintenance?: boolean;
+  /** Hosting-Pflichtwahl aus dem Landing-Preisrechner (Ja/Nein). */
+  hosting?: boolean;
   priceMin?: number;
   priceMax?: number;
 };
@@ -576,6 +595,7 @@ export const briefSubmitSchema = z.object({
       features: z.array(z.string().max(60)).max(30).optional(),
       extraLanguages: z.number().int().min(0).max(50).optional(),
       maintenance: z.boolean().optional(),
+      hosting: z.boolean().optional(),
       priceMin: z.number().int().min(0).optional(),
       priceMax: z.number().int().min(0).optional(),
     })

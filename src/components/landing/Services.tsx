@@ -18,6 +18,20 @@ const pillars: Pillar[] = [
   {
     icon: (
       <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
+        <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M3 9h18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M7 14h6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        <circle cx="6" cy="7" r="0.6" fill="currentColor" />
+      </svg>
+    ),
+    problem: "Kein professioneller Online-Auftritt",
+    title: "Deine individuelle Webseite",
+    description:
+      "Das Herzstück: deine maßgeschneiderte Website – von der Landingpage bis zur mehrseitigen Unternehmensseite. Einzigartiges Design auf deine Marke zugeschnitten, blitzschnell und SEO-stark.",
+  },
+  {
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" aria-hidden="true">
         <path
           d="M13 2 4.5 13.5H11l-1 8.5L19.5 10H13z"
           stroke="currentColor"
@@ -86,7 +100,7 @@ export function Services() {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {pillars.map((pillar) => (
             <article
               key={pillar.title}

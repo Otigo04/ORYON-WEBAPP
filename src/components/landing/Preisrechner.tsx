@@ -32,22 +32,25 @@ export function Preisrechner() {
   const [projectType, setProjectType] = useState<ProjectType>("onepager");
   const [design, setDesign] = useState<DesignType>("custom");
   const [features, setFeatures] = useState<FeatureKey[]>([]);
-  const [extraLanguages, setExtraLanguages] = useState(0);
   const [maintenance, setMaintenance] = useState(false);
+  // Hosting ist eine Pflichtauswahl (Ja/Nein) – ohne sie geht es nicht weiter.
+  const [hosting, setHosting] = useState<boolean | null>(null);
 
+  // Mehrsprachigkeit wird bewusst nicht mehr hier gewählt, sondern erst im
+  // ausführlichen Konfigurator (als Funktion). Deutsch ist immer inklusive.
   const price = useMemo(
-    () => calculatePrice({ projectType, design, features, extraLanguages, maintenance }),
-    [projectType, design, features, extraLanguages, maintenance],
+    () => calculatePrice({ projectType, design, features, extraLanguages: 0, maintenance }),
+    [projectType, design, features, maintenance],
   );
 
   const maintenanceRange = maintenanceRangeFor(projectType);
 
+  // Monatliche Summe: Hosting nur, wenn ausdrücklich gewählt.
+  const monthlyMin = (hosting ? price.hostingMin : 0) + price.maintenanceMin;
+  const monthlyMax = (hosting ? price.hostingMax : 0) + price.maintenanceMax;
+
   const toggleFeature = (key: FeatureKey) => {
     setFeatures((prev) => (prev.includes(key) ? prev.filter((f) => f !== key) : [...prev, key]));
-  };
-
-  const setLanguages = (n: number) => {
-    setExtraLanguages(Math.max(0, Math.min(PRICING.extraLanguage.max, n)));
   };
 
   /**
@@ -66,14 +69,19 @@ export function Preisrechner() {
     }
 
     const next: BriefDraft = {
-      data: existing.data ?? {},
+      data: {
+        ...(existing.data ?? {}),
+        // Hosting-Pflichtwahl der Landingpage in die Konfigurator-Frage übernehmen.
+        hostingStatus: hosting ? "Nein, bitte übernehmen" : "Ja, vorhanden",
+      },
       contact: existing.contact ?? emptyDraft().contact,
       summary: {
         projectType,
         design,
         features,
-        extraLanguages,
+        extraLanguages: 0,
         maintenance,
+        hosting: hosting ?? false,
         priceMin: price.oneTimeMin,
         priceMax: price.oneTimeMax,
       },
@@ -200,33 +208,54 @@ export function Preisrechner() {
             })}
           </div>
 
-          {/* Sprachen-Stepper */}
-          <div className="mt-3 flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4">
-            <div className="flex flex-col gap-0.5">
-              <span className="flex items-center gap-1.5 font-medium text-white">
-                Weitere Sprachen
-                <HelpTip label="Weitere Sprachen" text={HELP.languages} />
+          {/* Hosting – Pflichtauswahl (Ja/Nein), monatlich & projektabhängig */}
+          <div
+            className={`mt-3 rounded-xl border p-4 transition ${
+              hosting === null
+                ? "border-amber-400/40 bg-amber-400/[0.04]"
+                : "border-white/10 bg-white/5"
+            }`}
+          >
+            <div className="flex items-start justify-between gap-2">
+              <span className="flex flex-col gap-0.5">
+                <span className="flex items-center gap-1.5 font-medium text-white">
+                  Hosting gewünscht?
+                  <HelpTip label="Hosting" text={HELP.hosting} />
+                </span>
+                <span className="text-xs text-white/50">
+                  {formatEuro(price.hostingMin)}–{formatEuro(price.hostingMax)}/Monat · bitte wählen,
+                  um fortzufahren
+                </span>
               </span>
-              <span className="text-xs text-white/50">Mehrsprachigkeit · je Sprache mit Aufpreis</span>
+              {hosting === null && (
+                <span className="rounded-full border border-amber-400/40 bg-amber-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200">
+                  Pflicht
+                </span>
+              )}
             </div>
-            <div className="flex items-center gap-3">
-              <Stepper
-                label="Weniger Sprachen"
-                symbol="−"
-                disabled={extraLanguages <= 0}
-                onClick={() => setLanguages(extraLanguages - 1)}
-              />
-              <span className="w-6 text-center font-semibold text-white">{extraLanguages}</span>
-              <Stepper
-                label="Mehr Sprachen"
-                symbol="+"
-                disabled={extraLanguages >= PRICING.extraLanguage.max}
-                onClick={() => setLanguages(extraLanguages + 1)}
-              />
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              {([true, false] as const).map((opt) => {
+                const active = hosting === opt;
+                return (
+                  <button
+                    key={String(opt)}
+                    type="button"
+                    onClick={() => setHosting(opt)}
+                    aria-pressed={active}
+                    className={`rounded-lg border px-3 py-2.5 text-sm font-medium transition ${
+                      active
+                        ? "border-[#09ed2d] bg-[#09ed2d]/15 text-[#09ed2d]"
+                        : "border-white/15 bg-white/5 text-white/70 hover:border-white/30 hover:text-white"
+                    }`}
+                  >
+                    {opt ? "Ja, bitte übernehmen" : "Nein, habe ich schon"}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Wartung & Hosting (monatlich, projektabhängig) */}
+          {/* Wartung & Pflege (monatlich, projektabhängig) */}
           <div
             className={`relative mt-3 rounded-xl border p-4 transition ${
               maintenance
@@ -289,9 +318,14 @@ export function Preisrechner() {
               <div className="flex items-center justify-between gap-2">
                 <dt className="flex items-center gap-1.5 text-white/70">
                   <Dot /> Hosting
+                  {hosting === null && <span className="text-amber-300/80">(bitte wählen)</span>}
                 </dt>
                 <dd className="tabular-nums text-white/80">
-                  {formatRange(price.hostingMin, price.hostingMax)}/Mt.
+                  {hosting === false ? (
+                    <span className="text-white/40">nicht gewählt</span>
+                  ) : (
+                    <>{formatRange(price.hostingMin, price.hostingMax)}/Mt.</>
+                  )}
                 </dd>
               </div>
               <div className="flex items-center justify-between gap-2">
@@ -311,7 +345,7 @@ export function Preisrechner() {
             <div className="mt-2.5 flex items-center justify-between border-t border-white/10 pt-2.5">
               <span className="text-sm font-medium text-white">Summe / Monat</span>
               <span className="text-sm font-semibold tabular-nums text-[#09ed2d]">
-                {formatRange(price.monthlyMin, price.monthlyMax)}
+                {formatRange(monthlyMin, monthlyMax)}
               </span>
             </div>
           </div>
@@ -345,10 +379,16 @@ export function Preisrechner() {
               type="button"
               onClick={goToConfigurator}
               size="lg"
-              className="mt-4 w-full"
+              disabled={hosting === null}
+              className="mt-4 w-full disabled:cursor-not-allowed disabled:opacity-50"
             >
               Weiter kalkulieren →
             </RainbowButton>
+            {hosting === null && (
+              <p className="mt-2 text-center text-xs text-amber-300/80">
+                Bitte zuerst Hosting (Ja/Nein) auswählen.
+              </p>
+            )}
           </div>
         </div>
       </aside>
@@ -363,7 +403,7 @@ const HELP: {
   project: Record<ProjectType, string>;
   design: Record<DesignType, string>;
   feature: Record<FeatureKey, string>;
-  languages: string;
+  hosting: string;
   maintenance: string;
 } = {
   project: {
@@ -391,8 +431,8 @@ const HELP: {
     branding:
       "Logo-Design und ein einheitliches Erscheinungsbild (Farben, Schriften, Corporate Identity).",
   },
-  languages:
-    "Deine Seite zusätzlich in weiteren Sprachen – der Preis gilt je zusätzlicher Sprache.",
+  hosting:
+    "Webspace, auf dem deine Seite läuft (inkl. SSL & Backups). Monatlich, je nach Projektart. Falls du schon Hosting hast, wähle „Nein“.",
   maintenance:
     "Laufende Pflege, Sicherheits-Updates, Backups und kleine Inhaltsanpassungen – monatlich. Optional, zusätzlich zum Hosting. Der Preis richtet sich nach der Projektart.",
 };
@@ -416,30 +456,6 @@ function Fieldset({
       </legend>
       {children}
     </fieldset>
-  );
-}
-
-function Stepper({
-  label,
-  symbol,
-  disabled,
-  onClick,
-}: {
-  label: string;
-  symbol: string;
-  disabled?: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      disabled={disabled}
-      onClick={onClick}
-      className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-lg leading-none text-white transition hover:border-[#09ed2d]/50 disabled:cursor-not-allowed disabled:opacity-40"
-    >
-      {symbol}
-    </button>
   );
 }
 

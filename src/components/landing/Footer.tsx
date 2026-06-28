@@ -43,10 +43,10 @@ export function Footer() {
             Kontakt
           </span>
           <a
-            href="mailto:hello@tas-webworks.de"
+            href="mailto:Kontakt@tas-webworks.de"
             className="text-sm text-white/60 transition hover:text-white"
           >
-            hello@tas-webworks.de
+            Kontakt@tas-webworks.de
           </a>
           <Link
             href="/dashboard"

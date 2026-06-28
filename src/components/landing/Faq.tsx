@@ -20,9 +20,18 @@ export function Faq() {
   return (
     <section
       id="faq"
-      className="relative scroll-mt-28 border-t border-white/10 bg-black px-6 py-24"
+      className="relative scroll-mt-28 overflow-hidden border-t border-white/10 bg-gradient-to-b from-black via-[#03100a] to-black px-6 py-24"
     >
-      <div className="mx-auto max-w-3xl">
+      {/* Dezenter, cleaner Hintergrund: weicher Grün-Glow + feines Raster. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-0 h-72 w-[42rem] max-w-[90vw] -translate-x-1/2 rounded-full bg-[#09ed2d]/[0.08] blur-[120px]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:56px_56px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]"
+      />
+      <div className="relative mx-auto max-w-3xl">
         <header className="mb-12 text-center">
           <span className="text-sm font-medium uppercase tracking-[0.2em] text-[#09ed2d]">
             FAQ

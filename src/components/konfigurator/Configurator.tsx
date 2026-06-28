@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { LogoWordmark } from "@/components/Logo";
+import { LivePreview } from "@/components/konfigurator/LivePreview";
 import { createClient } from "@/lib/supabase/client";
 import { saveBrief } from "@/lib/actions/brief";
 import {
@@ -87,6 +88,7 @@ export function Configurator() {
       base = {
         ...base,
         summary: { projectType: "onepager", design: "custom", ...base.summary },
+        data: withLockedOptions(base.data),
       };
 
       if (active) {
@@ -220,7 +222,7 @@ export function Configurator() {
 
       {/* Zweispaltig: links Eingaben (cleanes Schwarz), rechts Kosten-HUD.
           Auf Mobil per flex-col-reverse → Kosten-HUD oben, Eingaben darunter. */}
-      <div className="mt-8 flex flex-col-reverse gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_330px] lg:items-start">
+      <div className="mt-8 flex flex-col-reverse gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] lg:items-start">
         {/* Linke Spalte: Eingaben */}
         <div className="flex flex-col gap-4">
           <div className="rounded-3xl border border-white/10 bg-black p-6 shadow-[0_20px_60px_-25px_rgba(0,0,0,0.95)] sm:p-8">
@@ -292,9 +294,23 @@ export function Configurator() {
           </p>
         </div>
 
-        {/* Rechte Spalte: gamifizierte Kosten-Anzeige */}
-        <aside className="lg:sticky lg:top-4">
+        {/* Rechte Spalte: Kosten-Anzeige + darunter die Live-Vorschau (nur Desktop) */}
+        <aside className="flex flex-col gap-5">
           <CostCounter draft={draft} />
+
+          <div className="hidden lg:block">
+            <div className="mb-2.5">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#09ed2d]">
+                Live-Vorschau
+              </span>
+              <p className="mt-1 text-xs leading-relaxed text-white/55">
+                Nur ein Design-<strong className="text-white/75">Beispiel</strong> – es baut sich
+                passend zu deiner Auswahl auf. <strong className="text-white/75">Alles ist frei
+                anpassbar</strong>: Farben, Texte, Bilder, Aufbau und Stil legen wir gemeinsam fest.
+              </p>
+            </div>
+            <LivePreview data={draft.data} />
+          </div>
         </aside>
       </div>
     </div>
@@ -405,8 +421,11 @@ function FieldRenderer({
   // select (einfach) & multi – als Chips
   const selected: string[] = Array.isArray(value) ? value : value ? [value] : [];
   const isMulti = field.type === "multi";
+  const locked = field.lockedOptions ?? [];
+  const isLocked = (opt: string) => locked.includes(opt);
 
   const toggle = (opt: string) => {
+    if (isLocked(opt)) return; // inklusive – nicht abwählbar
     if (isMulti) {
       const next = selected.includes(opt)
         ? selected.filter((s) => s !== opt)
@@ -428,7 +447,8 @@ function FieldRenderer({
       {field.hint && <span className="text-xs text-white/45">{field.hint}</span>}
       <div className="flex flex-wrap gap-2">
         {field.options?.map((opt) => {
-          const active = selected.includes(opt);
+          const locked = isLocked(opt);
+          const active = locked || selected.includes(opt);
           const help = field.optionHelp?.[opt];
           // Einzelpreise werden bewusst nicht mehr ausgewiesen – der Gesamtwert
           // bleibt eine Spanne (siehe CostCounter). So bleibt die Auswahl clean.
@@ -438,14 +458,21 @@ function FieldRenderer({
               type="button"
               onClick={() => toggle(opt)}
               aria-pressed={active}
+              disabled={locked}
+              title={locked ? "Inklusive – immer enthalten" : undefined}
               className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm transition ${
                 active
                   ? "border-[#09ed2d] bg-[#09ed2d]/15 text-[#09ed2d]"
                   : "border-white/15 bg-white/5 text-white/70 hover:border-white/30 hover:text-white"
-              }`}
+              } ${locked ? "cursor-default opacity-90" : ""}`}
             >
               {active && isMulti && <span>✓</span>}
               <span>{opt}</span>
+              {locked && (
+                <span className="rounded-full bg-[#09ed2d]/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#09ed2d]">
+                  inklusive
+                </span>
+              )}
               {help && <ChipHelp text={help} />}
             </button>
           );
@@ -530,12 +557,8 @@ function PackageStep({
   const projectType = (summary.projectType ?? "onepager") as ProjectType;
   const design = (summary.design ?? "custom") as DesignType;
   const selectedFeatures = (summary.features ?? []) as FeatureKey[];
-  const extraLanguages = summary.extraLanguages ?? 0;
   const maintenance = summary.maintenance ?? false;
   const maintenanceRange = maintenanceRangeFor(projectType);
-
-  const setLanguages = (n: number) =>
-    onChange({ extraLanguages: Math.max(0, Math.min(PRICING.extraLanguage.max, n)) });
 
   const toggleFeature = (key: FeatureKey) =>
     onChange({
@@ -624,34 +647,8 @@ function PackageStep({
         </div>
       </div>
 
-      {/* Weitere Sprachen */}
-      <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4">
-        <div className="flex flex-col gap-0.5">
-          <span className="font-medium text-white">Weitere Sprachen</span>
-          <span className="text-xs text-white/50">Mehrsprachigkeit – je Sprache mit Aufpreis</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            aria-label="Weniger Sprachen"
-            disabled={extraLanguages <= 0}
-            onClick={() => setLanguages(extraLanguages - 1)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-lg leading-none text-white transition hover:border-[#09ed2d]/50 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            −
-          </button>
-          <span className="w-6 text-center font-semibold text-white">{extraLanguages}</span>
-          <button
-            type="button"
-            aria-label="Mehr Sprachen"
-            disabled={extraLanguages >= PRICING.extraLanguage.max}
-            onClick={() => setLanguages(extraLanguages + 1)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-lg leading-none text-white transition hover:border-[#09ed2d]/50 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            +
-          </button>
-        </div>
-      </div>
+      {/* Mehrsprachigkeit wird als Funktion im Schritt „Funktionen & Technik"
+          gewählt – Deutsch ist immer inklusive. Daher hier kein Sprachen-Stepper. */}
 
       {/* Wartung & Pflege */}
       <button
@@ -1093,6 +1090,29 @@ function useCountUp(value: number, duration = 450) {
 function AnimatedEuro({ value }: { value: number }) {
   const display = useCountUp(value);
   return <>{formatEuro(display)}</>;
+}
+
+/**
+ * Sorgt dafür, dass immer-inklusive Optionen (z. B. „Startseite") in den
+ * Antwortdaten enthalten sind – auch wenn der Nutzer das Feld noch nicht
+ * angefasst hat. So sind sie sofort sichtbar ausgewählt und werden gespeichert.
+ */
+function withLockedOptions(data: BriefDraft["data"]): BriefDraft["data"] {
+  const next = { ...data };
+  for (const step of BRIEF_STEPS) {
+    for (const field of step.fields) {
+      if (!field.lockedOptions?.length) continue;
+      const current = Array.isArray(next[field.name])
+        ? (next[field.name] as string[])
+        : [];
+      const merged = [...current];
+      for (const opt of field.lockedOptions) {
+        if (!merged.includes(opt)) merged.unshift(opt);
+      }
+      next[field.name] = merged;
+    }
+  }
+  return next;
 }
 
 function readLocal(): BriefDraft | null {
