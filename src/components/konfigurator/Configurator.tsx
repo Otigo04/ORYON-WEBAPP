@@ -14,9 +14,11 @@ import {
   displayValue,
   computeBriefEstimate,
   isFieldVisible,
+  detectProjectTypeUpgrade,
   type BriefDraft,
   type BriefField,
   type BriefValue,
+  type ProjectTypeUpgrade,
 } from "@/lib/brief";
 import {
   PRICING,
@@ -49,6 +51,9 @@ export function Configurator() {
   const [errors, setErrors] = useState<{ name?: string; email?: string }>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  // Welche vorgeschlagene Projektart hat der Nutzer zuletzt weggeklickt?
+  // Verhindert wiederholtes Nerven, bis sich der Vorschlag wieder ändert.
+  const [nudgeDismissed, setNudgeDismissed] = useState<string | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // --- Laden: lokaler Entwurf + (falls eingeloggt) Konto-Entwurf -----------
@@ -195,6 +200,16 @@ export function Configurator() {
   const isContactStep = step === BRIEF_STEPS.length + 1;
   const current = !isPackageStep && !isContactStep ? BRIEF_STEPS[step - 1] : null;
 
+  // Überschneidung: verlangt die Detail-Auswahl eine größere Projektart?
+  const upgrade = detectProjectTypeUpgrade(draft.data, draft.summary);
+  const showNudge = !!upgrade && upgrade.suggested !== nudgeDismissed;
+
+  const applyUpgrade = () => {
+    if (!upgrade) return;
+    setSummary({ projectType: upgrade.suggested });
+    setNudgeDismissed(null);
+  };
+
   return (
     <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-20 pt-5 sm:px-6">
       {/* Kopf */}
@@ -233,6 +248,13 @@ export function Configurator() {
         {/* Linke Spalte: Eingaben */}
         <div className="flex flex-col gap-4">
           <div className="rounded-3xl border border-white/10 bg-black p-6 shadow-[0_20px_60px_-25px_rgba(0,0,0,0.95)] sm:p-8">
+            {loaded && upgrade && showNudge && (
+              <ProjectTypeNudge
+                upgrade={upgrade}
+                onApply={applyUpgrade}
+                onDismiss={() => setNudgeDismissed(upgrade.suggested)}
+              />
+            )}
             {!loaded ? (
               <div className="py-16 text-center text-sm text-white/40">Lädt …</div>
             ) : isPackageStep ? (
@@ -556,6 +578,64 @@ function ChipHelp({
         {text}
       </span>
     </span>
+  );
+}
+
+// =========================================================================
+// Projektart-Hinweis: süßer, freundlicher Nudge, wenn die Detail-Auswahl
+// eine größere Projektart verlangt (z. B. One-Pager + Online-Terminbuchung).
+// =========================================================================
+
+/** Fügt Auslöser sprachlich sauber zusammen: "A", "A und B", "A, B und C". */
+function joinReasons(reasons: string[]): string {
+  if (reasons.length <= 1) return reasons[0] ?? "";
+  return `${reasons.slice(0, -1).join(", ")} und ${reasons[reasons.length - 1]}`;
+}
+
+function ProjectTypeNudge({
+  upgrade,
+  onApply,
+  onDismiss,
+}: {
+  upgrade: ProjectTypeUpgrade;
+  onApply: () => void;
+  onDismiss: () => void;
+}) {
+  return (
+    <div className="animate-detail-in mb-6 flex flex-col gap-3 rounded-2xl border border-[#09ed2d]/30 bg-[#09ed2d]/[0.07] p-4 sm:p-5">
+      <div className="flex items-start gap-3">
+        <span aria-hidden="true" className="text-xl leading-none">
+          🌱
+        </span>
+        <div className="flex flex-col gap-1">
+          <p className="text-sm font-semibold text-white">
+            Pssst, kurzer Hinweis
+          </p>
+          <p className="text-sm leading-relaxed text-white/70">
+            Mit <strong className="text-[#09ed2d]">{joinReasons(upgrade.reasons)}</strong> wird aus
+            deinem Projekt eigentlich eine{" "}
+            <strong className="text-white">{upgrade.suggestedLabel}</strong>. Sollen wir die
+            Projektart anpassen? Das macht dein Angebot genauer. 💚
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-2 pl-9">
+        <button
+          type="button"
+          onClick={onApply}
+          className="rounded-full bg-[#09ed2d] px-4 py-2 text-xs font-semibold text-black transition hover:bg-[#09ed2d]/90"
+        >
+          Ja, anpassen
+        </button>
+        <button
+          type="button"
+          onClick={onDismiss}
+          className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-medium text-white/65 transition hover:text-white"
+        >
+          Nein, so lassen
+        </button>
+      </div>
+    </div>
   );
 }
 

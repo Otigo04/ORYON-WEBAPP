@@ -645,6 +645,94 @@ export function baseRangeForProjectType(projectType: string | undefined): [numbe
   return [0, 0];
 }
 
+// ---- Projektart-Abgleich (Überschneidungen erkennen) -------------------
+
+export type ProjectTypeKey = keyof typeof PRICING.projectTypes;
+
+/**
+ * Vorschlag, die Projektart hochzustufen, weil die Detail-Auswahl im
+ * Konfigurator über die aktuell gewählte Projektart hinausgeht (z. B. mehrere
+ * Unterseiten bei einem One-Pager oder eine Online-Terminbuchung).
+ */
+export type ProjectTypeUpgrade = {
+  /** Aktuell gewählte (zu kleine) Projektart. */
+  current: string;
+  /** Vorgeschlagene, zur Auswahl passende Projektart. */
+  suggested: ProjectTypeKey;
+  /** Lesbares Label der vorgeschlagenen Projektart (für die UI). */
+  suggestedLabel: string;
+  /** Menschlich lesbare Auslöser ("Online-Terminbuchung", "3 Unterseiten" …). */
+  reasons: string[];
+};
+
+/** Umfangs-Gewicht je Projektart = oberes Ende der Basis-Spanne. */
+function projectTypeWeight(pt: string | undefined): number {
+  return pt && pt in PRICING.projectTypes
+    ? PRICING.projectTypes[pt as ProjectTypeKey].base[1]
+    : 0;
+}
+
+/**
+ * Erkennt, ob die im Konfigurator getroffene Auswahl eine größere Projektart
+ * verlangt, als aktuell gewählt ist. Liefert den passenden Vorschlag oder
+ * `null`, wenn die Projektart bereits passt (gleich groß oder größer).
+ *
+ * Bewusst nicht erzwingend: die Funktion stellt nur fest, was sich überschneidet,
+ * die UI entscheidet, ob sie sanft darauf hinweist und die Anpassung anbietet.
+ */
+export function detectProjectTypeUpgrade(
+  data: BriefData,
+  summary: BriefSummary,
+): ProjectTypeUpgrade | null {
+  const current = summary.projectType ?? "onepager";
+  const candidates: { type: ProjectTypeKey; reason: string }[] = [];
+
+  // Eigene Unterseiten → Mehrseitige Website (ein One-Pager hat nur eine Seite).
+  const pages = Array.isArray(data.pages) ? data.pages : [];
+  const extraPages = pages.filter((p) => p !== "Startseite");
+  if (extraPages.length > 0) {
+    candidates.push({
+      type: "website",
+      reason: extraPages.length === 1 ? "eine Unterseite" : `${extraPages.length} Unterseiten`,
+    });
+  }
+
+  // Online-Terminbuchung (als Funktion oder Paket-Feature) → Buchungs-/Terminseite.
+  const features = Array.isArray(data.features) ? data.features : [];
+  const wantsBooking =
+    features.includes("Terminbuchung") || (summary.features ?? []).includes("booking");
+  if (wantsBooking) {
+    candidates.push({ type: "booking", reason: "Online-Terminbuchung" });
+  }
+
+  // Mitgliederbereich / Login → individuelle Web-App.
+  if (features.includes("Mitgliederbereich / Login")) {
+    candidates.push({ type: "webapp", reason: "Mitgliederbereich / Login" });
+  }
+
+  if (candidates.length === 0) return null;
+
+  // Umfangreichste vorgeschlagene Projektart bestimmt das Ziel.
+  const suggested = candidates.reduce((a, b) =>
+    projectTypeWeight(b.type) > projectTypeWeight(a.type) ? b : a,
+  );
+
+  // Passt die aktuelle Projektart bereits? Dann kein Hinweis nötig.
+  if (projectTypeWeight(current) >= projectTypeWeight(suggested.type)) return null;
+
+  // Alle Auslöser sammeln, die über die aktuelle Projektart hinausgehen.
+  const reasons = candidates
+    .filter((c) => projectTypeWeight(c.type) > projectTypeWeight(current))
+    .map((c) => c.reason);
+
+  return {
+    current,
+    suggested: suggested.type,
+    suggestedLabel: PRICING.projectTypes[suggested.type].label,
+    reasons,
+  };
+}
+
 const roundEuro = (value: number) => Math.round(value);
 
 /**
