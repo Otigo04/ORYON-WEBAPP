@@ -15,9 +15,9 @@ import { siteConfig } from "@/lib/site";
 import { FLEET_APP_URL, FLEET_FAQS, FLEET_TIERS } from "@/lib/tas-fleet";
 
 const PATH = "/leistungen/tas-fleet";
-const TITLE = "TAS-FLEET – Fuhrpark- & Dispositionssoftware für Taxi & Mietwagen";
+const TITLE = "TAS-FLEET, Fuhrpark- & Dispositionssoftware für Taxi & Mietwagen";
 const DESCRIPTION =
-  "TAS-FLEET ist die All-in-One-Web-App für Fuhrpark-, Fahrer- und Dispositionsverwaltung. Schichtplanung in Echtzeit, Compliance-Center, OCR-Massenimport und Incident-Log – für Taxi-, Mietwagen- und Shuttle-Betriebe.";
+  "TAS-FLEET ist die All-in-One-Web-App für Fuhrpark-, Fahrer- und Dispositionsverwaltung. Schichtplanung in Echtzeit, Compliance-Center, OCR-Massenimport und Incident-Log, für Taxi-, Mietwagen- und Shuttle-Betriebe.";
 
 export const metadata: Metadata = {
   title: TITLE,

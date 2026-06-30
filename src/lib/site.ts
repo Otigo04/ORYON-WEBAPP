@@ -13,7 +13,7 @@ export const siteConfig = {
   legalName: "TAS Webworks (Inhaber: Yakup Orhan Tas)",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.tas-webworks.de",
   description:
-    "TAS Webworks ist deine Webagentur aus Berlin für blitzschnelle, SEO-optimierte Websites, Online-Shops und Landingpages – preiswert, modern und conversion-stark. Richtpreis in 60 Sekunden berechnen.",
+    "TAS Webworks ist deine Webagentur aus Berlin für blitzschnelle, SEO-optimierte Websites, Web-Apps und Landingpages. Preiswert, modern und conversion-stark. Richtpreis in 60 Sekunden berechnen.",
   /** Kurze Tagline für OG-Bild & Social. */
   tagline: "Preiswerte Webagentur aus Berlin",
   locale: "de_DE",
@@ -28,17 +28,27 @@ export const siteConfig = {
     region: "Berlin",
     country: "DE",
   },
-  /** Geokoordinaten (Berlin-Reinickendorf, Brunowstraße – für LocalBusiness). */
+  /** Geokoordinaten (Berlin-Reinickendorf, Brunowstraße, für LocalBusiness). */
   geo: { latitude: 52.5876, longitude: 13.2887 },
   /**
+   * Bankverbindung für Überweisungen (TAS-FLEET-Rechnungen).
+   * PLATZHALTER – durch echte Daten ersetzen, bevor Rechnungen rausgehen.
+   */
+  bank: {
+    accountHolder: "Yakup Orhan Tas",
+    iban: "DE00 0000 0000 0000 0000 00",
+    bic: "XXXXXXXXXXX",
+    bankName: "Bank",
+  },
+  /**
    * Umsatzsteuer-Identifikationsnummer. `null`, da Kleinunternehmer nach
-   * § 19 UStG – es wird keine USt-IdNr. geführt und keine USt. ausgewiesen.
+   * § 19 UStG, es wird keine USt-IdNr. geführt und keine USt. ausgewiesen.
    */
   vatId: null,
   /** Kleinunternehmer-Regelung nach § 19 UStG. */
   smallBusiness: true,
   founder: "Yakup Orhan Tas",
-  foundingYear: "2024",
+  foundingYear: "2026",
   social: {
     twitter: "@taswebworks",
     linkedin: "https://www.linkedin.com/company/tas-webworks",
@@ -54,7 +64,7 @@ export const siteKeywords = [
   "Webdesign Berlin",
   "Website erstellen lassen",
   "Homepage erstellen lassen",
-  "Online-Shop erstellen lassen",
+  "Web-App erstellen lassen",
   "Landingpage erstellen",
   "One-Pager Agentur",
   "SEO Optimierung Berlin",

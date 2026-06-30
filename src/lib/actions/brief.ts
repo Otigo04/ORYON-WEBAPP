@@ -18,7 +18,7 @@ export type SaveBriefState = {
  * Sicherheit:
  * - Vollständige serverseitige Zod-Validierung (Client-Validierung ist nur
  *   Komfort).
- * - `user_id` wird aus der Session abgeleitet, nicht vom Client – RLS ordnet die
+ * - `user_id` wird aus der Session abgeleitet, nicht vom Client, RLS ordnet die
  *   Anfrage korrekt zu. Anonyme Anfragen (ohne Login) sind erlaubt.
  * - Räumt nach erfolgreichem Absenden den geräteübergreifenden Entwurf des
  *   Nutzers auf (brief_drafts).
@@ -36,7 +36,7 @@ export async function saveBrief(input: unknown): Promise<SaveBriefState> {
   const { contact, data, summary } = parsed.data;
 
   // Schätzpreis serverseitig aus der vollständigen Konfiguration (data + summary)
-  // berechnen – nicht aus summary.priceMin/Max. Letztere stammen nur aus dem
+  // berechnen, nicht aus summary.priceMin/Max. Letztere stammen nur aus dem
   // Landing-Preisrechner und fehlen/veralten, sobald der Nutzer direkt in den
   // Konfigurator geht oder dort Optionen ändert. So steht der Preis verlässlich
   // in Admin-Panel und Kundenportal.
@@ -86,7 +86,7 @@ export async function saveBrief(input: unknown): Promise<SaveBriefState> {
       await supabase.from("brief_drafts").delete().eq("user_id", user.id);
     }
 
-    // Benachrichtigung an das Team – darf den Brief nie scheitern lassen.
+    // Benachrichtigung an das Team, darf den Brief nie scheitern lassen.
     await notifyNewLead({
       source: "Konfigurator",
       name: contact.name,

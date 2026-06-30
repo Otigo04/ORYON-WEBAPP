@@ -29,7 +29,7 @@ function hasSupabaseEnv() {
 }
 
 /**
- * Alle Kunden samt (optionalem) TAS-FLEET-Abo – nur für Admins, RLS über
+ * Alle Kunden samt (optionalem) TAS-FLEET-Abo, nur für Admins, RLS über
  * `is_admin()`. Das Abo wird per PostgREST-Embed aus `subscriptions` geholt
  * (1:1 über die eindeutige `user_id`).
  */

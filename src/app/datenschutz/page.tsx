@@ -4,13 +4,13 @@ import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Datenschutzerklärung",
-  description: `Datenschutzerklärung von ${siteConfig.name} – Informationen zur Verarbeitung personenbezogener Daten nach DSGVO.`,
+  description: `Datenschutzerklärung von ${siteConfig.name}, Informationen zur Verarbeitung personenbezogener Daten nach DSGVO.`,
   alternates: { canonical: "/datenschutz" },
   robots: { index: true, follow: true },
 };
 
 /**
- * Datenschutzerklärung – DSGVO-konformes Dummy. Deckt die in dieser App real
+ * Datenschutzerklärung, DSGVO-konformes Dummy. Deckt die in dieser App real
  * eingesetzten Verarbeitungen ab (Vercel-Hosting, Server-Logs, Supabase als
  * Auftragsverarbeiter für Auth & Leads, Kontakt-/Preisrechner-Formular). Die
  * Verantwortlichen-Angaben sind Platzhalter aus `siteConfig`.
@@ -107,7 +107,7 @@ export default function DatenschutzPage() {
           EU). Dabei werden Konto- und Anmeldedaten (E-Mail-Adresse, verschlüsselt
           gespeichertes Passwort, Session-Informationen) sowie die dir
           zugeordneten Anfragen verarbeitet. Der Zugriff auf deine Daten ist durch
-          Row-Level-Security abgesichert – du siehst ausschließlich deine eigenen
+          Row-Level-Security abgesichert, du siehst ausschließlich deine eigenen
           Datensätze. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO. Mit Supabase
           besteht ein Auftragsverarbeitungsvertrag.
         </p>
@@ -153,7 +153,7 @@ export default function DatenschutzPage() {
           Unbeschadet anderweitiger Rechtsbehelfe hast du das Recht, dich bei
           einer Datenschutz-Aufsichtsbehörde zu beschweren (Art. 77 DSGVO). Für
           uns zuständig ist die Berliner Beauftragte für Datenschutz und
-          Informationsfreiheit, Alt-Moabit 59–61, 10555 Berlin.
+          Informationsfreiheit, Alt-Moabit 59 bis 61, 10555 Berlin.
         </p>
       </LegalSection>
 

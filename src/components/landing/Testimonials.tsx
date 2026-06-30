@@ -1,12 +1,8 @@
-import { getTestimonials } from "@/lib/testimonials";
+import { getTestimonials, type Testimonial } from "@/lib/testimonials";
 
 function Stars({ rating }: { rating: number }) {
   return (
-    <div
-      className="flex gap-0.5"
-      role="img"
-      aria-label={`${rating} von 5 Sternen`}
-    >
+    <div className="flex gap-0.5" role="img" aria-label={`${rating} von 5 Sternen`}>
       {Array.from({ length: 5 }).map((_, i) => (
         <svg
           key={i}
@@ -21,18 +17,41 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
+function Card({ t }: { t: Testimonial }) {
+  return (
+    <figure className="flex flex-col justify-between rounded-2xl border border-white/10 bg-white/[0.04] p-6 transition hover:border-[#09ed2d]/40 hover:bg-white/[0.07]">
+      <div>
+        <Stars rating={t.rating} />
+        <blockquote className="mt-4 text-sm leading-relaxed text-white/80">
+          „{t.quote}“
+        </blockquote>
+      </div>
+      <figcaption className="mt-6 flex items-center gap-3">
+        <span
+          aria-hidden="true"
+          className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-gradient-to-br from-[#09ed2d]/30 to-[#22d3ee]/20 text-sm font-semibold text-[#09ed2d]"
+        >
+          {t.author.trim().charAt(0)}
+        </span>
+        <div>
+          <p className="text-sm font-semibold text-white">{t.author}</p>
+          <p className="text-xs text-white/50">{t.role}</p>
+        </div>
+      </figcaption>
+    </figure>
+  );
+}
+
 /**
- * Server Component: lädt Bewertungen serverseitig (RSC) – kein Client-JS nötig.
+ * Server Component: lädt Bewertungen serverseitig (RSC) und zeigt sie als
+ * cleanes, statisches Karten-Grid. Keine Animation, kein Client-JS.
  */
 export async function Testimonials() {
   const testimonials = await getTestimonials();
 
   return (
-    <section
-      id="referenzen"
-      className="border-t border-white/10 bg-black px-6 py-24"
-    >
-      <div className="mx-auto max-w-5xl">
+    <section id="referenzen" className="border-t border-white/10 bg-black py-24">
+      <div className="mx-auto max-w-6xl px-6">
         <header className="mb-14 max-w-2xl">
           <span className="text-sm font-medium uppercase tracking-[0.2em] text-[#09ed2d]">
             Referenzen
@@ -42,23 +61,9 @@ export async function Testimonials() {
           </h2>
         </header>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((t) => (
-            <figure
-              key={t.id}
-              className="flex h-full flex-col justify-between rounded-2xl border border-white/10 bg-white/5 p-6"
-            >
-              <div>
-                <Stars rating={t.rating} />
-                <blockquote className="mt-4 text-sm leading-relaxed text-white/80">
-                  „{t.quote}“
-                </blockquote>
-              </div>
-              <figcaption className="mt-6">
-                <p className="text-sm font-semibold text-white">{t.author}</p>
-                <p className="text-xs text-white/50">{t.role}</p>
-              </figcaption>
-            </figure>
+            <Card key={t.id} t={t} />
           ))}
         </div>
       </div>

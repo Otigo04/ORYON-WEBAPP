@@ -4,7 +4,7 @@ import { Preisrechner } from "@/components/landing/Preisrechner";
  * Preisrechner-Sektion der Landingpage.
  *
  * Server Component, die nur den (statischen) Rahmen rendert; der interaktive
- * Rechner selbst ist die einzige Client-Insel. Bewusst keine eigene Route –
+ * Rechner selbst ist die einzige Client-Insel. Bewusst keine eigene Route -
  * der Kunde kalkuliert direkt auf der Startseite (Anker `#preisrechner`).
  */
 export function PreisrechnerSection() {
@@ -17,7 +17,7 @@ export function PreisrechnerSection() {
         aria-hidden="true"
         className="pointer-events-none absolute right-0 top-1/4 h-80 w-80 rounded-full bg-[#09ed2d]/[0.07] blur-[120px]"
       />
-      <div className="relative mx-auto max-w-5xl">
+      <div className="relative mx-auto max-w-6xl">
         <header className="mb-12 max-w-2xl">
           <span className="text-sm font-medium uppercase tracking-[0.2em] text-[#09ed2d]">
             Preisrechner

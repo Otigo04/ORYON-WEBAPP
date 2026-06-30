@@ -10,7 +10,7 @@ export default async function AdminSubscriptionsPage() {
     <>
       <PageHeader
         title="Abonnements"
-        subtitle="TAS-FLEET-Abos der Kunden einsehen und manuell freischalten. Solange der Stripe-Checkout noch nicht live ist, kannst du Abos hier setzen."
+        subtitle="TAS-FLEET-Abos der Kunden einsehen und manuell freischalten. Abos werden hier direkt gesetzt."
       />
 
       {customers.length === 0 ? (

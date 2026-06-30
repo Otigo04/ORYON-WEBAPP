@@ -4,6 +4,7 @@ import SideRaysBackground from "@/components/backgrounds/SideRaysBackground";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { LiveRefresh } from "@/components/dashboard/LiveRefresh";
 import { ActivityFeed, type ActivityItem } from "@/components/dashboard/ActivityFeed";
+import { ExpandableList, ExpandableGrid } from "@/components/dashboard/Expandable";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import {
   StatusBadge,
@@ -13,7 +14,7 @@ import {
   conceptTone,
   leadTone,
 } from "@/components/ui/StatusBadge";
-import { getMyLeads, projectTypeLabel } from "@/lib/leads";
+import { projectTypeLabel } from "@/lib/leads";
 import { getMyBriefs, BRIEF_STATUS_LABELS } from "@/lib/briefs";
 import type { ProjectType } from "@/lib/pricing";
 import { getMyProfile, firstNameOf } from "@/lib/profile";
@@ -23,7 +24,6 @@ import { getMyOffers } from "@/lib/offers";
 import { getMyConcepts } from "@/lib/concepts";
 import { isAdmin } from "@/lib/auth";
 import { formatEuro } from "@/lib/pricing";
-import { DEPOSIT_RATE } from "@/lib/payment";
 import {
   computeTotals,
   formatMoney,
@@ -34,7 +34,7 @@ import {
 } from "@/lib/documents";
 
 export const metadata: Metadata = {
-  title: "Dashboard – TAS Webworks",
+  title: "Dashboard, TAS Webworks",
   description: "Dein persönlicher Bereich: Projekte, Angebote, Rechnungen und Konzepte.",
   robots: { index: false, follow: false },
 };
@@ -54,8 +54,7 @@ type NextStep = {
 };
 
 export default async function DashboardPage() {
-  const [leads, briefs, profile, projects, invoices, offers, concepts, admin] = await Promise.all([
-    getMyLeads(),
+  const [briefs, profile, projects, invoices, offers, concepts, admin] = await Promise.all([
     getMyBriefs(),
     getMyProfile(),
     getMyProjects(),
@@ -69,11 +68,13 @@ export default async function DashboardPage() {
   const greeting = firstName ? `Willkommen zurück, ${firstName}` : "Willkommen zurück";
 
   const openInvoices = invoices.filter((i) => i.status === "sent");
+  // Nur Kennzahlen mit echtem Wert zeigen, damit das Dashboard nicht mit
+  // leeren „—"-Karten überladen wirkt.
   const stats = [
-    { label: "Aktive Projekte", value: projects.length || "—", hint: "In Betreuung" },
-    { label: "Angebote", value: offers.length || "—", hint: "Für dich erstellt" },
-    { label: "Offene Rechnungen", value: openInvoices.length || "—", hint: "Zu begleichen" },
-  ];
+    { label: "Aktive Projekte", value: projects.length, hint: "In Betreuung" },
+    { label: "Angebote", value: offers.length, hint: "Für dich erstellt" },
+    { label: "Offene Rechnungen", value: openInvoices.length, hint: "Zu begleichen" },
+  ].filter((s) => s.value > 0);
 
   // --- Aktivitäts-Feed: alle Ereignisse zusammenführen, neueste zuerst -------
   const activity: ActivityItem[] = [
@@ -119,27 +120,18 @@ export default async function DashboardPage() {
     if (o.status === "sent") {
       nextSteps.push({
         id: `step-offer-${o.id}`,
-        label: `Angebot ${o.number} prüfen`,
-        hint: "Annehmen oder ablehnen – dann starten wir.",
+        label: `Dein Angebot ist da: ${o.title}`,
+        hint: `${o.number} · auch per E-Mail erhalten · Zusagen per Antwort-Mail`,
         href: `/dashboard/angebote/${o.id}`,
         cta: "Ansehen",
-      });
-    } else if (o.status === "accepted") {
-      const deposit = Math.round(computeTotals(o.items, o.tax_rate).gross * DEPOSIT_RATE * 100) / 100;
-      nextSteps.push({
-        id: `step-deposit-${o.id}`,
-        label: `Anzahlung leisten (${formatMoney(deposit, o.currency)})`,
-        hint: `Für Angebot ${o.number} – Projektstart nach Zahlungseingang.`,
-        href: `/dashboard/angebote/${o.id}`,
-        cta: "Zur Zahlung",
       });
     }
   }
   for (const inv of openInvoices) {
     nextSteps.push({
       id: `step-invoice-${inv.id}`,
-      label: `Rechnung ${inv.number} begleichen`,
-      hint: `Offen: ${formatMoney(computeTotals(inv.items, inv.tax_rate).gross, inv.currency)}`,
+      label: `Rechnung begleichen: ${inv.title}`,
+      hint: `${inv.number} · offen: ${formatMoney(computeTotals(inv.items, inv.tax_rate).gross, inv.currency)}`,
       href: `/dashboard/rechnungen/${inv.id}`,
       cta: "Öffnen",
     });
@@ -159,8 +151,7 @@ export default async function DashboardPage() {
     offers.length === 0 &&
     invoices.length === 0 &&
     concepts.length === 0 &&
-    briefs.length === 0 &&
-    leads.length === 0;
+    briefs.length === 0;
 
   return (
     <main className="relative isolate min-h-screen overflow-hidden bg-black text-white">
@@ -177,8 +168,8 @@ export default async function DashboardPage() {
           </span>
           <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">{greeting}</h1>
           <p className="max-w-xl text-base text-white/70">
-            Verfolge deine Projekte live mit, sieh deine Angebote, Rechnungen und Konzepte –
-            alles an einem Ort.
+            Verfolge deine Projekte live mit und sieh deine Angebote, Rechnungen und Konzepte.
+            Alles an einem Ort.
           </p>
         </header>
 
@@ -186,27 +177,29 @@ export default async function DashboardPage() {
           <Onboarding />
         ) : (
           <>
-            <section aria-label="Kennzahlen" className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-              {stats.map((stat) => (
-                <article
-                  key={stat.label}
-                  className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md"
-                >
-                  <p className="text-sm text-white/60">{stat.label}</p>
-                  <p className="mt-2 text-4xl font-semibold text-white">{stat.value}</p>
-                  <p className="mt-1 text-xs text-white/40">{stat.hint}</p>
-                </article>
-              ))}
-            </section>
+            {stats.length > 0 && (
+              <section aria-label="Kennzahlen" className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+                {stats.map((stat) => (
+                  <article
+                    key={stat.label}
+                    className="rounded-2xl border border-white/10 bg-white/5 p-6"
+                  >
+                    <p className="text-sm text-white/60">{stat.label}</p>
+                    <p className="mt-2 text-4xl font-semibold text-white">{stat.value}</p>
+                    <p className="mt-1 text-xs text-white/40">{stat.hint}</p>
+                  </article>
+                ))}
+              </section>
+            )}
 
             {/* Nächste Schritte + Was ist neu nebeneinander */}
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <section className="flex flex-col gap-4">
                 <SectionTitle title="Deine nächsten Schritte" />
                 {nextSteps.length === 0 ? (
-                  <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-white/60 backdrop-blur-md">
-                    Alles erledigt – aktuell ist nichts zu tun. Wir melden uns, sobald es
-                    Neuigkeiten gibt.
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-white/60">
+                    Alles erledigt. Aktuell ist nichts zu tun. Wir melden uns per E-Mail,
+                    sobald es Neuigkeiten gibt.
                   </div>
                 ) : (
                   <ul className="flex flex-col gap-3">
@@ -214,7 +207,7 @@ export default async function DashboardPage() {
                       <li key={step.id}>
                         <Link
                           href={step.href}
-                          className="flex items-center justify-between gap-4 rounded-2xl border border-[#09ed2d]/20 bg-[#09ed2d]/[0.06] p-4 backdrop-blur-md transition hover:border-[#09ed2d]/40 hover:bg-[#09ed2d]/10"
+                          className="flex items-center justify-between gap-4 rounded-2xl border border-[#09ed2d]/20 bg-[#09ed2d]/[0.06] p-4 transition hover:border-[#09ed2d]/40 hover:bg-[#09ed2d]/10"
                         >
                           <div className="min-w-0">
                             <p className="font-medium text-white">{step.label}</p>
@@ -232,7 +225,7 @@ export default async function DashboardPage() {
 
               <section className="flex flex-col gap-4">
                 <SectionTitle title="Was ist neu" />
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   {activity.length === 0 ? (
                     <p className="px-2 py-4 text-sm text-white/50">Noch keine Aktivität.</p>
                   ) : (
@@ -242,20 +235,15 @@ export default async function DashboardPage() {
               </section>
             </div>
 
-            {/* Projekte mit Live-Fortschritt */}
-            <Section title="Deine Projekte" hint="Live aktualisiert">
-              {projects.length === 0 ? (
-                <Empty>
-                  Aktuell läuft kein Projekt. Sobald wir gemeinsam starten, siehst du hier den
-                  Fortschritt in Echtzeit.
-                </Empty>
-              ) : (
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {/* Projekte mit Live-Fortschritt – nur wenn vorhanden */}
+            {projects.length > 0 && (
+              <Section title="Deine Projekte" hint="Live aktualisiert">
+                <ExpandableGrid max={4} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {projects.map((p) => (
                     <Link
                       key={p.id}
                       href={`/dashboard/projekte/${p.id}`}
-                      className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md transition hover:border-emerald-400/40 hover:bg-white/10"
+                      className="rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-emerald-400/40 hover:bg-white/10"
                     >
                       <div className="flex items-start justify-between gap-3">
                         <h3 className="font-semibold">{p.title}</h3>
@@ -267,16 +255,14 @@ export default async function DashboardPage() {
                       <ProgressBar value={p.progress} className="mt-4" />
                     </Link>
                   ))}
-                </div>
-              )}
-            </Section>
+                </ExpandableGrid>
+              </Section>
+            )}
 
-            {/* Angebote */}
-            <Section title="Angebote">
-              {offers.length === 0 ? (
-                <Empty>Noch keine Angebote vorhanden.</Empty>
-              ) : (
-                <DocList>
+            {/* Angebote – nur wenn vorhanden */}
+            {offers.length > 0 && (
+              <Section title="Angebote">
+                <ExpandableList max={5}>
                   {offers.map((o) => (
                     <DocRow
                       key={o.id}
@@ -287,16 +273,14 @@ export default async function DashboardPage() {
                       badge={<StatusBadge label={OFFER_STATUS_LABELS[o.status]} tone={offerTone(o.status)} />}
                     />
                   ))}
-                </DocList>
-              )}
-            </Section>
+                </ExpandableList>
+              </Section>
+            )}
 
-            {/* Rechnungen */}
-            <Section title="Rechnungen">
-              {invoices.length === 0 ? (
-                <Empty>Noch keine Rechnungen vorhanden.</Empty>
-              ) : (
-                <DocList>
+            {/* Rechnungen – nur wenn vorhanden */}
+            {invoices.length > 0 && (
+              <Section title="Rechnungen">
+                <ExpandableList max={5}>
                   {invoices.map((inv) => (
                     <DocRow
                       key={inv.id}
@@ -307,16 +291,14 @@ export default async function DashboardPage() {
                       badge={<StatusBadge label={INVOICE_STATUS_LABELS[inv.status]} tone={invoiceTone(inv.status)} />}
                     />
                   ))}
-                </DocList>
-              )}
-            </Section>
+                </ExpandableList>
+              </Section>
+            )}
 
-            {/* Konzepte */}
-            <Section title="Konzepte">
-              {concepts.length === 0 ? (
-                <Empty>Noch keine Konzepte geteilt.</Empty>
-              ) : (
-                <DocList>
+            {/* Konzepte – nur wenn vorhanden */}
+            {concepts.length > 0 && (
+              <Section title="Konzepte">
+                <ExpandableList max={5}>
                   {concepts.map((c) => (
                     <DocRow
                       key={c.id}
@@ -326,14 +308,14 @@ export default async function DashboardPage() {
                       badge={<StatusBadge label={CONCEPT_STATUS_LABELS[c.status]} tone={conceptTone(c.status)} />}
                     />
                   ))}
-                </DocList>
-              )}
-            </Section>
+                </ExpandableList>
+              </Section>
+            )}
 
             {/* Detaillierte Konfigurator-Anfragen */}
             {briefs.length > 0 && (
               <Section title="Deine Konfigurations-Anfragen">
-                <DocList>
+                <ExpandableList max={5}>
                   {briefs.map((b) => (
                     <DocRow
                       key={b.id}
@@ -345,7 +327,7 @@ export default async function DashboardPage() {
                       sub={dateFormatter.format(new Date(b.created_at))}
                       amount={
                         typeof b.price_min === "number" && typeof b.price_max === "number"
-                          ? `${formatEuro(b.price_min)} – ${formatEuro(b.price_max)}`
+                          ? `${formatEuro(b.price_min)} bis ${formatEuro(b.price_max)}`
                           : undefined
                       }
                       badge={
@@ -353,23 +335,7 @@ export default async function DashboardPage() {
                       }
                     />
                   ))}
-                </DocList>
-              </Section>
-            )}
-
-            {/* Berechnete Angebote aus dem Preisrechner */}
-            {leads.length > 0 && (
-              <Section title="Deine Preisrechner-Anfragen">
-                <DocList>
-                  {leads.map((lead) => (
-                    <DocRow
-                      key={lead.id}
-                      title={projectTypeLabel(lead.project_type)}
-                      sub={dateFormatter.format(new Date(lead.created_at))}
-                      amount={`${formatEuro(lead.price_min)} – ${formatEuro(lead.price_max)}`}
-                    />
-                  ))}
-                </DocList>
+                </ExpandableList>
               </Section>
             )}
           </>
@@ -387,19 +353,19 @@ function Onboarding() {
     },
     {
       title: "Detailliert konfigurieren",
-      text: "Gib im Konfigurator alle Wünsche an – Firma, Domain, Funktionen, Stil. Je genauer, desto besser.",
+      text: "Gib im Konfigurator alle Wünsche an: Firma, Domain, Funktionen, Stil. Je genauer, desto besser.",
     },
     {
       title: "Angebot & Projektstart",
-      text: "Wir erstellen dein persönliches Angebot. Nach Annahme & Anzahlung starten wir dein Projekt.",
+      text: "Wir erstellen dein persönliches Angebot und senden es dir per E-Mail. Nach deiner Zusage starten wir dein Projekt.",
     },
   ];
 
   return (
-    <section className="rounded-3xl border border-[#09ed2d]/20 bg-gradient-to-br from-[#09ed2d]/10 via-white/[0.03] to-black p-8 backdrop-blur-md">
+    <section className="rounded-3xl border border-[#09ed2d]/20 bg-gradient-to-br from-[#09ed2d]/10 via-white/[0.03] to-black p-8">
       <h2 className="text-2xl font-semibold text-white">Willkommen bei TAS Webworks</h2>
       <p className="mt-2 max-w-2xl text-white/60">
-        Hier ist noch nichts los – das ändern wir gemeinsam. So läuft dein Weg zur neuen Website:
+        Hier ist noch nichts los. Das ändern wir gemeinsam. So läuft dein Weg zur neuen Website:
       </p>
 
       <ol className="mt-6 grid gap-4 sm:grid-cols-3">
@@ -469,22 +435,6 @@ function Section({
       </div>
       {children}
     </section>
-  );
-}
-
-function Empty({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-white/60 backdrop-blur-md">
-      {children}
-    </div>
-  );
-}
-
-function DocList({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
-      <ul className="divide-y divide-white/10">{children}</ul>
-    </div>
   );
 }
 

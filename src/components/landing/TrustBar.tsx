@@ -1,5 +1,5 @@
 /**
- * Trust-Bar – dezente Leiste mit ausgegrauten Tech-Stack-Logos direkt unter dem
+ * Trust-Bar, dezente Leiste mit ausgegrauten Tech-Stack-Logos direkt unter dem
  * Hero. Vermittelt Seriosität ("worauf wir bauen") ohne vom Hero abzulenken.
  * Reine Server Component; Logos als Inline-SVG, daher keine externen Assets.
  */

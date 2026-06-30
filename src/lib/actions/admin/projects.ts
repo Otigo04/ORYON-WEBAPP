@@ -164,7 +164,7 @@ export async function deleteProjectUpdate(formData: FormData): Promise<void> {
     const supabase = await createClient();
     await supabase.from("project_updates").delete().eq("id", id);
   } catch {
-    // bewusst still – UI revalidiert ohnehin
+    // bewusst still, UI revalidiert ohnehin
   }
 
   if (typeof projectId === "string") {

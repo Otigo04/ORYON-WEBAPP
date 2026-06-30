@@ -12,7 +12,7 @@ function hasSupabaseEnv() {
 }
 
 /**
- * Alle Kundenprofile (nur Admin – RLS-Policy `profiles_select_admin`).
+ * Alle Kundenprofile (nur Admin, RLS-Policy `profiles_select_admin`).
  * Dient zur Kundenauswahl beim Anlegen von Projekten/Dokumenten.
  */
 export async function getCustomers(): Promise<Customer[]> {

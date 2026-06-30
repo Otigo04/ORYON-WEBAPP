@@ -69,7 +69,7 @@ export function FleetHero() {
           </h1>
 
           <p className="mt-6 max-w-lg text-lg leading-relaxed text-white/60">
-            Disposition, Fahrer- und Fahrzeugverwaltung, Compliance und Vorfälle –
+            Disposition, Fahrer- und Fahrzeugverwaltung, Compliance und Vorfälle -
             TAS-FLEET bündelt den kompletten Betrieb von Taxi-, Mietwagen- und
             Shuttle-Unternehmen in einer schnellen, sicheren Web-App. Schluss mit
             Zettelwirtschaft und Telefonchaos.
@@ -109,7 +109,7 @@ export function FleetHero() {
           />
           <BrowserFrame
             src="/tas-fleet/screens/dashboard.png"
-            alt="TAS-FLEET Dashboard – Flottenübersicht in Echtzeit"
+            alt="TAS-FLEET Dashboard, Flottenübersicht in Echtzeit"
             mock="dashboard"
           />
         </div>

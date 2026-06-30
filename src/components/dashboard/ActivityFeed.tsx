@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export type ActivityItem = {
   id: string;
-  /** Art des Ereignisses – bestimmt Icon & Farbe. */
+  /** Art des Ereignisses, bestimmt Icon & Farbe. */
   kind: "offer" | "invoice" | "project" | "concept" | "lead";
   title: string;
   sub: string;
@@ -14,7 +14,7 @@ export type ActivityItem = {
   date: string;
 };
 
-const SEEN_KEY = "tas-dash-seen";
+const SEEN_KEY = "tas-dash-seen-ids";
 
 const KIND_META: Record<ActivityItem["kind"], { label: string; color: string }> = {
   offer: { label: "Angebot", color: "text-[#09ed2d]" },
@@ -31,38 +31,45 @@ const dateFormatter = new Intl.DateTimeFormat("de-DE", {
   minute: "2-digit",
 });
 
+function loadSeen(): Set<string> {
+  try {
+    const raw = localStorage.getItem(SEEN_KEY);
+    return new Set(raw ? (JSON.parse(raw) as string[]) : []);
+  } catch {
+    return new Set();
+  }
+}
+
 /**
- * „Was ist neu"-Feed. Markiert Ereignisse, die seit dem letzten Besuch
- * hinzugekommen sind, mit einem NEU-Badge. Der „zuletzt gesehen"-Zeitpunkt
- * liegt im localStorage und wird beim Anzeigen aktualisiert – rein clientseitig,
- * ohne zusätzliche Tabelle.
+ * „Was ist neu"-Feed. Jedes Ereignis bleibt mit NEU-Badge sichtbar, bis der
+ * Kunde es einmal angeklickt hat. Erst der Klick markiert genau diesen Eintrag
+ * als gesehen (per-Item statt globaler „zuletzt gesehen"-Zeitstempel), sodass
+ * ungeöffnete Punkte erhalten bleiben. Speicherung rein clientseitig im
+ * localStorage, ohne zusätzliche Tabelle.
  */
 export function ActivityFeed({ items }: { items: ActivityItem[] }) {
-  const [lastSeen, setLastSeen] = useState<number | null>(null);
+  const [seen, setSeen] = useState<Set<string> | null>(null);
 
   useEffect(() => {
-    let prev = 0;
-    try {
-      prev = Number(localStorage.getItem(SEEN_KEY)) || 0;
-    } catch {
-      /* kein Storage */
-    }
     // Bewusst nach dem Mount: localStorage ist client-only. So bleibt der
     // erste (Server-)Render frei von NEU-Badges und es gibt kein Hydration-
     // Mismatch.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setLastSeen(prev);
+    setSeen(loadSeen());
+  }, []);
 
-    // Neuesten Zeitpunkt als „gesehen" merken (für den nächsten Besuch).
-    const newest = items.reduce((max, it) => Math.max(max, new Date(it.date).getTime()), 0);
-    if (newest > 0) {
+  function markSeen(id: string) {
+    setSeen((prev) => {
+      const next = new Set(prev ?? []);
+      next.add(id);
       try {
-        localStorage.setItem(SEEN_KEY, String(newest));
+        localStorage.setItem(SEEN_KEY, JSON.stringify([...next]));
       } catch {
         /* egal */
       }
-    }
-  }, [items]);
+      return next;
+    });
+  }
 
   if (items.length === 0) return null;
 
@@ -70,7 +77,7 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
     <ul className="flex flex-col">
       {items.map((it, idx) => {
         const meta = KIND_META[it.kind];
-        const isNew = lastSeen !== null && new Date(it.date).getTime() > lastSeen;
+        const isNew = seen !== null && !seen.has(it.id);
         const inner = (
           <div className="flex items-start gap-3 py-3">
             <span
@@ -103,7 +110,11 @@ export function ActivityFeed({ items }: { items: ActivityItem[] }) {
             className={idx > 0 ? "border-t border-white/5" : undefined}
           >
             {it.href ? (
-              <Link href={it.href} className="block rounded-lg px-2 transition hover:bg-white/[0.04]">
+              <Link
+                href={it.href}
+                onClick={() => markSeen(it.id)}
+                className="block rounded-lg px-2 transition hover:bg-white/[0.04]"
+              >
                 {inner}
               </Link>
             ) : (

@@ -5,7 +5,7 @@ import { PrintButton } from "@/components/documents/PrintButton";
 import { getConcept } from "@/lib/concepts";
 
 export const metadata: Metadata = {
-  title: "Konzept – TAS Webworks",
+  title: "Konzept, TAS Webworks",
   robots: { index: false, follow: false },
 };
 

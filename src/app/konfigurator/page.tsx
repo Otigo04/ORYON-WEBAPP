@@ -3,17 +3,19 @@ import FloatingLinesBackground from "@/components/backgrounds/FloatingLinesBackg
 import { Configurator } from "@/components/konfigurator/Configurator";
 
 export const metadata: Metadata = {
-  title: "Projekt konfigurieren – TAS Webworks",
+  title: "Projekt konfigurieren, TAS Webworks",
   description:
-    "Konfiguriere dein Webprojekt im Detail – Schritt für Schritt. Deine Angaben werden automatisch gespeichert.",
+    "Konfiguriere dein Webprojekt im Detail, Schritt für Schritt. Deine Angaben werden automatisch gespeichert.",
   robots: { index: false, follow: false },
 };
 
 /**
- * Detaillierter Projekt-Konfigurator. Server Component als schlanke Hülle:
- * lädt den FloatingLines-Hintergrund (Client, WebGL) und den eigentlichen
- * Wizard (Client). Übernommene Werte aus dem Preisrechner werden clientseitig
- * aus dem gespeicherten Entwurf gelesen.
+ * Detaillierter Projekt-Konfigurator. Server Component als schlanke Hülle.
+ *
+ * Der animierte WebGL-Hintergrund (FloatingLines, grüne „Rohre") läuft bewusst
+ * OHNE `mix-blend-mode: screen`: Auf schwarzem Grund ist screen optisch identisch
+ * mit normal (screen(x,0)=x), erspart aber das teure Verrechnen mit dem gesamten
+ * Seiten-Backdrop jeden Frame – das war die eigentliche FPS-Bremse.
  */
 export default function KonfiguratorPage() {
   return (

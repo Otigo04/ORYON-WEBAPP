@@ -3,7 +3,7 @@ import { PRICING, formatEuro } from "@/lib/pricing";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 
 /**
- * Problem & Solution ("Leistungen") – holt den Kunden bei seinen Pain-Points ab
+ * Problem & Solution ("Leistungen"), holt den Kunden bei seinen Pain-Points ab
  * und stellt OTIGO Digital als die Lösung dar. Reine Server Component.
  * Betont zusätzlich prominent den USP: Agentur-Qualität zum kleinen Preis.
  */
@@ -24,10 +24,10 @@ const pillars: Pillar[] = [
         <circle cx="6" cy="7" r="0.6" fill="currentColor" />
       </svg>
     ),
-    problem: "Kein professioneller Online-Auftritt",
+    problem: "Schluss mit unprofessionellem Auftritt",
     title: "Deine individuelle Webseite",
     description:
-      "Das Herzstück: deine maßgeschneiderte Website – von der Landingpage bis zur mehrseitigen Unternehmensseite. Einzigartiges Design auf deine Marke zugeschnitten, blitzschnell und SEO-stark.",
+      "Das Herzstück: deine maßgeschneiderte Website, von der Landingpage bis zur mehrseitigen Unternehmensseite. Einzigartiges Design auf deine Marke zugeschnitten, blitzschnell und SEO-stark.",
   },
   {
     icon: (
@@ -40,10 +40,10 @@ const pillars: Pillar[] = [
         />
       </svg>
     ),
-    problem: "Langsame, veraltete Systeme",
+    problem: "Schluss mit langsamen, veralteten Seiten",
     title: "Performance-First Entwicklung",
     description:
-      "Alte Seiten kosten Kunden und Rankings. Wir bauen mit Next.js & TypeScript blitzschnelle Anwendungen, die in Millisekunden laden und top in Google ranken.",
+      "Langsame Seiten kosten Kunden und Rankings. Wir bauen mit Next.js & TypeScript blitzschnelle Anwendungen, die in Millisekunden laden und top in Google ranken.",
   },
   {
     icon: (
@@ -52,10 +52,10 @@ const pillars: Pillar[] = [
         <path d="M3 9h18M8 21h8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
       </svg>
     ),
-    problem: "Design, das nicht konvertiert",
+    problem: "Schluss mit Design, das nicht verkauft",
     title: "Conversion-starkes UI/UX",
     description:
-      "Schön reicht nicht – es muss verkaufen. Wir gestalten klare, vertrauensbildende Interfaces, die Besucher gezielt zu Anfragen und Abschlüssen führen.",
+      "Schön reicht nicht, es muss verkaufen. Wir gestalten klare, vertrauensbildende Interfaces, die Besucher gezielt zu Anfragen und Abschlüssen führen.",
   },
   {
     icon: (
@@ -69,7 +69,7 @@ const pillars: Pillar[] = [
         <path d="m9 12 2 2 4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
-    problem: "Fehlende Digitalisierung & Skalierung",
+    problem: "Schluss mit fehlender Digitalisierung",
     title: "Automatisierte Prozesse",
     description:
       "Wir digitalisieren deine Abläufe, von der Terminbuchung bis zur Kundenverwaltung. Sicher, DSGVO-konform und jederzeit erweiterbar.",

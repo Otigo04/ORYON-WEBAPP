@@ -32,7 +32,7 @@ export function AuthShell({
 
       <div className="animate-auth-rise relative z-10 w-full max-w-md">
         <div className="flex justify-center">
-          <Link href="/" aria-label="TAS Webworks – Startseite" className="inline-flex">
+          <Link href="/" aria-label="TAS Webworks, Startseite" className="inline-flex">
             <LogoWordmark className="h-12 w-auto sm:h-14" />
           </Link>
         </div>

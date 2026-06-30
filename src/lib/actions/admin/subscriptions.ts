@@ -25,7 +25,7 @@ const setSchema = z.object({
 });
 
 /**
- * Setzt (oder aktualisiert) das Abo eines Kunden manuell – die Admin-Variante
+ * Setzt (oder aktualisiert) das Abo eines Kunden manuell, die Admin-Variante
  * zur Freischaltung bzw. zum Testen, solange der Stripe-Checkout (Phase 2) noch
  * nicht live ist.
  *

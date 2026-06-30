@@ -2,7 +2,7 @@
  * Zentrale Datenquelle für die TAS-FLEET-Produktseite (`/leistungen/tas-fleet`).
  *
  * TAS-FLEET ist das eigene SaaS-Produkt von TAS Webworks: eine Web-App für
- * Fuhrpark-, Fahrer- und Dispositionsverwaltung – primär für Taxi-, Mietwagen-
+ * Fuhrpark-, Fahrer- und Dispositionsverwaltung, primär für Taxi-, Mietwagen-
  * und Shuttle-Betriebe. Alle Inhalte der Produktseite (Module, Preis-Tiers,
  * Kennzahlen, FAQ, Testimonials) liegen hier gebündelt, damit Texte, SEO und
  * strukturierte Daten immer aus einer Quelle stammen.
@@ -15,7 +15,7 @@
 
 import { pricingConfig } from "../../pricing.config";
 
-/** Externer Link zur eigentlichen App – Ziel des "Jetzt starten"-CTA. */
+/** Externer Link zur eigentlichen App, Ziel des "Jetzt starten"-CTA. */
 export const FLEET_APP_URL = "https://fleet.tas-webworks.de";
 
 /**
@@ -27,9 +27,9 @@ export const FLEET_DEMO_VIDEO_ID = "";
 
 /** Markenfarben der TAS-FLEET-Produktseite (Tailwind-Arbitrary-Werte). */
 export const FLEET_COLORS = {
-  /** Smaragd – Anker an die Dachmarke TAS Webworks. */
+  /** Smaragd, Anker an die Dachmarke TAS Webworks. */
   emerald: "#09ed2d",
-  /** Cyan – eigenständige Produktfarbe (Mobility/Tech-Anmutung). */
+  /** Cyan, eigenständige Produktfarbe (Mobility/Tech-Anmutung). */
   cyan: "#22d3ee",
 } as const;
 
@@ -59,7 +59,7 @@ export const FLEET_MODULES: FleetModule[] = [
     eyebrow: "Überblick",
     title: "Live-Dashboard für Ihre gesamte Flotte",
     description:
-      "Alle Kennzahlen auf einen Blick: Anzahl aktiver Fahrer und Fahrzeuge, der aktuelle Flottenstatus (Aktiv / Wartung / Offline) und sämtliche ablaufenden Dokumente – in Echtzeit und ohne eine einzige Excel-Tabelle.",
+      "Alle Kennzahlen auf einen Blick: Anzahl aktiver Fahrer und Fahrzeuge, der aktuelle Flottenstatus (Aktiv / Wartung / Offline) und sämtliche ablaufenden Dokumente, in Echtzeit und ohne eine einzige Excel-Tabelle.",
     highlights: [
       "Gesamtzahl Fahrer & Fahrzeuge in Echtzeit",
       "Statusampel: Aktiv, Wartung, Offline",
@@ -72,9 +72,9 @@ export const FLEET_MODULES: FleetModule[] = [
   {
     id: "disposition",
     eyebrow: "Disposition",
-    title: "Schichtplanung in Echtzeit – mit PDF-Export",
+    title: "Schichtplanung in Echtzeit, mit PDF-Export",
     description:
-      "Weisen Sie Fahrer und Fahrzeuge tagesgenau zu. Änderungen synchronisieren sich live für das gesamte Team. Den fertigen Schichtplan exportieren Sie mit einem Klick als sauberes PDF – Schluss mit Zettelwirtschaft und Telefonchaos.",
+      "Weisen Sie Fahrer und Fahrzeuge tagesgenau zu. Änderungen synchronisieren sich live für das gesamte Team. Den fertigen Schichtplan exportieren Sie mit einem Klick als sauberes PDF, Schluss mit Zettelwirtschaft und Telefonchaos.",
     highlights: [
       "Tagesbasierte Schichtzuweisung per Drag-and-drop",
       "Echtzeit-Synchronisation über alle Geräte",
@@ -89,7 +89,7 @@ export const FLEET_MODULES: FleetModule[] = [
     eyebrow: "Stammdaten",
     title: "Fahrer- & Fahrzeugverwaltung, die mitdenkt",
     description:
-      "Pflegen Sie Ihre komplette Flotte zentral – mit Filterung, Suche und allen relevanten Feldern. Neue Fahrer importieren Sie per Excel/CSV im Massen-Upload; eine integrierte OCR-Erkennung liest Daten automatisch aus.",
+      "Pflegen Sie Ihre komplette Flotte zentral, mit Filterung, Suche und allen relevanten Feldern. Neue Fahrer importieren Sie per Excel/CSV im Massen-Upload; eine integrierte OCR-Erkennung liest Daten automatisch aus.",
     highlights: [
       "Vollständiges CRUD für Fahrer & Fahrzeuge",
       "Massenimport via Excel/CSV mit OCR-Erkennung",
@@ -104,7 +104,7 @@ export const FLEET_MODULES: FleetModule[] = [
     eyebrow: "Compliance",
     title: "Compliance-Center: keine Frist mehr verpassen",
     description:
-      "P-Schein, Führerschein, TÜV, Versicherung – TAS-FLEET behält jede Frist im Auge und warnt Sie rechtzeitig, bevor ein Dokument abläuft. Lückenlose Dokumentation für jede Prüfung und maximale Rechtssicherheit.",
+      "P-Schein, Führerschein, TÜV, Versicherung, TAS-FLEET behält jede Frist im Auge und warnt Sie rechtzeitig, bevor ein Dokument abläuft. Lückenlose Dokumentation für jede Prüfung und maximale Rechtssicherheit.",
     highlights: [
       "Zentrale Dokumenten- & Fristenverwaltung",
       "Automatische Warnungen vor Ablauf",
@@ -132,14 +132,14 @@ export const FLEET_MODULES: FleetModule[] = [
   {
     id: "import",
     eyebrow: "Onboarding",
-    title: "In Minuten startklar – statt Wochen",
+    title: "In Minuten startklar, statt Wochen",
     description:
       "Bestehende Flotten und Fahrerlisten übernehmen Sie per Massenimport. Die globale Suche bringt Sie in Sekunden zu jedem Fahrer und jedem Fahrzeug. Kein langwieriges Einrichten, kein Datenchaos beim Umstieg.",
     highlights: [
       "Massenimport bestehender Daten in Minuten",
       "Globale Sofort-Suche über die ganze Flotte",
       "Intuitive Oberfläche ohne Schulungsaufwand",
-      "Sofort einsatzbereit – im Browser, ohne Installation",
+      "Sofort einsatzbereit, im Browser, ohne Installation",
     ],
     image: "/tas-fleet/screens/import.png",
     mock: "import",
@@ -156,7 +156,7 @@ export const FLEET_STATS: FleetStat[] = [
   { value: "DSGVO", label: "konform & sicher gehostet" },
 ];
 
-/** Eindeutige Tarif-Kennung – auch der in der Datenbank gespeicherte `plan`. */
+/** Eindeutige Tarif-Kennung, auch der in der Datenbank gespeicherte `plan`. */
 export type FleetPlanId = "starter" | "professional" | "enterprise";
 
 export type FleetTier = {
@@ -180,6 +180,23 @@ export type FleetTier = {
   features: string[];
 };
 
+/**
+ * Voller Funktionsumfang von TAS-FLEET. Bewusst in jedem Tarif identisch -
+ * die Tarife unterscheiden sich ausschließlich über die maximale Flottengröße.
+ */
+const FLEET_FULL_FEATURES: string[] = [
+  "Live-Dashboard in Echtzeit",
+  "Fahrer- & Fahrzeugverwaltung",
+  "Compliance-Center (Fristen & Warnungen)",
+  "Disposition & Schichtplanung mit PDF-Export",
+  "Echtzeit-Synchronisation über alle Geräte",
+  "Massenimport via Excel/CSV mit OCR",
+  "Incident-Log für lückenlose Dokumentation",
+  "Globale Sofort-Suche",
+  "DSGVO-konform & sicher gehostet",
+  "E-Mail-Support",
+];
+
 export const FLEET_TIERS: FleetTier[] = [
   {
     id: "starter",
@@ -190,13 +207,7 @@ export const FLEET_TIERS: FleetTier[] = [
     vehicles: "bis 10 Fahrzeuge",
     vehicleLimit: 10,
     cta: "Kostenlos testen",
-    features: [
-      "Live-Dashboard",
-      "Fahrer- & Fahrzeugverwaltung",
-      "Compliance-Center (Fristen & Warnungen)",
-      "Globale Suche",
-      "E-Mail-Support",
-    ],
+    features: FLEET_FULL_FEATURES,
   },
   {
     id: "professional",
@@ -204,18 +215,11 @@ export const FLEET_TIERS: FleetTier[] = [
     tagline: "Für wachsende Taxi- & Mietwagenflotten",
     monthly: pricingConfig.tasFleet.professional.monthly,
     yearly: pricingConfig.tasFleet.professional.yearly,
-    vehicles: "bis 50 Fahrzeuge",
-    vehicleLimit: 50,
+    vehicles: "bis 25 Fahrzeuge",
+    vehicleLimit: 25,
     featured: true,
     cta: "Jetzt starten",
-    features: [
-      "Alles aus Starter",
-      "Disposition & Schichtplanung mit PDF-Export",
-      "Echtzeit-Synchronisation",
-      "Massenimport via Excel/CSV mit OCR",
-      "Incident-Log",
-      "Prioritäts-Support",
-    ],
+    features: FLEET_FULL_FEATURES,
   },
   {
     id: "enterprise",
@@ -223,17 +227,10 @@ export const FLEET_TIERS: FleetTier[] = [
     tagline: "Für große Flotten & mehrere Standorte",
     monthly: pricingConfig.tasFleet.enterprise.monthly,
     yearly: pricingConfig.tasFleet.enterprise.yearly,
-    vehicles: "unbegrenzte Fahrzeuge",
+    vehicles: "ab 26 Fahrzeuge, unbegrenzt",
     vehicleLimit: null,
     cta: "Angebot anfragen",
-    features: [
-      "Alles aus Professional",
-      "Mehrere Standorte & Mandanten",
-      "Rollen- & Rechteverwaltung",
-      "API-Zugang & individuelle Integrationen",
-      "Persönliches Onboarding",
-      "Dedizierter Ansprechpartner & SLA",
-    ],
+    features: FLEET_FULL_FEATURES,
   },
 ];
 
@@ -242,18 +239,32 @@ export function getFleetTier(plan: FleetPlanId): FleetTier | undefined {
   return FLEET_TIERS.find((t) => t.id === plan);
 }
 
+/** Abrechnungsintervall einer Bestellung. */
+export type FleetInterval = "monthly" | "yearly";
+
+/**
+ * Rechnungsbetrag (in Euro) für die gewählte Periode: bei monatlicher Zahlung
+ * ein Monat, bei jährlicher Zahlung der volle Jahresbetrag im Voraus (der
+ * `yearly`-Preis ist bereits der rabattierte Monatspreis × 12).
+ */
+export function fleetInvoiceAmount(plan: FleetPlanId, interval: FleetInterval): number {
+  const tier = getFleetTier(plan);
+  if (!tier) return 0;
+  return interval === "yearly" ? tier.yearly * 12 : tier.monthly;
+}
+
 export type FleetFaq = { question: string; answer: string };
 
 export const FLEET_FAQS: FleetFaq[] = [
   {
     question: "Für wen ist TAS-FLEET gemacht?",
     answer:
-      "Für alle Betriebe mit Fuhrpark – besonders für Taxi-, Mietwagen- und Shuttle-Unternehmen. Ob fünf oder fünfhundert Fahrzeuge: TAS-FLEET skaliert mit Ihrem Betrieb.",
+      "Für alle Betriebe mit Fuhrpark, besonders für Taxi-, Mietwagen- und Shuttle-Unternehmen. Ob fünf oder fünfhundert Fahrzeuge: TAS-FLEET skaliert mit Ihrem Betrieb.",
   },
   {
     question: "Muss ich etwas installieren?",
     answer:
-      "Nein. TAS-FLEET läuft vollständig im Browser – auf Desktop, Tablet und Smartphone. Sie melden sich an und legen sofort los, ganz ohne Installation oder eigene Server.",
+      "Nein. TAS-FLEET läuft vollständig im Browser, auf Desktop, Tablet und Smartphone. Sie melden sich an und legen sofort los, ganz ohne Installation oder eigene Server.",
   },
   {
     question: "Wie aufwendig ist der Umstieg?",
@@ -263,7 +274,7 @@ export const FLEET_FAQS: FleetFaq[] = [
   {
     question: "Sind meine Daten sicher?",
     answer:
-      "Ja. TAS-FLEET wird DSGVO-konform auf europäischen Servern gehostet. Jeder Betrieb sieht ausschließlich seine eigenen Daten – abgesichert durch strikte Zugriffskontrollen auf Datenbankebene.",
+      "Ja. TAS-FLEET wird DSGVO-konform auf europäischen Servern gehostet. Jeder Betrieb sieht ausschließlich seine eigenen Daten, abgesichert durch strikte Zugriffskontrollen auf Datenbankebene.",
   },
   {
     question: "Kann ich den Tarif später wechseln?",

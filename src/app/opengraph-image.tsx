@@ -3,10 +3,10 @@ import { siteConfig } from "@/lib/site";
 
 /**
  * Dynamisch generiertes Open-Graph-/Social-Vorschaubild (1200×630).
- * Markendesign (dunkel + OTIGO-Grün) – sorgt für hochwertige Link-Previews
+ * Markendesign (dunkel + OTIGO-Grün), sorgt für hochwertige Link-Previews
  * auf LinkedIn, X, WhatsApp & Co. (wichtiger Social-/SEO-Signalgeber).
  */
-export const alt = "TAS Webworks – Preiswerte Webagentur aus Berlin";
+export const alt = "TAS Webworks, Preiswerte Webagentur aus Berlin";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

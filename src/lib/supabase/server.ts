@@ -6,7 +6,7 @@ import { cookies } from "next/headers";
  *
  * Sicherheit: Der Client liest/schreibt das Session-Cookie über die Next.js
  * `cookies()`-Bridge. Datenzugriffe werden serverseitig durch Supabase
- * Row Level Security (RLS) abgesichert – ein eingeloggter Nutzer sieht damit
+ * Row Level Security (RLS) abgesichert, ein eingeloggter Nutzer sieht damit
  * ausschließlich seine eigenen Datensätze.
  */
 export async function createClient() {

@@ -169,7 +169,7 @@ export async function signOutAction() {
 /**
  * Fordert eine Passwort-Zurücksetzen-E-Mail an.
  *
- * Sicherheit: Es wird IMMER eine generische Erfolgsmeldung zurückgegeben –
+ * Sicherheit: Es wird IMMER eine generische Erfolgsmeldung zurückgegeben -
  * unabhängig davon, ob die E-Mail registriert ist. So lässt sich nicht
  * herausfinden, welche Adressen ein Konto besitzen (kein User-Enumeration).
  */

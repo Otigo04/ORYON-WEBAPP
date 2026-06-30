@@ -9,7 +9,7 @@ import {
 import { FLEET_FAQS } from "@/lib/tas-fleet";
 
 /**
- * FAQ der TAS-FLEET-Seite – animiertes Accordion (Animate UI) im
+ * FAQ der TAS-FLEET-Seite, animiertes Accordion (Animate UI) im
  * minimalistischen Stil mit Chevron im Cyan-Akzent der Fleet-Marke.
  * Korrespondiert mit dem FAQ-JSON-LD der Seite (Rich-Results); die Antworten
  * bleiben dank `keepRendered` immer im DOM (auch im SSR-HTML).

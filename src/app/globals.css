@@ -228,6 +228,23 @@ body {
     animation: none;
   }
 }
+
+/* Cleaner Aurora-Hintergrund (Konfigurator): dezente Drift, nur transform,
+   damit der GPU-Compositor ohne Repaint arbeitet (kostet praktisch keine FPS). */
+@keyframes aurora-drift {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(26px); }
+}
+.aurora-drift {
+  animation: aurora-drift 16s ease-in-out infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .aurora-drift {
+    animation: none;
+  }
+}
+
 /* Druckansicht für Dokumente (Rechnungen, Angebote, Konzepte).
    Blendet UI-Chrome (.no-print) aus und stellt das Belegblatt randlos dar. */
 @media print {

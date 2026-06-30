@@ -30,7 +30,7 @@ function hasSupabaseEnv() {
 const COLS =
   "id, created_at, user_id, lead_id, name, email, phone, company, data, project_type, price_min, price_max, status, admin_note";
 
-/** Alle detaillierten Konfigurationen (nur Admin – RLS-abgesichert). */
+/** Alle detaillierten Konfigurationen (nur Admin, RLS-abgesichert). */
 export async function getAllBriefs(): Promise<Brief[]> {
   if (!hasSupabaseEnv()) return [];
   try {

@@ -1,5 +1,5 @@
 /**
- * Häufige Fragen – sichtbar auf der Landingpage UND als FAQ-JSON-LD (Rich
+ * Häufige Fragen, sichtbar auf der Landingpage UND als FAQ-JSON-LD (Rich
  * Results). Bewusst keyword-stark (Preis/günstig, Berlin, Dauer, SEO), um
  * Long-Tail-Suchanfragen abzudecken. Antworten betonen den Preisvorteil.
  */
@@ -7,22 +7,22 @@ export const faqs = [
   {
     question: "Was kostet eine Website bei TAS Webworks?",
     answer:
-      "Deutlich weniger als bei klassischen Agenturen: Ein professioneller One-Pager startet bereits im niedrigen dreistelligen Bereich, mehrseitige Websites und Online-Shops entsprechend gestaffelt. Mit unserem Online-Preisrechner erhältst du in 60 Sekunden einen transparenten Richtpreis – komplett unverbindlich.",
+      "Deutlich weniger als bei klassischen Agenturen: Ein professioneller One-Pager startet bereits im niedrigen dreistelligen Bereich, mehrseitige Websites und Web-Apps entsprechend gestaffelt. Mit unserem Online-Preisrechner erhältst du in 60 Sekunden einen transparenten Richtpreis, komplett unverbindlich.",
   },
   {
     question: "Warum ist TAS Webworks so preiswert?",
     answer:
-      "Wir arbeiten mit schlanken, hochautomatisierten Prozessen und modernster Technologie (Next.js, Vercel, Supabase). Dadurch sparen wir Zeit und Kosten – und geben diesen Vorteil direkt an dich weiter. Du bekommst Agentur-Qualität zum fairen Festpreis, ohne versteckte Kosten.",
+      "Wir arbeiten mit schlanken, hochautomatisierten Prozessen und modernster Technologie (Next.js, Vercel, Supabase). Dadurch sparen wir Zeit und Kosten und geben diesen Vorteil direkt an dich weiter. Du bekommst Agentur-Qualität zum fairen Festpreis, ohne versteckte Kosten.",
   },
   {
     question: "Seid ihr eine Webagentur aus Berlin?",
     answer:
-      "Ja. TAS Webworks ist ein Berliner Unternehmen. Wir betreuen Kundinnen und Kunden in ganz Deutschland, kennen aber den lokalen Markt in Berlin besonders gut und sind für persönliche Termine in der Region erreichbar.",
+      "Ja. TAS Webworks ist ein Berliner Unternehmen. Wir betreuen Kundinnen und Kunden in ganz Deutschland, kennen aber den lokalen Markt in Berlin besonders gut. Erreichbar sind wir schnell und unkompliziert per E-Mail, ergänzt um Lead-Videos, in denen wir dir alles direkt zeigen.",
   },
   {
     question: "Ist die Suchmaschinenoptimierung (SEO) inklusive?",
     answer:
-      "Ja. Jede Website wird technisch sauber, serverseitig gerendert und mit strukturierten Daten ausgeliefert. SEO-Grundoptimierung und beste Core-Web-Vitals sind immer inklusive – damit dich deine Kunden bei Google finden.",
+      "Ja. Jede Website wird technisch sauber, serverseitig gerendert und mit strukturierten Daten ausgeliefert. SEO-Grundoptimierung und beste Core-Web-Vitals sind immer inklusive, damit dich deine Kunden bei Google finden.",
   },
   {
     question: "Bekomme ich einen verbindlichen Festpreis?",
@@ -32,6 +32,6 @@ export const faqs = [
   {
     question: "Wie lange dauert die Umsetzung meiner Website?",
     answer:
-      "Einfache One-Pager realisieren wir oft innerhalb weniger Tage, umfangreichere Websites und Shops je nach Umfang in wenigen Wochen. Den genauen Zeitrahmen nennen wir dir verbindlich im Erstgespräch.",
+      "Einfache One-Pager realisieren wir oft innerhalb weniger Tage, umfangreichere Websites und Web-Apps je nach Umfang in wenigen Wochen. Den genauen Zeitrahmen nennen wir dir verbindlich nach kurzer Abstimmung per E-Mail.",
   },
 ] as const;

@@ -91,13 +91,13 @@ export function Navbar() {
         aria-label="Hauptnavigation"
         className={`mx-auto flex max-w-5xl items-center justify-between rounded-2xl border px-4 py-3 transition-all duration-300 sm:px-6 ${
           scrolled || menuOpen
-            ? "border-[#09ed2d]/20 bg-black/80 shadow-[0_8px_40px_-12px_rgba(9,237,45,0.35)] backdrop-blur-xl"
-            : "border-white/10 bg-white/[0.04] shadow-[0_4px_30px_-12px_rgba(9,237,45,0.25)] backdrop-blur-md"
+            ? "border-[#09ed2d]/20 bg-black/90 shadow-[0_8px_40px_-12px_rgba(9,237,45,0.35)] backdrop-blur-md"
+            : "border-white/10 bg-black/40 shadow-[0_4px_30px_-12px_rgba(9,237,45,0.25)] backdrop-blur-md"
         }`}
       >
         <Link
           href="/"
-          aria-label="TAS Webworks – Startseite"
+          aria-label="TAS Webworks, Startseite"
           className="flex items-center"
           onClick={() => setMenuOpen(false)}
         >
@@ -106,8 +106,8 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Rechts gruppiert: erst die Navigations-Reiter, dann – durch Abstand
-            und einen dezenten Trenner klar abgesetzt – die Konto-Aktionen. */}
+        {/* Rechts gruppiert: erst die Navigations-Reiter, dann, durch Abstand
+            und einen dezenten Trenner klar abgesetzt, die Konto-Aktionen. */}
         <div className="hidden items-center gap-8 md:flex">
           <ul className="flex items-center gap-7 text-sm text-white/70">
             <li>

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { RainbowButton } from "@/components/ui/rainbow-button";
-import { BRIEF_STORAGE_KEY, emptyDraft, type BriefDraft } from "@/lib/brief";
+import { BRIEF_STORAGE_KEY, BRIEF_HANDOFF_KEY, emptyDraft, type BriefDraft } from "@/lib/brief";
 import {
   PRICING,
   PROJECT_TYPES,
@@ -22,7 +22,7 @@ import {
  *
  * Bewusst nur der erste, schnelle Schritt: Projektart, Design und Features
  * zusammenklicken und einen groben Richtwert (immer als Spanne) sehen. Die
- * eigentliche, genaue Kalkulation – inklusive Angebot/Kontakt – findet
+ * eigentliche, genaue Kalkulation, inklusive Angebot/Kontakt, findet
  * ausschließlich im ausführlichen Konfigurator statt. „Weiter kalkulieren"
  * übergibt die Auswahl dorthin (localStorage), wo sie sichtbar und anpassbar ist.
  */
@@ -33,7 +33,7 @@ export function Preisrechner() {
   const [design, setDesign] = useState<DesignType>("custom");
   const [features, setFeatures] = useState<FeatureKey[]>([]);
   const [maintenance, setMaintenance] = useState(false);
-  // Hosting ist eine Pflichtauswahl (Ja/Nein) – ohne sie geht es nicht weiter.
+  // Hosting ist eine Pflichtauswahl (Ja/Nein), ohne sie geht es nicht weiter.
   const [hosting, setHosting] = useState<boolean | null>(null);
 
   // Mehrsprachigkeit wird bewusst nicht mehr hier gewählt, sondern erst im
@@ -56,7 +56,7 @@ export function Preisrechner() {
   /**
    * Übergibt die aktuelle Auswahl an den ausführlichen Konfigurator: schreibt sie
    * in denselben Entwurfs-Speicher (localStorage), den der Konfigurator liest, und
-   * navigiert dann dorthin. Vorhandene Detail-Eingaben bleiben erhalten – nur die
+   * navigiert dann dorthin. Vorhandene Detail-Eingaben bleiben erhalten, nur die
    * Paket-Zusammenfassung wird aktualisiert.
    */
   const goToConfigurator = () => {
@@ -65,7 +65,7 @@ export function Preisrechner() {
       const raw = localStorage.getItem(BRIEF_STORAGE_KEY);
       if (raw) existing = { ...existing, ...(JSON.parse(raw) as BriefDraft) };
     } catch {
-      /* kein/defekter Entwurf – mit leerem starten */
+      /* kein/defekter Entwurf, mit leerem starten */
     }
 
     const next: BriefDraft = {
@@ -89,24 +89,29 @@ export function Preisrechner() {
 
     try {
       localStorage.setItem(BRIEF_STORAGE_KEY, JSON.stringify(next));
+      // Marker: frische Übergabe → im Konfigurator hat diese Auswahl Vorrang
+      // vor einem evtl. älteren Konto-Entwurf.
+      localStorage.setItem(BRIEF_HANDOFF_KEY, "1");
     } catch {
-      /* Speicher nicht verfügbar – Konfigurator startet dann leer */
+      /* Speicher nicht verfügbar, Konfigurator startet dann leer */
     }
     router.push("/konfigurator");
   };
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
+    <div className="grid gap-8 lg:grid-cols-[1fr_420px]">
       {/* Linke Spalte: Optionen */}
       <div className="flex flex-col gap-8 sm:gap-10">
         {/* Mobile-Preisvorschau: auf dem Handy oben sichtbar. Auf Desktop ausgeblendet. */}
-        <div className="sticky top-20 z-20 -mt-2 rounded-2xl border border-[#09ed2d]/25 bg-black/80 px-4 py-3 backdrop-blur lg:hidden">
+        <div className="sticky top-20 z-20 -mt-2 rounded-2xl border border-[#09ed2d]/25 bg-[#0a0a0a] px-4 py-3 lg:hidden">
           <div className="flex items-center justify-between gap-3">
             <span className="text-[11px] font-medium uppercase tracking-[0.15em] text-[#09ed2d]">
               Grober Richtwert
             </span>
-            <span className="text-lg font-semibold tabular-nums text-white">
-              <AnimatedEuro value={price.oneTimeMin} /> – <AnimatedEuro value={price.oneTimeMax} />
+            <span className="flex items-center gap-1.5 text-lg font-semibold tabular-nums text-white">
+              <AnimatedEuro value={price.oneTimeMin} /> bis <AnimatedEuro value={price.oneTimeMax} />
+              <span className="text-[#09ed2d]">+</span>
+              <HelpTip label="Richtwert" text={HELP.estimate} />
             </span>
           </div>
         </div>
@@ -164,7 +169,7 @@ export function Preisrechner() {
           </div>
         </Fieldset>
 
-        <Fieldset legend="3 · Features" hint="Optional – kombiniere, was du brauchst.">
+        <Fieldset legend="3 · Features" hint="Optional, kombiniere, was du brauchst.">
           <div className="grid gap-3 sm:grid-cols-2">
             {FEATURE_KEYS.map((key) => {
               const feature = PRICING.features[key];
@@ -208,7 +213,7 @@ export function Preisrechner() {
             })}
           </div>
 
-          {/* Hosting – Pflichtauswahl (Ja/Nein), monatlich & projektabhängig */}
+          {/* Hosting, Pflichtauswahl (Ja/Nein), monatlich & projektabhängig */}
           <div
             className={`mt-3 rounded-xl border p-4 transition ${
               hosting === null
@@ -223,13 +228,13 @@ export function Preisrechner() {
                   <HelpTip label="Hosting" text={HELP.hosting} />
                 </span>
                 <span className="text-xs text-white/50">
-                  {formatEuro(price.hostingMin)}–{formatEuro(price.hostingMax)}/Monat · bitte wählen,
-                  um fortzufahren
+                  {formatEuro(price.hostingMin)} bis {formatEuro(price.hostingMax)}/Monat · bitte
+                  wählen, um fortzufahren
                 </span>
               </span>
               {hosting === null && (
                 <span className="rounded-full border border-amber-400/40 bg-amber-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200">
-                  Pflicht
+                  Auswahl erforderlich
                 </span>
               )}
             </div>
@@ -303,10 +308,16 @@ export function Preisrechner() {
             Grober Richtwert
           </span>
           <div className="mt-2 flex flex-wrap items-baseline gap-x-2">
-            <p className="text-3xl font-semibold tracking-tight tabular-nums text-white">
-              <AnimatedEuro value={price.oneTimeMin} /> – <AnimatedEuro value={price.oneTimeMax} />
+            <p className="flex items-baseline text-3xl font-semibold tracking-tight tabular-nums text-white">
+              <AnimatedEuro value={price.oneTimeMin} />
+              <span className="mx-1.5 text-xl font-normal text-white/60">bis</span>
+              <AnimatedEuro value={price.oneTimeMax} />
+              <span className="text-[#09ed2d]">+</span>
             </p>
-            <span className="text-xs text-white/45">einmalig</span>
+            <span className="flex items-center gap-1 text-xs text-white/45">
+              einmalig
+              <HelpTip label="Grober Richtwert" text={HELP.estimate} />
+            </span>
           </div>
 
           {/* Laufende Kosten als Spanne */}
@@ -361,8 +372,8 @@ export function Preisrechner() {
 
           {price.isComplex && (
             <p className="mt-4 rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-xs text-amber-200/90">
-              Komplexer Online-Shop: nur grobe Spanne. Den genauen Preis ermitteln
-              wir im Konfigurator bzw. einem individuellen Planungsgespräch.
+              Individuelle Web-App: nur grobe Spanne. Den genauen Preis ermitteln
+              wir im Konfigurator bzw. nach kurzer Abstimmung per E-Mail.
             </p>
           )}
 
@@ -397,7 +408,7 @@ export function Preisrechner() {
 }
 
 /**
- * Kurze, laienverständliche Erklärungen je Punkt – erscheinen im "?"-Tooltip.
+ * Kurze, laienverständliche Erklärungen je Punkt, erscheinen im "?"-Tooltip.
  */
 const HELP: {
   project: Record<ProjectType, string>;
@@ -405,22 +416,27 @@ const HELP: {
   feature: Record<FeatureKey, string>;
   hosting: string;
   maintenance: string;
+  estimate: string;
 } = {
+  estimate:
+    "Grober Richtwert, keine Endsumme. Bei viel Aufwand (viele Seiten, Sonderfunktionen, aufwändiges Design) kann es auch mehr werden, daher das Plus. Den genauen Preis legen wir gemeinsam fest.",
   project: {
     onepager:
-      "Eine einzelne, fokussierte Seite – ideal als digitale Visitenkarte oder für eine Kampagne.",
+      "Eine einzelne, fokussierte Seite, ideal als digitale Visitenkarte oder für eine Kampagne.",
     website:
       "Mehrere Unterseiten (z. B. Start, Über uns, Leistungen, Kontakt) für einen vollständigen Auftritt.",
-    shopSimple:
-      "Online-Shop mit überschaubarem Sortiment, Warenkorb und sicherer Bezahlung.",
-    shopComplex:
-      "Großer Shop mit vielen Produkten, Varianten, Filtern und individuellen Funktionen.",
+    booking:
+      "Website mit integrierter Online-Terminbuchung, damit Kunden rund um die Uhr buchen können.",
+    portfolio:
+      "Anschauliche Portfolio- oder Kreativseite, die deine Arbeiten und Referenzen ins beste Licht rückt.",
+    webapp:
+      "Individuelle Web-App oder interaktives Tool (z. B. Dashboard, Buchungssystem, Mitgliederbereich). Umfang ganz nach deinen Anforderungen.",
   },
   design: {
     custom:
-      "Komplett individuell für deine Marke gestaltet – einzigartig und maßgeschneidert.",
+      "Komplett individuell für deine Marke gestaltet, einzigartig und maßgeschneidert.",
     template:
-      "Basiert auf einer bewährten Vorlage, an deine Marke angepasst – schneller und günstiger.",
+      "Basiert auf einer bewährten Vorlage, an deine Marke angepasst, schneller und günstiger.",
   },
   feature: {
     content:
@@ -434,7 +450,7 @@ const HELP: {
   hosting:
     "Webspace, auf dem deine Seite läuft (inkl. SSL & Backups). Monatlich, je nach Projektart. Falls du schon Hosting hast, wähle „Nein“.",
   maintenance:
-    "Laufende Pflege, Sicherheits-Updates, Backups und kleine Inhaltsanpassungen – monatlich. Optional, zusätzlich zum Hosting. Der Preis richtet sich nach der Projektart.",
+    "Laufende Pflege, Sicherheits-Updates, Backups und kleine Inhaltsanpassungen, monatlich. Optional, zusätzlich zum Hosting. Der Preis richtet sich nach der Projektart.",
 };
 
 function Fieldset({
@@ -469,7 +485,7 @@ function Dot() {
  * Der eigentliche Auswahl-Button liegt als unsichtbare Ebene über der gesamten
  * Karte (`absolute inset-0`); der sichtbare Inhalt ist `pointer-events-none`,
  * leitet Klicks also durch. Einzelne interaktive Elemente im Inhalt (z. B. der
- * "?"-Tooltip) reaktivieren ihre Klicks selbst – so liegt kein Button im Button
+ * "?"-Tooltip) reaktivieren ihre Klicks selbst, so liegt kein Button im Button
  * (valides, barrierefreies Markup) und die Karte bleibt komplett anklickbar.
  */
 function OptionCard({
@@ -505,7 +521,7 @@ function OptionCard({
 
 /**
  * "?"-Symbol mit Hover-/Fokus-Tooltip, das den jeweiligen Punkt in einfacher
- * Sprache erklärt. Reines CSS (group-hover / focus-within) – sofort & ohne
+ * Sprache erklärt. Reines CSS (group-hover / focus-within), sofort & ohne
  * State. `pointer-events-auto` macht es auch in durchklickbaren Karten nutzbar.
  */
 function HelpTip({ text, label }: { text: string; label: string }) {
@@ -531,7 +547,7 @@ function HelpTip({ text, label }: { text: string; label: string }) {
 
 /**
  * Zählt einen Zahlenwert sanft hoch bzw. runter, wenn er sich ändert
- * (easeOutCubic) – für die lebendigen Live-Werte.
+ * (easeOutCubic), für die lebendigen Live-Werte.
  */
 function useCountUp(value: number, duration = 450) {
   const [display, setDisplay] = useState(value);

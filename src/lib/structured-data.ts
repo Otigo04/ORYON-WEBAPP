@@ -11,7 +11,7 @@ import { siteConfig } from "@/lib/site";
 const ORG_ID = `${siteConfig.url}/#organization`;
 const WEBSITE_ID = `${siteConfig.url}/#website`;
 
-/** TAS Webworks als lokales Unternehmen (Berlin) – Basis für Knowledge Graph. */
+/** TAS Webworks als lokales Unternehmen (Berlin), Basis für Knowledge Graph. */
 export function organizationSchema() {
   return {
     "@context": "https://schema.org",
@@ -57,7 +57,7 @@ export function organizationSchema() {
       "Webentwicklung",
       "Webdesign",
       "Suchmaschinenoptimierung (SEO)",
-      "Online-Shops",
+      "Web-Apps",
       "Landingpages",
       "Next.js",
     ],
@@ -77,7 +77,7 @@ export function websiteSchema() {
   };
 }
 
-/** FAQ für Rich Results – beantwortet typische Kundenfragen (inkl. Preis). */
+/** FAQ für Rich Results, beantwortet typische Kundenfragen (inkl. Preis). */
 export function faqSchema(
   faqs: ReadonlyArray<{ question: string; answer: string }>,
 ) {

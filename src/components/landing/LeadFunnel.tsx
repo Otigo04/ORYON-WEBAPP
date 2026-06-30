@@ -1,5 +1,5 @@
 /**
- * Finaler Lead-Funnel – dedizierte, hochkonvertierende Abschluss-Sektion für
+ * Finaler Lead-Funnel, dedizierte, hochkonvertierende Abschluss-Sektion für
  * den Projektstart. Reine Server Component. Der Preisrechner-Button scrollt zum
  * interaktiven Rechner auf der Landingpage (`#preisrechner`); alternativ ist die
  * direkte Kontaktaufnahme der zweite Conversion-Pfad.
@@ -8,7 +8,7 @@ import { RainbowButton } from "@/components/ui/rainbow-button";
 
 const guarantees = [
   "Antwort innerhalb von 24 Stunden",
-  "Unverbindliches Erstgespräch",
+  "Unverbindliches Angebot per E-Mail",
   "Festpreis statt böser Überraschungen",
 ];
 
@@ -30,8 +30,8 @@ export function LeadFunnel() {
               Bereit, dein Projekt zu starten?
             </h2>
             <p className="mt-4 text-pretty text-base text-white/70 sm:text-lg">
-              Berechne in 60 Sekunden einen unverbindlichen Richtpreis – oder
-              schreib uns direkt. Wir melden uns mit konkreten nächsten Schritten.
+              Berechne in 60 Sekunden einen unverbindlichen Richtpreis oder
+              schreib uns direkt per E-Mail. Wir melden uns mit konkreten nächsten Schritten.
             </p>
 
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">

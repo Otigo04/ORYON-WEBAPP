@@ -12,10 +12,10 @@ const mid = (a: number, b: number) => Math.round((a + b) / 2);
 /**
  * Wandelt eine Konfigurator-Anfrage (Brief) in konkrete Angebots-Positionen um.
  *
- * Preise sind im Rechner Spannen – fürs Angebot wird je Position der Mittelwert
+ * Preise sind im Rechner Spannen, fürs Angebot wird je Position der Mittelwert
  * angesetzt; einmalige Posten der Detailauswahl (z. B. zusätzliche Seiten) haben
  * feste Preise und werden direkt übernommen. Laufende Kosten (Hosting, Wartung)
- * bleiben bewusst außen vor – ein Angebot ist einmalig. Der Admin kann nach dem
+ * bleiben bewusst außen vor, ein Angebot ist einmalig. Der Admin kann nach dem
  * Import jede Position frei anpassen.
  */
 export function briefToLineItems(data: BriefData, summary: BriefSummary): LineItem[] {

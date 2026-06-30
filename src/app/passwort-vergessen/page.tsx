@@ -14,7 +14,7 @@ export default function ForgotPasswordPage() {
     <AuthShell
       badge="Kundenportal"
       title="Passwort vergessen?"
-      subtitle="Gib deine E-Mail-Adresse ein – wir senden dir einen Link zum Zurücksetzen."
+      subtitle="Gib deine E-Mail-Adresse ein, wir senden dir einen Link zum Zurücksetzen."
       footer={
         <>
           Wieder eingefallen?{" "}

@@ -90,7 +90,7 @@ export function OfferForm({
                     {b.name}
                     {b.company ? ` (${b.company})` : ""}
                     {b.price_min != null && b.price_max != null
-                      ? ` · ${b.price_min}–${b.price_max} €`
+                      ? ` · ${b.price_min}-${b.price_max} €`
                       : ""}
                   </option>
                 ))}

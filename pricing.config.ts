@@ -12,12 +12,13 @@
  */
 
 export const pricingConfig = {
-  /** Projektarten – `base` ist die Einmalpreis-Spanne [min, max]. */
+  /** Projektarten. `base` ist die Einmalpreis-Spanne [min, max]. Keine Shops. */
   projectTypes: {
-    onepager:    { label: "One-Pager / Landingpage", base: [95, 195],     complex: false },
-    website:     { label: "Mehrseitige Website",      base: [199, 399],    complex: false },
-    shopSimple:  { label: "Einfacher Online-Shop",    base: [450, 990],    complex: false },
-    shopComplex: { label: "Komplexer Online-Shop",    base: [1490, 4900],  complex: true  },
+    onepager:  { label: "One-Pager / Landingpage",        base: [95, 195],    complex: false },
+    website:   { label: "Mehrseitige Website",            base: [199, 399],   complex: false },
+    booking:   { label: "Buchungs- / Terminseite",        base: [290, 690],   complex: false },
+    portfolio: { label: "Portfolio- / Kreativseite",      base: [190, 490],   complex: false },
+    webapp:    { label: "Web-App / individuelle Lösung",  base: [690, 2900],  complex: true  },
   },
 
   /** Design-Faktor: maßgeschneidert = voller Preis, Template = günstiger. */
@@ -42,10 +43,11 @@ export const pricingConfig = {
   hosting: {
     label: "Hosting",
     byProjectType: {
-      onepager:    [9, 15],
-      website:     [15, 25],
-      shopSimple:  [25, 45],
-      shopComplex: [45, 79],
+      onepager:  [9, 15],
+      website:   [15, 25],
+      booking:   [15, 29],
+      portfolio: [12, 22],
+      webapp:    [29, 59],
     },
   },
 
@@ -57,10 +59,11 @@ export const pricingConfig = {
   maintenance: {
     label: "Wartung & Pflege",
     byProjectType: {
-      onepager:    [10, 24],
-      website:     [24, 44],
-      shopSimple:  [34, 74],
-      shopComplex: [54, 120],
+      onepager:  [10, 24],
+      website:   [24, 44],
+      booking:   [24, 49],
+      portfolio: [19, 39],
+      webapp:    [49, 99],
     },
   },
 
@@ -77,8 +80,8 @@ export const pricingConfig = {
    *  `src/lib/tas-fleet.ts`.
    */
   tasFleet: {
-    starter:      { monthly: 49,  yearly: 39  },
-    professional: { monthly: 149, yearly: 119 },
-    enterprise:   { monthly: 399, yearly: 319 },
+    starter:      { monthly: 29,  yearly: 23  },
+    professional: { monthly: 69,  yearly: 55  },
+    enterprise:   { monthly: 129, yearly: 103 },
   },
 } as const;

@@ -28,14 +28,14 @@ export function Hero() {
         </span>
 
         <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-6xl">
-          <span className="sr-only">TAS Webworks – </span>
+          <span className="sr-only">TAS Webworks: </span>
           Smarte Web-Lösungen, die dein Unternehmen
           <span className="text-[#09ed2d]"> wachsen lassen.</span>
         </h1>
 
         <p className="mt-6 max-w-xl text-pretty text-base text-white/70 sm:text-lg">
-          Agentur-Qualität muss nicht teuer sein. Wir entwickeln atemberaubende, 
-          SEO-optimierte Websites und Online-Shops zu Preisen, die jedes Budget schonen.
+          Agentur-Qualität muss nicht teuer sein. Wir entwickeln atemberaubende,
+          SEO-optimierte Websites, Web-Apps und Landingpages zu Preisen, die jedes Budget schonen.
           Jetzt konfigurieren und direkt online berechnen!
         </p>
 

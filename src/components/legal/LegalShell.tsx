@@ -4,7 +4,7 @@ import { Footer } from "@/components/landing/Footer";
 
 /**
  * Einheitlicher Rahmen für Rechtstexte (Impressum, Datenschutz).
- * Server Component – ruhiges, gut lesbares Layout im Markendesign.
+ * Server Component, ruhiges, gut lesbares Layout im Markendesign.
  */
 export function LegalShell({
   title,

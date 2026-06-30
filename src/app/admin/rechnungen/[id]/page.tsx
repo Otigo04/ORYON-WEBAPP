@@ -22,7 +22,7 @@ export default async function EditInvoicePage({
           ← Zurück
         </Link>
         <Link href={`/dashboard/rechnungen/${invoice.id}`} className="text-sm text-[#09ed2d] hover:underline">
-          Kundenansicht / Druck →
+          Als PDF herunterladen →
         </Link>
       </div>
       <Card className="max-w-3xl">

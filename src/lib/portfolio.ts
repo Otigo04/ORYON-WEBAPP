@@ -11,7 +11,7 @@ export type Project = {
 
 /**
  * Dummy-Projekte als Fallback, falls die Supabase-Datenbank leer oder nicht
- * verbunden ist – so bleibt das Portfolio-Grid immer befüllt.
+ * verbunden ist, so bleibt das Portfolio-Grid immer befüllt.
  */
 const fallbackProjects: Project[] = [
   {
@@ -19,7 +19,7 @@ const fallbackProjects: Project[] = [
     title: "NORDLICHT Studio",
     category: "Webdesign & Branding",
     description:
-      "Repräsentative Onepage mit Buchungsstrecke. +40 % qualifizierte Anfragen im ersten Quartal.",
+      "Repräsentative One-Page mit Buchungsstrecke. 40 % mehr qualifizierte Anfragen im ersten Quartal.",
     image_url: null,
   },
   {
@@ -32,18 +32,34 @@ const fallbackProjects: Project[] = [
   },
   {
     id: "fallback-3",
-    title: "Helio Shop",
-    category: "E-Commerce",
+    title: "Atelier Mara",
+    category: "Portfolio & Kreativseite",
     description:
-      "Performanter Headless-Store. Ladezeit unter 1 s, Conversion-Rate verdoppelt.",
+      "Anschauliche Galerie-Seite mit ruhigen Animationen und makelloser Bildqualität. Ladezeit unter 1 s.",
     image_url: null,
   },
   {
     id: "fallback-4",
-    title: "Meridian Beratung",
+    title: "Meridian Consulting",
     category: "Corporate Website",
     description:
       "SEO-optimierte Mehrseiten-Präsenz mit CMS-Anbindung und Lead-Formularen.",
+    image_url: null,
+  },
+  {
+    id: "fallback-5",
+    title: "Praxis Lindqvist",
+    category: "Buchungs-Website",
+    description:
+      "Online-Terminbuchung rund um die Uhr. Rund 60 % weniger Telefonaufwand für das Team.",
+    image_url: null,
+  },
+  {
+    id: "fallback-6",
+    title: "TAS-FLEET",
+    category: "SaaS Web-App",
+    description:
+      "Unsere eigene Flottenlösung: Disposition, Compliance und Live-Dashboard in Echtzeit.",
     image_url: null,
   },
 ];
@@ -93,7 +109,7 @@ export type ShowcaseProject = Project & {
 const ADMIN_COLS =
   "id, created_at, title, category, description, image_url, project_url, sort_order, published";
 
-/** Alle Referenzprojekte (inkl. Entwürfe) – nur für Admins (RLS). */
+/** Alle Referenzprojekte (inkl. Entwürfe), nur für Admins (RLS). */
 export async function getAllShowcaseProjects(): Promise<ShowcaseProject[]> {
   const hasSupabaseEnv =
     !!process.env.NEXT_PUBLIC_SUPABASE_URL &&

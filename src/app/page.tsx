@@ -15,7 +15,7 @@ import { faqSchema } from "@/lib/structured-data";
 import { faqs } from "@/lib/faq";
 
 /**
- * Öffentliche Startseite (Onepager) – Server Component.
+ * Öffentliche Startseite (Onepager), Server Component.
  *
  * Conversion-Aufbau: Navbar (sticky) → Hero → Leistungen → Warum wir →
  * Portfolio → Trust-Bar → Social Proof → Preisrechner → FAQ → Lead-Funnel.

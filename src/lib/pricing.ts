@@ -4,7 +4,7 @@ import { pricingConfig } from "../../pricing.config";
 /**
  * Preislogik des OTIGO-Preisrechners.
  *
- * Eine einzige Quelle der Wahrheit für Validierung UND Berechnung – genutzt
+ * Eine einzige Quelle der Wahrheit für Validierung UND Berechnung, genutzt
  * sowohl im Client (Live-Berechnung, React-Hook-Form) als auch in der Server
  * Action (erneute Validierung + Speicherung). Reines Modul ohne
  * "use client"/"use server", damit beide Seiten es importieren können.
@@ -33,7 +33,7 @@ export const PROJECT_TYPES = Object.keys(PRICING.projectTypes) as ProjectType[];
 export const FEATURE_KEYS = Object.keys(PRICING.features) as FeatureKey[];
 
 // ---------------------------------------------------------------------------
-// Validierung (Zod) – identisch im Client (RHF) und auf dem Server.
+// Validierung (Zod), identisch im Client (RHF) und auf dem Server.
 // ---------------------------------------------------------------------------
 
 export const quoteSelectionSchema = z.object({
@@ -65,16 +65,16 @@ export type QuoteLeadInput = z.infer<typeof quoteLeadSchema>;
 export type PriceResult = {
   oneTimeMin: number;
   oneTimeMax: number;
-  /** Hosting – fällt immer an (eigener, dauerhaft sichtbarer Posten). */
+  /** Hosting, fällt immer an (eigener, dauerhaft sichtbarer Posten). */
   hostingMin: number;
   hostingMax: number;
-  /** Wartung & Pflege – nur wenn gewählt (sonst 0). */
+  /** Wartung & Pflege, nur wenn gewählt (sonst 0). */
   maintenanceMin: number;
   maintenanceMax: number;
   /** Gesamte monatliche Spanne (Hosting + ggf. Wartung). */
   monthlyMin: number;
   monthlyMax: number;
-  /** True bei "komplexem Online-Shop" → grobe Spanne + Planungs-Hinweis. */
+  /** True bei komplexer Web-App: grobe Spanne + Planungs-Hinweis. */
   isComplex: boolean;
 };
 
@@ -143,10 +143,10 @@ export function formatEuro(value: number): string {
 
 /**
  * Formatiert eine Preisspanne. Sind Min und Max gleich (z. B. wenn keine
- * Spanne nötig ist), wird nur ein einzelner Betrag ausgegeben – sonst die
- * Spanne „min – max". Zentral, damit alle Anzeigen einheitlich mit Ranges
+ * Spanne nötig ist), wird nur ein einzelner Betrag ausgegeben, sonst die
+ * Spanne „min bis max". Zentral, damit alle Anzeigen einheitlich mit Ranges
  * arbeiten.
  */
 export function formatRange(min: number, max: number): string {
-  return min === max ? formatEuro(min) : `${formatEuro(min)} – ${formatEuro(max)}`;
+  return min === max ? formatEuro(min) : `${formatEuro(min)} bis ${formatEuro(max)}`;
 }

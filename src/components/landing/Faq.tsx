@@ -9,11 +9,11 @@ import {
 import { faqs } from "@/lib/faq";
 
 /**
- * FAQ-Sektion – animiertes Accordion (Animate UI, Headless UI + Motion) im
+ * FAQ-Sektion, animiertes Accordion (Animate UI, Headless UI + Motion) im
  * minimalistischen Stil: schlichte Trennlinien, Chevron im Smaragd-Akzent der
  * Marke. Inhaltlich auf Long-Tail-SEO und den Preisvorteil ausgerichtet;
  * korrespondiert 1:1 mit dem FAQ-JSON-LD auf der Startseite (Voraussetzung für
- * FAQ-Rich-Results). Die Antworten bleiben dank `keepRendered` immer im DOM –
+ * FAQ-Rich-Results). Die Antworten bleiben dank `keepRendered` immer im DOM -
  * also auch im SSR-HTML für die Indexierung.
  */
 export function Faq() {
@@ -41,7 +41,7 @@ export function Faq() {
           </h2>
           <p className="mt-4 text-base text-white/60">
             Alles Wichtige zu Preisen, Ablauf und unserer Arbeit als Berliner
-            Webagentur – kurz und transparent beantwortet.
+            Webagentur, kurz und transparent beantwortet.
           </p>
         </header>
 

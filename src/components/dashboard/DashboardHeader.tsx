@@ -16,11 +16,11 @@ export function DashboardHeader({ isAdmin = false }: { isAdmin?: boolean }) {
     <header className="relative z-50 px-4 pt-4 sm:px-6 sm:pt-5">
       <nav
         aria-label="Portal-Navigation"
-        className="mx-auto flex max-w-6xl items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 shadow-[0_4px_30px_-12px_rgba(9,237,45,0.25)] backdrop-blur-xl sm:px-6"
+        className="mx-auto flex max-w-6xl items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 shadow-[0_4px_30px_-12px_rgba(9,237,45,0.25)] sm:px-6"
       >
         <Link
           href="/"
-          aria-label="TAS Webworks – Startseite"
+          aria-label="TAS Webworks, Startseite"
           className="flex items-center"
         >
           <LogoWordmark className="h-9 w-auto sm:h-10" />

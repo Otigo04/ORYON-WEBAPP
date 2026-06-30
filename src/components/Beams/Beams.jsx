@@ -51,8 +51,11 @@ function extendMaterial(BaseMaterial, cfg) {
   return mat;
 }
 
-const CanvasWrapper = ({ children, onCreated, style }) => (
-  <Canvas dpr={[1, 2]} frameloop="always" className="beams-container" onCreated={onCreated} style={style}>
+const CanvasWrapper = ({ children, onCreated, style, frameloop }) => (
+  // dpr auf 1.5 begrenzt (statt 2): halbiert nahezu die Fragment-Last auf
+  // HiDPI-Displays. frameloop wird von außen gesteuert, damit der teure
+  // Continuous-Render pausiert, sobald der Hintergrund weggescrollt ist.
+  <Canvas dpr={[1, 1.5]} frameloop={frameloop} className="beams-container" onCreated={onCreated} style={style}>
     {children}
   </Canvas>
 );
@@ -153,9 +156,24 @@ const Beams = ({
   rotation = 0
 }) => {
   const meshRef = useRef(null);
+  const wrapRef = useRef(null);
   // Sanftes Einblenden, sobald der WebGL-Kontext bereit ist – verhindert das
   // abrupte „Reinploppen" des Hintergrunds beim Seitenaufruf.
   const [ready, setReady] = useState(false);
+  // Nur rendern, solange der Hintergrund tatsächlich sichtbar ist. Sobald der
+  // Nutzer am Hero vorbeigescrollt ist, pausiert der Render-Loop komplett und
+  // gibt die GPU frei – das behebt den Scroll-Lag auf der restlichen Seite.
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), {
+      threshold: 0.01
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   const beamMaterial = useMemo(
     () =>
       extendMaterial(THREE.MeshStandardMaterial, {
@@ -214,18 +232,21 @@ const Beams = ({
   );
 
   return (
-    <CanvasWrapper
-      onCreated={() => setReady(true)}
-      style={{ opacity: ready ? 1 : 0, transition: 'opacity 1.4s ease-in-out' }}
-    >
-      <group rotation={[0, 0, degToRad(rotation)]}>
-        <PlaneNoise ref={meshRef} material={beamMaterial} count={beamNumber} width={beamWidth} height={beamHeight} />
-        <DirLight color={lightColor} position={[0, 3, 10]} />
-      </group>
-      <ambientLight intensity={1} />
-      <color attach="background" args={['#000000']} />
-      <PerspectiveCamera makeDefault position={[0, 0, 20]} fov={30} />
-    </CanvasWrapper>
+    <div ref={wrapRef} style={{ position: 'absolute', inset: 0 }}>
+      <CanvasWrapper
+        frameloop={visible ? 'always' : 'never'}
+        onCreated={() => setReady(true)}
+        style={{ opacity: ready ? 1 : 0, transition: 'opacity 1.4s ease-in-out' }}
+      >
+        <group rotation={[0, 0, degToRad(rotation)]}>
+          <PlaneNoise ref={meshRef} material={beamMaterial} count={beamNumber} width={beamWidth} height={beamHeight} />
+          <DirLight color={lightColor} position={[0, 3, 10]} />
+        </group>
+        <ambientLight intensity={1} />
+        <color attach="background" args={['#000000']} />
+        <PerspectiveCamera makeDefault position={[0, 0, 20]} fov={30} />
+      </CanvasWrapper>
+    </div>
   );
 };
 

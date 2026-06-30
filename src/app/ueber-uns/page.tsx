@@ -11,9 +11,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/ueber-uns" },
   robots: { index: true, follow: true },
   openGraph: {
-    title: "Über uns – TAS Webworks",
+    title: "Über uns, TAS Webworks",
     description:
-      "Inhabergeführte Webagentur aus Berlin: persönlich, transparent, technisch top.",
+      "Inhabergeführte Webagentur aus Berlin: direkt erreichbar, transparent, technisch top.",
     url: `${siteConfig.url}/ueber-uns`,
     type: "website",
   },
@@ -25,8 +25,8 @@ const values = [
     body: "Du weißt vor Projektstart, was es kostet. Keine versteckten Posten, keine bösen Überraschungen auf der Rechnung.",
   },
   {
-    title: "Persönlich statt Hotline",
-    body: "Du sprichst direkt mit der Person, die deine Seite baut – kurze Wege, schnelle Antworten, ein Ansprechpartner.",
+    title: "Direkt statt Hotline",
+    body: "Du schreibst direkt der Person, die deine Seite baut. Per E-Mail, mit kurzen Wegen und schnellen Antworten, plus Lead-Videos, in denen ich dir alles direkt zeige.",
   },
   {
     title: "Technik mit Zukunft",
@@ -34,7 +34,7 @@ const values = [
   },
   {
     title: "Ergebnis vor Effekt",
-    body: "Schön reicht nicht. Wir bauen Seiten, die Besucher zu Anfragen und Kunden machen – messbar.",
+    body: "Schön reicht nicht. Wir bauen Seiten, die Besucher zu Anfragen und Kunden machen. Messbar.",
   },
 ];
 
@@ -85,13 +85,13 @@ export default function UeberUnsPage() {
           Über uns
         </p>
         <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl">
-          Eine Webagentur aus Berlin, die mitdenkt –{" "}
-          <span className="text-[#09ed2d]">nicht nur abliefert.</span>
+          Eine Webagentur aus Berlin, die mitdenkt.{" "}
+          <span className="text-[#09ed2d]">Nicht nur abliefert.</span>
         </h1>
         <p className="mt-6 max-w-2xl text-lg text-white/70">
           TAS Webworks ist inhabergeführt. Das heißt: kein anonymes Agentur-Konstrukt,
           sondern ein fester Ansprechpartner, der dein Projekt von der ersten Idee bis zum
-          Launch begleitet – und auch danach erreichbar bleibt.
+          Launch begleitet und auch danach per E-Mail erreichbar bleibt.
         </p>
 
         <dl className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -126,8 +126,15 @@ export default function UeberUnsPage() {
               echte Anfragen werden.
             </p>
             <p>
-              Dahinter steht {siteConfig.founder} – mit dem Anspruch, Technik verständlich zu
-              machen und Projekte ehrlich, planbar und persönlich umzusetzen.
+              Dahinter steht {siteConfig.founder}. Die technische Expertise stammt aus dem
+              Bachelor-Studium der Medieninformatik in Berlin und mündet in einem klaren
+              Anspruch: Technik verständlich machen und Projekte ehrlich, planbar und direkt
+              umsetzen.
+            </p>
+            <p>
+              Statt langer Meetings setzen wir auf den schnellsten Weg: Kontakt per E-Mail und
+              Lead-Videos, in denen ich dir Ideen, Fortschritt und Ergebnisse direkt vorführe.
+              So siehst du jederzeit genau, woran wir arbeiten.
             </p>
           </div>
         </div>
@@ -156,7 +163,7 @@ export default function UeberUnsPage() {
             Lust auf ein Projekt mit klarem Preis?
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-white/70">
-            Berechne in 60 Sekunden einen Richtpreis – unverbindlich und ohne versteckte
+            Berechne in 60 Sekunden einen Richtpreis. Unverbindlich und ohne versteckte
             Kosten.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">

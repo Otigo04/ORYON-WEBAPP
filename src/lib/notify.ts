@@ -6,17 +6,17 @@ import { siteConfig } from "@/lib/site";
  * Bewusst ohne SDK-Abhängigkeit (nur `fetch`), damit der Build schlank bleibt
  * und die Funktion bei fehlender Konfiguration einfach nichts tut.
  *
- * Konfiguration (alle optional – ohne `RESEND_API_KEY` ist Versand deaktiviert):
- * - `RESEND_API_KEY`        – API-Key von resend.com
- * - `LEAD_NOTIFICATION_TO`  – Empfänger (Fallback: siteConfig.email)
- * - `LEAD_NOTIFICATION_FROM`– Absender, Domain muss bei Resend verifiziert sein
- *                             (Fallback: "TAS Webworks <noreply@tas-webworks.de>")
+ * Konfiguration (alle optional, ohne `RESEND_API_KEY` ist Versand deaktiviert):
+ * - `RESEND_API_KEY`: API-Key von resend.com
+ * - `LEAD_NOTIFICATION_TO`: Empfänger (Fallback: siteConfig.email)
+ * - `LEAD_NOTIFICATION_FROM`: Absender, Domain muss bei Resend verifiziert sein
+ *   (Fallback: "TAS Webworks <noreply@tas-webworks.de>")
  *
  * WICHTIG: Diese Funktion wirft niemals. Ein fehlgeschlagener Mailversand darf
  * das Speichern eines Leads nie verhindern.
  */
 export type LeadNotification = {
-  /** Quelle der Anfrage – steuert nur die Betreffzeile. */
+  /** Quelle der Anfrage, steuert nur die Betreffzeile. */
   source: "Preisrechner" | "Konfigurator";
   name: string;
   email: string;
@@ -42,7 +42,7 @@ function buildHtml(lead: LeadNotification): string {
   const priceMin = formatEur(lead.priceMin);
   const priceMax = formatEur(lead.priceMax);
   const priceRange =
-    priceMin && priceMax ? `${priceMin} – ${priceMax}` : priceMin ?? priceMax ?? "–";
+    priceMin && priceMax ? `${priceMin} bis ${priceMax}` : priceMin ?? priceMax ?? "-";
 
   const row = (label: string, value?: string | null) =>
     value
@@ -70,7 +70,7 @@ function buildHtml(lead: LeadNotification): string {
 
 export async function notifyNewLead(lead: LeadNotification): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return; // Versand deaktiviert – stillschweigend überspringen.
+  if (!apiKey) return; // Versand deaktiviert, stillschweigend überspringen.
 
   const to = process.env.LEAD_NOTIFICATION_TO || siteConfig.email;
   const from =
@@ -100,7 +100,7 @@ export async function notifyNewLead(lead: LeadNotification): Promise<void> {
       );
     }
   } catch (err) {
-    // Niemals werfen – der Lead ist bereits gespeichert.
+    // Niemals werfen, der Lead ist bereits gespeichert.
     console.error("[notifyNewLead] Versand fehlgeschlagen:", err);
   }
 }

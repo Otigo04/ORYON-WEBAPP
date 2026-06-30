@@ -10,7 +10,7 @@ export type Testimonial = {
 
 /**
  * Dummy-Bewertungen (alle 5 Sterne) als Fallback, falls die Supabase-Datenbank
- * leer oder nicht verbunden ist – so bleibt die Onepage immer befüllt.
+ * leer oder nicht verbunden ist, so bleibt die Onepage immer befüllt.
  */
 const fallbackTestimonials: Testimonial[] = [
   {
@@ -34,7 +34,7 @@ const fallbackTestimonials: Testimonial[] = [
     author: "Sophie Keller",
     role: "Marketing-Lead, Helio GmbH",
     quote:
-      "Die neue Landingpage performt herausragend. Ladezeiten, Design und Conversion – einfach top.",
+      "Die neue Landingpage performt herausragend. Ladezeiten, Design und Conversion, einfach top.",
     rating: 5,
   },
 ];
@@ -82,7 +82,7 @@ export type TestimonialRow = Testimonial & {
 
 const ADMIN_COLS = "id, created_at, author, role, quote, rating, sort_order, published";
 
-/** Alle Bewertungen (inkl. Entwürfe) – nur für Admins (RLS). */
+/** Alle Bewertungen (inkl. Entwürfe), nur für Admins (RLS). */
 export async function getAllTestimonials(): Promise<TestimonialRow[]> {
   const hasSupabaseEnv =
     !!process.env.NEXT_PUBLIC_SUPABASE_URL &&

@@ -1,7 +1,7 @@
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 /**
- * Supabase-Client mit Service-Role-Key – umgeht RLS.
+ * Supabase-Client mit Service-Role-Key, umgeht RLS.
  *
  * NUR serverseitig und nur dort verwenden, wo der Aufrufer bereits anderweitig
  * autorisiert ist (z. B. im Stripe-Webhook, dessen Signatur geprüft wurde).

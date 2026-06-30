@@ -9,7 +9,7 @@ import { getMySubscription } from "@/lib/subscription";
 import { isAdmin } from "@/lib/auth";
 
 export const metadata: Metadata = {
-  title: "Einstellungen – TAS Webworks",
+  title: "Einstellungen, TAS Webworks",
   description: "Verwalte dein Profil und dein TAS-FLEET-Abonnement.",
   robots: { index: false, follow: false },
 };
@@ -64,7 +64,7 @@ export default async function SettingsPage() {
         {/* Profil */}
         <section className="flex flex-col gap-4">
           <h2 className="text-lg font-semibold">Profil</h2>
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
             <ProfileForm profile={profile} />
           </div>
         </section>

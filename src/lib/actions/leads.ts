@@ -20,7 +20,7 @@ export type SaveQuoteState = {
  * Sicherheit:
  * - Alle Eingaben werden serverseitig erneut mit Zod validiert (Client-Validierung
  *   ist nur Komfort, nie Vertrauensbasis).
- * - Der Preis wird hier neu berechnet – manipulierte Client-Werte sind wirkungslos.
+ * - Der Preis wird hier neu berechnet, manipulierte Client-Werte sind wirkungslos.
  * - `user_id` wird aus der serverseitigen Session abgeleitet (nicht vom Client),
  *   sodass die zeilenbasierte Sicherheit (RLS) Leads korrekt dem Nutzer zuordnet.
  *   Anonyme Anfragen (ohne Login) sind erlaubt (`user_id` = null).
@@ -78,7 +78,7 @@ export async function saveQuoteLead(input: unknown): Promise<SaveQuoteState> {
       };
     }
 
-    // Benachrichtigung an das Team – fire-and-forget, darf den Lead nie scheitern lassen.
+    // Benachrichtigung an das Team, fire-and-forget, darf den Lead nie scheitern lassen.
     await notifyNewLead({
       source: "Preisrechner",
       name: data.name,

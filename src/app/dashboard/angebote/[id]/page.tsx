@@ -3,15 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DocumentView } from "@/components/documents/DocumentView";
 import { PrintButton } from "@/components/documents/PrintButton";
-import { OfferResponse } from "@/components/dashboard/OfferResponse";
-import { PaymentBox } from "@/components/dashboard/PaymentBox";
 import { getOffer } from "@/lib/offers";
 import { getMyProfile } from "@/lib/profile";
-import { OFFER_STATUS_LABELS, computeTotals } from "@/lib/documents";
-import { DEPOSIT_RATE, paymentReference } from "@/lib/payment";
+import { OFFER_STATUS_LABELS } from "@/lib/documents";
 
 export const metadata: Metadata = {
-  title: "Angebot – TAS Webworks",
+  title: "Angebot, TAS Webworks",
   robots: { index: false, follow: false },
 };
 
@@ -32,9 +29,6 @@ export default async function CustomerOfferPage({
     ...(offer.valid_until ? [{ label: "Gültig bis", value: df.format(new Date(offer.valid_until)) }] : []),
   ];
 
-  const gross = computeTotals(offer.items, offer.tax_rate).gross;
-  const deposit = Math.round(gross * DEPOSIT_RATE * 100) / 100;
-
   return (
     <main className="min-h-screen bg-neutral-950 py-8 text-white print:bg-white print:py-0">
       <div className="no-print mx-auto mb-6 flex max-w-3xl items-center justify-between px-6">
@@ -47,6 +41,7 @@ export default async function CustomerOfferPage({
       <div className="px-6 print:px-0">
         <DocumentView
           kind="Angebot"
+          logoSrc="/logo/tas_webworks_logo_v2_black.svg"
           number={offer.number}
           title={offer.title}
           meta={meta}
@@ -62,47 +57,13 @@ export default async function CustomerOfferPage({
         />
       </div>
 
-      {/* Kunden-Aktionen – nie im Druck */}
+      {/* Kunden-Hinweis (nie im Druck). Angebote besprechen wir per E-Mail. */}
       <div className="no-print mx-auto mt-6 flex max-w-3xl flex-col gap-4 px-6">
-        {offer.status === "sent" && <OfferResponse offerId={offer.id} />}
-
-        {offer.status === "accepted" && (
-          <>
-            <div className="rounded-2xl border border-[#09ed2d]/30 bg-[#09ed2d]/10 px-5 py-4 text-sm text-[#09ed2d]">
-              ✓ Angebot angenommen
-              {offer.responded_at && (
-                <span className="text-[#09ed2d]/70">
-                  {" "}
-                  am {df.format(new Date(offer.responded_at))}
-                </span>
-              )}
-              . Vielen Dank! Mit der Anzahlung starten wir dein Projekt.
-            </div>
-            <PaymentBox
-              amount={deposit}
-              currency={offer.currency}
-              reference={paymentReference(offer.number)}
-              heading="Anzahlung (50 %) zum Projektstart"
-              subline={`Restbetrag bei Fertigstellung · Gesamt ${new Intl.NumberFormat("de-DE", { style: "currency", currency: offer.currency }).format(gross)}`}
-              checkout={{ kind: "offer_deposit", id: offer.id }}
-            />
-          </>
-        )}
-
-        {offer.status === "declined" && (
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm text-white/60">
-            Du hast dieses Angebot abgelehnt
-            {offer.responded_at && <> am {df.format(new Date(offer.responded_at))}</>}. Melde dich
-            gern, wenn wir etwas anpassen sollen – wir erstellen dir dann ein neues Angebot.
-          </div>
-        )}
-
-        {offer.customer_comment && (
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4">
-            <p className="text-xs uppercase tracking-wide text-white/40">Dein Kommentar</p>
-            <p className="mt-1 text-sm text-white/75">{offer.customer_comment}</p>
-          </div>
-        )}
+        <div className="rounded-2xl border border-[#09ed2d]/25 bg-[#09ed2d]/[0.06] px-5 py-4 text-sm text-white/75">
+          Dieses Angebot hast du auch per E-Mail erhalten. Antworte einfach direkt auf die
+          Mail, wenn du zusagen möchtest oder etwas angepasst werden soll. Wir melden uns
+          persönlich per E-Mail bei dir zurück.
+        </div>
       </div>
     </main>
   );

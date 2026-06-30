@@ -1,4 +1,4 @@
-/** Fortschrittsbalken (0–100 %) im Markenlook. */
+/** Fortschrittsbalken (0 bis 100 %) im Markenlook. */
 export function ProgressBar({
   value,
   showLabel = true,

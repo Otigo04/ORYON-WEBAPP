@@ -9,6 +9,7 @@ import { saveBrief } from "@/lib/actions/brief";
 import {
   BRIEF_STEPS,
   BRIEF_STORAGE_KEY,
+  BRIEF_HANDOFF_KEY,
   emptyDraft,
   displayValue,
   computeBriefEstimate,
@@ -55,6 +56,10 @@ export function Configurator() {
     let active = true;
 
     const local = readLocal();
+    // Kam der Nutzer gerade frisch über den Landing-Preisrechner? Dann hat seine
+    // lokale Auswahl Vorrang vor dem (evtl. älteren) Konto-Entwurf. Marker direkt
+    // verbrauchen, damit ein späterer Direktaufruf wieder den Konto-Entwurf bevorzugt.
+    const handoff = consumeHandoff();
 
     const init = async () => {
       let base = local ?? emptyDraft();
@@ -73,13 +78,15 @@ export function Configurator() {
               .eq("user_id", user.id)
               .maybeSingle();
             const remote = data?.data as BriefDraft | undefined;
-            // Konto-Entwurf hat Vorrang (geräteübergreifend), lokaler füllt Lücken.
+            // Standard: Konto-Entwurf hat Vorrang (geräteübergreifend), lokaler
+            // füllt Lücken. Bei frischer Preisrechner-Übergabe (handoff) gewinnt
+            // dagegen die lokale Auswahl, der Konto-Entwurf füllt nur Lücken.
             if (remote && remote.data) {
-              base = mergeDrafts(remote, base);
+              base = mergeDrafts(remote, base, handoff);
             }
           }
         } catch {
-          /* offline / kein Backend – lokaler Entwurf genügt */
+          /* offline / kein Backend, lokaler Entwurf genügt */
         }
       }
 
@@ -120,7 +127,7 @@ export function Configurator() {
               .from("brief_drafts")
               .upsert({ user_id: userId, data: next, updated_at: new Date().toISOString() });
           } catch {
-            /* still ok – lokal ist gespeichert */
+            /* still ok, lokal ist gespeichert */
           }
         }, 800);
       }
@@ -189,10 +196,10 @@ export function Configurator() {
   const current = !isPackageStep && !isContactStep ? BRIEF_STEPS[step - 1] : null;
 
   return (
-    <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-20 pt-5 sm:px-6">
+    <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-20 pt-5 sm:px-6">
       {/* Kopf */}
       <header className="flex items-center justify-between">
-        <Link href="/" aria-label="TAS Webworks – Startseite" className="flex items-center">
+        <Link href="/" aria-label="TAS Webworks, Startseite" className="flex items-center">
           <LogoWordmark className="h-11 w-auto sm:h-14" />
         </Link>
         <Link
@@ -213,7 +220,7 @@ export function Configurator() {
         </h1>
         <p className="mx-auto mt-2 max-w-xl text-sm text-white/55">
           Je genauer, desto besser dein Angebot. Du kannst jederzeit vor- und
-          zurückspringen – deine Angaben werden automatisch gespeichert.
+          zurückspringen, deine Angaben werden automatisch gespeichert.
         </p>
       </div>
 
@@ -222,7 +229,7 @@ export function Configurator() {
 
       {/* Zweispaltig: links Eingaben (cleanes Schwarz), rechts Kosten-HUD.
           Auf Mobil per flex-col-reverse → Kosten-HUD oben, Eingaben darunter. */}
-      <div className="mt-8 flex flex-col-reverse gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] lg:items-start">
+      <div className="mt-8 flex flex-col-reverse gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(440px,560px)] lg:items-start">
         {/* Linke Spalte: Eingaben */}
         <div className="flex flex-col gap-4">
           <div className="rounded-3xl border border-white/10 bg-black p-6 shadow-[0_20px_60px_-25px_rgba(0,0,0,0.95)] sm:p-8">
@@ -290,7 +297,7 @@ export function Configurator() {
           </div>
 
           <p className="text-center text-xs text-white/35">
-            💾 Automatisch gespeichert{userId ? " – auch in deinem Konto" : ""}.
+            💾 Automatisch gespeichert{userId ? ", auch in deinem Konto" : ""}.
           </p>
         </div>
 
@@ -304,7 +311,7 @@ export function Configurator() {
                 Live-Vorschau
               </span>
               <p className="mt-1 text-xs leading-relaxed text-white/55">
-                Nur ein Design-<strong className="text-white/75">Beispiel</strong> – es baut sich
+                Nur ein Design-<strong className="text-white/75">Beispiel</strong>, es baut sich
                 passend zu deiner Auswahl auf. <strong className="text-white/75">Alles ist frei
                 anpassbar</strong>: Farben, Texte, Bilder, Aufbau und Stil legen wir gemeinsam fest.
               </p>
@@ -418,14 +425,14 @@ function FieldRenderer({
     );
   }
 
-  // select (einfach) & multi – als Chips
+  // select (einfach) & multi, als Chips
   const selected: string[] = Array.isArray(value) ? value : value ? [value] : [];
   const isMulti = field.type === "multi";
   const locked = field.lockedOptions ?? [];
   const isLocked = (opt: string) => locked.includes(opt);
 
   const toggle = (opt: string) => {
-    if (isLocked(opt)) return; // inklusive – nicht abwählbar
+    if (isLocked(opt)) return; // inklusive, nicht abwählbar
     if (isMulti) {
       const next = selected.includes(opt)
         ? selected.filter((s) => s !== opt)
@@ -450,7 +457,7 @@ function FieldRenderer({
           const locked = isLocked(opt);
           const active = locked || selected.includes(opt);
           const help = field.optionHelp?.[opt];
-          // Einzelpreise werden bewusst nicht mehr ausgewiesen – der Gesamtwert
+          // Einzelpreise werden bewusst nicht mehr ausgewiesen, der Gesamtwert
           // bleibt eine Spanne (siehe CostCounter). So bleibt die Auswahl clean.
           return (
             <button
@@ -459,7 +466,7 @@ function FieldRenderer({
               onClick={() => toggle(opt)}
               aria-pressed={active}
               disabled={locked}
-              title={locked ? "Inklusive – immer enthalten" : undefined}
+              title={locked ? "Inklusive, immer enthalten" : undefined}
               className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm transition ${
                 active
                   ? "border-[#09ed2d] bg-[#09ed2d]/15 text-[#09ed2d]"
@@ -479,7 +486,7 @@ function FieldRenderer({
         })}
       </div>
 
-      {/* Detailtexte der gewählten Optionen – klappen bei Auswahl auf und
+      {/* Detailtexte der gewählten Optionen, klappen bei Auswahl auf und
           erklären, was in die Seite/Funktion reinkommt bzw. wie sie aufgebaut wird. */}
       {detailedOptions.length > 0 && (
         <ul className="mt-1.5 flex flex-col gap-2">
@@ -517,7 +524,17 @@ function FieldRenderer({
  * Reine Spans (valides Markup im Chip-Button); `stopPropagation` verhindert,
  * dass das Antippen des „?" die Option umschaltet.
  */
-function ChipHelp({ text }: { text: string }) {
+function ChipHelp({
+  text,
+  placement = "top",
+}: {
+  text: string;
+  placement?: "top" | "bottom";
+}) {
+  const pos =
+    placement === "bottom"
+      ? "top-[calc(100%+8px)] -translate-y-1 group-hover/tip:translate-y-0 group-active/tip:translate-y-0"
+      : "bottom-[calc(100%+8px)] translate-y-1 group-hover/tip:translate-y-0 group-active/tip:translate-y-0";
   return (
     <span
       className="group/tip relative ml-0.5 inline-flex"
@@ -534,7 +551,7 @@ function ChipHelp({ text }: { text: string }) {
       </span>
       <span
         role="tooltip"
-        className="pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 z-50 w-48 -translate-x-1/2 translate-y-1 rounded-lg border border-[#09ed2d]/25 bg-black/95 px-3 py-2 text-center text-xs font-normal leading-relaxed text-white/85 opacity-0 shadow-[0_10px_30px_-12px_rgba(9,237,45,0.5)] transition-all duration-150 group-hover/tip:translate-y-0 group-hover/tip:opacity-100 group-active/tip:translate-y-0 group-active/tip:opacity-100"
+        className={`pointer-events-none absolute left-1/2 z-50 w-48 -translate-x-1/2 rounded-lg border border-[#09ed2d]/25 bg-black/95 px-3 py-2 text-center text-xs font-normal leading-relaxed text-white/85 opacity-0 shadow-[0_10px_30px_-12px_rgba(9,237,45,0.5)] transition-all duration-150 group-hover/tip:opacity-100 group-active/tip:opacity-100 ${pos}`}
       >
         {text}
       </span>
@@ -543,7 +560,7 @@ function ChipHelp({ text }: { text: string }) {
 }
 
 // =========================================================================
-// Paket-Schritt – die aus dem Preisrechner übernommene Vorauswahl,
+// Paket-Schritt, die aus dem Preisrechner übernommene Vorauswahl,
 // hier sichtbar und jederzeit anpassbar.
 // =========================================================================
 
@@ -572,7 +589,7 @@ function PackageStep({
       <div>
         <h2 className="text-xl font-semibold text-white">Dein Paket</h2>
         <p className="mt-1 text-sm text-white/55">
-          Das hast du im Preisrechner gewählt. Du kannst hier alles anpassen –
+          Das hast du im Preisrechner gewählt. Du kannst hier alles anpassen -
           die Kalkulation rechts aktualisiert sich sofort.
         </p>
       </div>
@@ -648,7 +665,7 @@ function PackageStep({
       </div>
 
       {/* Mehrsprachigkeit wird als Funktion im Schritt „Funktionen & Technik"
-          gewählt – Deutsch ist immer inklusive. Daher hier kein Sprachen-Stepper. */}
+          gewählt, Deutsch ist immer inklusive. Daher hier kein Sprachen-Stepper. */}
 
       {/* Wartung & Pflege */}
       <button
@@ -819,7 +836,7 @@ function Summary({ draft }: { draft: BriefDraft }) {
           )}
           {typeof s.priceMin === "number" && typeof s.priceMax === "number" && (
             <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-white/70">
-              Preisrechner: {formatEuro(s.priceMin)} – {formatEuro(s.priceMax)}
+              Preisrechner: {formatEuro(s.priceMin)} bis {formatEuro(s.priceMax)}
             </span>
           )}
         </div>
@@ -830,6 +847,7 @@ function Summary({ draft }: { draft: BriefDraft }) {
           <span className="text-sm text-white/70">Geschätzte Gesamtkosten (mit Detailauswahl)</span>
           <span className="text-xl font-semibold tabular-nums text-[#09ed2d]">
             ca. {formatRange(estimate.oneTimeMin, estimate.oneTimeMax)}
+            {estimate.oneTimeMax > estimate.oneTimeMin && <span className="text-[#09ed2d]/80">+</span>}
           </span>
         </div>
         {estimate.hosting > 0 && (
@@ -859,7 +877,7 @@ function Summary({ draft }: { draft: BriefDraft }) {
         </dl>
       ) : (
         <p className="mt-3 text-xs text-white/40">
-          Du hast die Detailfragen übersprungen – das ist okay. Je mehr du ausfüllst,
+          Du hast die Detailfragen übersprungen, das ist okay. Je mehr du ausfüllst,
           desto genauer wird dein Angebot.
         </p>
       )}
@@ -889,8 +907,8 @@ function SuccessScreen({ draft }: { draft: BriefDraft }) {
       <h1 className="mt-6 text-3xl font-semibold">Anfrage erhalten!</h1>
       <p className="mt-3 text-white/60">
         Vielen Dank{draft.contact.name ? `, ${draft.contact.name.split(" ")[0]}` : ""}! Wir
-        prüfen deine Konfiguration und melden uns innerhalb von 24 Stunden mit einem
-        persönlichen Angebot.
+        prüfen deine Konfiguration und melden uns innerhalb von 24 Stunden per E-Mail mit
+        einem persönlichen Angebot.
       </p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link
@@ -974,15 +992,22 @@ function CostCounter({ draft }: { draft: BriefDraft }) {
         </span>
       </div>
 
-      {/* Summe – immer als unverbindliche Spanne */}
+      {/* Summe, immer als unverbindliche Spanne */}
       <div className="mt-4">
-        <span className="text-xs text-white/45">geschätzt, einmalig</span>
+        <span className="flex items-center gap-1 text-xs text-white/45">
+          geschätzt, einmalig
+          <ChipHelp
+            placement="bottom"
+            text="Grober Richtwert, keine Endsumme. Bei viel Aufwand (viele Seiten, Sonderfunktionen, aufwändiges Design) kann es auch mehr werden, daher das Plus. Den genauen Preis legen wir gemeinsam fest."
+          />
+        </span>
         <div key={`${estimate.oneTimeMin}-${estimate.oneTimeMax}`} className="animate-cost-pop mt-0.5 origin-left">
           <span className="text-[2rem] font-bold leading-none tabular-nums text-[#09ed2d] drop-shadow-[0_0_18px_rgba(9,237,45,0.35)] sm:text-[2.4rem]">
             ca. <AnimatedEuro value={estimate.oneTimeMin} />
             {estimate.oneTimeMax !== estimate.oneTimeMin && (
-              <> – <AnimatedEuro value={estimate.oneTimeMax} /></>
+              <> bis <AnimatedEuro value={estimate.oneTimeMax} /></>
             )}
+            <span className="text-white/80">+</span>
           </span>
         </div>
         {estimate.monthlyMax > 0 && (
@@ -1094,7 +1119,7 @@ function AnimatedEuro({ value }: { value: number }) {
 
 /**
  * Sorgt dafür, dass immer-inklusive Optionen (z. B. „Startseite") in den
- * Antwortdaten enthalten sind – auch wenn der Nutzer das Feld noch nicht
+ * Antwortdaten enthalten sind, auch wenn der Nutzer das Feld noch nicht
  * angefasst hat. So sind sie sofort sichtbar ausgewählt und werden gespeichert.
  */
 function withLockedOptions(data: BriefDraft["data"]): BriefDraft["data"] {
@@ -1130,16 +1155,36 @@ function readLocal(): BriefDraft | null {
   }
 }
 
-/** Konto-Entwurf hat Vorrang; lokaler füllt nur leere Kontaktfelder. */
-function mergeDrafts(remote: BriefDraft, local: BriefDraft): BriefDraft {
+/**
+ * Verschmilzt Konto-Entwurf (remote) und lokalen Entwurf.
+ *
+ * Standard: Konto-Entwurf hat Vorrang (geräteübergreifend), lokaler füllt Lücken.
+ * Bei `localWins` (frische Preisrechner-Übergabe) kehrt sich die Priorität um:
+ * die gerade getroffene lokale Auswahl gewinnt, der Konto-Entwurf füllt nur Lücken.
+ * Kontaktfelder nehmen jeweils den ersten nicht-leeren Wert.
+ */
+function mergeDrafts(remote: BriefDraft, local: BriefDraft, localWins = false): BriefDraft {
+  const primary = localWins ? local : remote;
+  const secondary = localWins ? remote : local;
   return {
-    data: { ...local.data, ...remote.data },
-    summary: { ...local.summary, ...remote.summary },
+    data: { ...secondary.data, ...primary.data },
+    summary: { ...secondary.summary, ...primary.summary },
     contact: {
-      name: remote.contact?.name || local.contact.name,
-      email: remote.contact?.email || local.contact.email,
-      phone: remote.contact?.phone || local.contact.phone,
-      company: remote.contact?.company || local.contact.company,
+      name: primary.contact?.name || secondary.contact?.name || "",
+      email: primary.contact?.email || secondary.contact?.email || "",
+      phone: primary.contact?.phone || secondary.contact?.phone || "",
+      company: primary.contact?.company || secondary.contact?.company || "",
     },
   };
+}
+
+/** Liest den Handoff-Marker und entfernt ihn sofort (einmalige Wirkung). */
+function consumeHandoff(): boolean {
+  try {
+    const flag = localStorage.getItem(BRIEF_HANDOFF_KEY) === "1";
+    if (flag) localStorage.removeItem(BRIEF_HANDOFF_KEY);
+    return flag;
+  } catch {
+    return false;
+  }
 }

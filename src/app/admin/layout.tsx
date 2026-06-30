@@ -7,7 +7,7 @@ import { signOutAction } from "@/lib/actions/auth";
 import { requireAdmin } from "@/lib/auth";
 
 export const metadata: Metadata = {
-  title: "Admin – TAS Webworks",
+  title: "Admin, TAS Webworks",
   description: "Internes Verwaltungs-Dashboard.",
   robots: { index: false, follow: false },
 };

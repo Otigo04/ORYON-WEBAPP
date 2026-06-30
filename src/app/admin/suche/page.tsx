@@ -9,7 +9,7 @@ import { getAllBriefs } from "@/lib/briefs";
 import { projectTypeLabel } from "@/lib/leads";
 
 export const metadata = {
-  title: "Suche – Admin",
+  title: "Suche, Admin",
   robots: { index: false, follow: false },
 };
 
@@ -41,7 +41,7 @@ export default async function AdminSearchPage({
       <>
         <PageHeader
           title="Suche"
-          subtitle="Suche über Angebote, Rechnungen, Projekte, Konzepte und Anfragen – nach Nummer, Titel, Name oder E-Mail."
+          subtitle="Suche über Angebote, Rechnungen, Projekte, Konzepte und Anfragen, nach Nummer, Titel, Name oder E-Mail."
         />
         <EmptyState>Gib oben links einen Suchbegriff ein (z. B. eine Rechnungs- oder Angebotsnummer).</EmptyState>
       </>

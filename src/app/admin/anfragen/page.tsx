@@ -21,7 +21,7 @@ export default async function AdminLeadsPage() {
     <>
       <PageHeader
         title="Anfragen"
-        subtitle="Eingehende Anfragen aus dem Preisrechner – Status setzen und intern beantworten."
+        subtitle="Eingehende Anfragen aus dem Preisrechner, Status setzen und intern beantworten."
       />
 
       {leads.length === 0 ? (
@@ -45,11 +45,11 @@ export default async function AdminLeadsPage() {
                 </div>
                 <div className="text-right">
                   <p className="text-lg font-semibold text-[#09ed2d]">
-                    {formatEuro(lead.price_min)} – {formatEuro(lead.price_max)}
+                    {formatEuro(lead.price_min)} bis {formatEuro(lead.price_max)}
                   </p>
                   {(lead.monthly_min > 0 || lead.monthly_max > 0) && (
                     <p className="text-xs text-white/40">
-                      mtl. {formatEuro(lead.monthly_min)} – {formatEuro(lead.monthly_max)}
+                      mtl. {formatEuro(lead.monthly_min)} bis {formatEuro(lead.monthly_max)}
                     </p>
                   )}
                 </div>

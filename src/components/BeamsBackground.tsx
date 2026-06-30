@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
  *
  * Three.js / @react-three/fiber benötigen das `window`-Objekt und dürfen daher
  * nicht serverseitig gerendert werden. Über `next/dynamic` mit `ssr: false`
- * wird die Komponente erst im Browser geladen – die umgebenden Sektionen
+ * wird die Komponente erst im Browser geladen, die umgebenden Sektionen
  * bleiben Server Components (SSR-/SEO-freundlich).
  */
 const Beams = dynamic(() => import("@/components/Beams/Beams"), {

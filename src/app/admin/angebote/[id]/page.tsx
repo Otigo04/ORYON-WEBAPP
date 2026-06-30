@@ -22,7 +22,7 @@ export default async function EditOfferPage({
           ← Zurück
         </Link>
         <Link href={`/dashboard/angebote/${offer.id}`} className="text-sm text-[#09ed2d] hover:underline">
-          Kundenansicht / Druck →
+          Als PDF herunterladen →
         </Link>
       </div>
       {(offer.status === "accepted" || offer.status === "declined" || offer.customer_comment) && (

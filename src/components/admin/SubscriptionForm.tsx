@@ -82,7 +82,7 @@ export function SubscriptionForm({
         </div>
       </form>
 
-      {/* Abo entfernen – eigenständiges Formular (keine verschachtelten Forms) */}
+      {/* Abo entfernen, eigenständiges Formular (keine verschachtelten Forms) */}
       {subscription && (
         <form action={removeAction} className="flex justify-end">
           <input type="hidden" name="user_id" value={userId} />

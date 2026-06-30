@@ -14,7 +14,7 @@ export function Footer() {
     <footer className="border-t border-white/10 bg-black px-6 py-14">
       <div className="mx-auto flex max-w-5xl flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
         <div className="max-w-sm">
-          <Link href="/" aria-label="TAS Webworks – Startseite" className="inline-flex">
+          <Link href="/" aria-label="TAS Webworks, Startseite" className="inline-flex">
             <LogoWordmark className="h-12 w-auto" />
           </Link>
           <p className="mt-4 text-sm text-white/60">

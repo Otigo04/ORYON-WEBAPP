@@ -9,7 +9,7 @@ import type { FleetModule } from "@/lib/tas-fleet";
  *
  * Versucht zunächst, den echten Screenshot unter `src` zu laden. Existiert die
  * Datei (noch) nicht, fällt die Komponente automatisch auf einen stilvollen
- * CSS-Mockup zurück – so sieht die Seite schon ohne echte Assets fertig aus.
+ * CSS-Mockup zurück, so sieht die Seite schon ohne echte Assets fertig aus.
  * Sobald du die PNGs unter /public/tas-fleet/screens/ ablegst, erscheinen sie
  * ohne weitere Codeänderung.
  */
@@ -61,7 +61,7 @@ export function BrowserFrame({ src, alt, mock, url = "fleet.tas-webworks.de", cl
   );
 }
 
-/** Stilisierte App-Oberfläche je Modul – reiner CSS/JSX-Platzhalter. */
+/** Stilisierte App-Oberfläche je Modul, reiner CSS/JSX-Platzhalter. */
 function MockScreen({ mock }: { mock: FleetModule["mock"] }) {
   return (
     <div className="absolute inset-0 flex bg-gradient-to-br from-[#08120e] via-[#060c0a] to-black text-white/70">

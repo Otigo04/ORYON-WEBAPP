@@ -16,7 +16,7 @@ const depositPercent = Math.round(DEPOSIT_RATE * 100);
  * Allgemeine Geschäftsbedingungen (AGB) für die Erbringung von Webdesign-,
  * Webentwicklungs- und damit verbundenen Dienstleistungen.
  *
- * HINWEIS: Branchenüblicher, sorgfältig formulierter Entwurf – ersetzt keine
+ * HINWEIS: Branchenüblicher, sorgfältig formulierter Entwurf, ersetzt keine
  * Rechtsberatung. Vor dem Verlassen auf diese AGB anwaltlich prüfen lassen.
  */
 export default function AgbPage() {
@@ -46,8 +46,8 @@ export default function AgbPage() {
       <LegalSection heading="§ 2 Vertragsgegenstand und Leistungen">
         <p>
           Gegenstand des Vertrags ist die im jeweiligen Angebot bzw. in der Projektkonfiguration
-          konkret beschriebene Leistung – etwa die Konzeption, Gestaltung und Umsetzung von
-          Websites, Online-Shops und Landingpages sowie optional Hosting, Wartung und Pflege.
+          konkret beschriebene Leistung, etwa die Konzeption, Gestaltung und Umsetzung von
+          Websites, Web-Apps und Landingpages sowie optional Hosting, Wartung und Pflege.
         </p>
         <p>
           Maßgeblich für Art und Umfang der Leistung ist die schriftliche Leistungsbeschreibung
@@ -60,7 +60,7 @@ export default function AgbPage() {
         <p>
           Anfragen über den Preisrechner, den Konfigurator oder per E-Mail sind unverbindlich.
           Auf Grundlage der Anfrage erstellt der Auftragnehmer ein verbindliches Angebot. Der
-          Vertrag kommt zustande, wenn der Auftraggeber dieses Angebot annimmt – etwa über die
+          Vertrag kommt zustande, wenn der Auftraggeber dieses Angebot annimmt, etwa über die
           Annahmefunktion im Kundenportal oder in Textform.
         </p>
       </LegalSection>

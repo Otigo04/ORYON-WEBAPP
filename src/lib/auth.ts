@@ -44,7 +44,7 @@ export async function isAdmin(): Promise<boolean> {
 
 /**
  * Serverseitige Zweitprüfung für den Admin-Bereich. Jede Admin-Seite und jede
- * Admin-Server-Action ruft dies auf – unabhängig von der Middleware (defense in
+ * Admin-Server-Action ruft dies auf, unabhängig von der Middleware (defense in
  * depth). Leitet Nicht-Admins um.
  */
 export async function requireAdmin() {

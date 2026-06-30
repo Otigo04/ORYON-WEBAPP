@@ -3,7 +3,7 @@ import { FLEET_MODULES } from "@/lib/tas-fleet";
 
 /**
  * Feature-Deep-Dive: jedes TAS-FLEET-Modul wird mit Text und einem
- * Browser-Mockup vorgestellt, abwechselnd links/rechts. Reine Server Component –
+ * Browser-Mockup vorgestellt, abwechselnd links/rechts. Reine Server Component -
  * nur die einzelnen {@link BrowserFrame} sind Client-Inseln.
  */
 export function FleetFeatures() {
@@ -22,7 +22,7 @@ export function FleetFeatures() {
             Module
           </span>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            Alles, was Ihr Betrieb braucht – an einem Ort
+            Alles, was Ihr Betrieb braucht, an einem Ort
           </h2>
           <p className="mt-4 text-base text-white/60">
             Sechs aufeinander abgestimmte Module decken den kompletten Alltag Ihrer

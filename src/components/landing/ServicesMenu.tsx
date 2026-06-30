@@ -9,7 +9,7 @@ import { branches, brancheHref } from "@/lib/branches";
  *
  * Client-Insel: Der als Button erkennbare "Leistungen"-Eintrag öffnet beim Klick
  * ein Karten-Panel (Branchen-Lösungen). Die Animation läuft rein über
- * CSS-Transitions – der geschlossene Zustand ist bereits im (Server-)Markup
+ * CSS-Transitions, der geschlossene Zustand ist bereits im (Server-)Markup
  * versteckt (opacity-0 + pointer-events-none), daher blitzt das Panel beim
  * Laden der Seite nicht kurz auf. Öffnen/Schließen ist dadurch sofort und clean.
  * Schließen per Außenklick oder Escape.

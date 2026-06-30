@@ -11,7 +11,7 @@ import { getProjectWithUpdates } from "@/lib/projects";
 import { PROJECT_STATUS_LABELS } from "@/lib/documents";
 
 export const metadata: Metadata = {
-  title: "Projekt – TAS Webworks",
+  title: "Projekt, TAS Webworks",
   robots: { index: false, follow: false },
 };
 
@@ -38,7 +38,7 @@ export default async function CustomerProjectPage({
           ← Zurück zum Dashboard
         </Link>
 
-        <header className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
+        <header className="rounded-2xl border border-white/10 bg-white/5 p-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <h1 className="text-3xl font-semibold tracking-tight">{project.title}</h1>
@@ -51,7 +51,7 @@ export default async function CustomerProjectPage({
           <ProgressBar value={project.progress} className="mt-6" />
         </header>
 
-        <section className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
           <div className="mb-5 flex items-center justify-between">
             <h2 className="text-lg font-semibold">Projektverlauf</h2>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-300">

@@ -19,9 +19,9 @@ const reasons: Reason[] = [
     ),
     title: "Berliner Unternehmen",
     description:
-      "Du hast immer einen echten Ansprechpartner in Berlin – kein Ticket-System, kein Callcenter. Persönliche Termine und kurze Wege inklusive.",
+      "Du hast immer einen echten Ansprechpartner in Berlin, kein Ticket-System, kein Callcenter. Schnelle Antworten per E-Mail und Lead-Videos, in denen wir dir alles direkt zeigen.",
     details:
-      "Regionale Präsenz kombiniert mit moderner Cloud-Infrastruktur. Direkter Draht zum Entwicklungsteam, kein Outsourcing ins Ausland.",
+      "Regionale Präsenz kombiniert mit moderner Cloud-Infrastruktur. Direkter Draht zum Entwicklungsteam per E-Mail, kein Outsourcing ins Ausland.",
   },
   {
     icon: (
@@ -71,7 +71,7 @@ const reasons: Reason[] = [
     description:
       "Deine Website ist rund um die Uhr erreichbar und alle Kundendaten sind sicher geschützt. Automatisch und ohne extra Aufwand für dich.",
     details:
-      "Serverless-Hosting auf Vercel & Supabase mit Auto-Scaling, Row-Level Security und Ende-zu-Ende-Verschlüsselung –> höchste Verfügbarkeit garantiert.",
+      "Serverless-Hosting auf Vercel & Supabase mit Auto-Scaling, Row-Level Security und Ende-zu-Ende-Verschlüsselung für höchste Verfügbarkeit.",
   },
   {
     icon: (
@@ -96,7 +96,7 @@ const reasons: Reason[] = [
     ),
     title: "Alles aus einer Hand",
     description:
-      "Von der ersten Idee bis zur fertigen Website - ein Team, ein Ansprechpartner, kein Chaos. Du musst nichts koordinieren.",
+      "Von der ersten Idee bis zur fertigen Website: ein Team, ein Ansprechpartner, kein Chaos. Du musst nichts koordinieren.",
     details:
       "Integrierter Prozess aus Strategie, Design, Entwicklung und Hosting, keine Schnittstellen zwischen Dienstleistern, klare Verantwortung.",
   },
@@ -113,7 +113,7 @@ const reasons: Reason[] = [
     description:
       "Keine versteckten Kosten oder böse Überraschungen. Mit unserem interaktiven Preisrechner kalkulierst du dein Budget vorab und weißt von Tag eins an exakt, woran du bist.",
     details:
-      "Dynamische Kostenkalkulation in Echtzeit. Feste Projektpakete statt stündlicher Abrechnungen – Planungssicherheit vom ersten Klick an.",
+      "Dynamische Kostenkalkulation in Echtzeit. Feste Projektpakete statt stündlicher Abrechnungen, Planungssicherheit vom ersten Klick an.",
   },
   {
     icon: (
@@ -124,7 +124,7 @@ const reasons: Reason[] = [
     ),
     title: "Automatisierte Prozesse",
     description:
-      "Wir beenden das Zettelchaos. Ob digitale Terminbuchung, Mitarbeiter-Dashboard oder Planungs-App – wir digitalisieren und vereinfachen deinen Arbeitsalltag spürbar.",
+      "Wir beenden das Zettelchaos. Ob digitale Terminbuchung, Mitarbeiter-Dashboard oder Planungs-App, wir digitalisieren und vereinfachen deinen Arbeitsalltag spürbar.",
     details:
       "Maßgeschneiderte Web-Apps mit Next.js. Automatische Workflows ersetzen manuelle Schritte und sparen deinem Team täglich wertvolle Zeit.",
   },

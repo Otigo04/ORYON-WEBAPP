@@ -311,7 +311,7 @@ export default function FloatingLines({
     camera.position.z = 1;
 
     const renderer = new WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
     container.appendChild(renderer.domElement);
@@ -447,6 +447,12 @@ export default function FloatingLines({
     let raf = 0;
     const renderLoop = () => {
       if (!active) return;
+
+      // Tab im Hintergrund: nicht rendern (spart GPU/Akku), Loop am Leben halten.
+      if (typeof document !== 'undefined' && document.hidden) {
+        raf = requestAnimationFrame(renderLoop);
+        return;
+      }
 
       uniforms.iTime.value = (performance.now() - startTime) / 1000;
 
