@@ -1,12 +1,13 @@
 import {
   BRIEF_STEPS,
+  computeBriefEstimate,
   displayValue,
   isFieldVisible,
   type BriefData,
   type BriefSummary,
 } from "@/lib/brief";
-import { PRICING, type DesignType, type FeatureKey } from "@/lib/pricing";
-import type { LineItem } from "@/lib/documents";
+import { PRICING, formatEuro, type DesignType, type FeatureKey } from "@/lib/pricing";
+import { computeTotals, type LineItem } from "@/lib/documents";
 
 const mid = (a: number, b: number) => Math.round((a + b) / 2);
 
@@ -67,16 +68,23 @@ export function briefToSummaryText(brief: BriefLike): string {
   return blocks.join("\n\n").trim();
 }
 
+/** Lesbares Label der Projektart, z. B. „One-Pager / Landingpage". */
+function projectLabel(summary: BriefSummary): string | null {
+  const pt = summary.projectType;
+  return pt && pt in PRICING.projectTypes
+    ? PRICING.projectTypes[pt as keyof typeof PRICING.projectTypes].label
+    : null;
+}
+
 /**
- * Wandelt eine Konfigurator-Anfrage (Brief) in konkrete Angebots-Positionen um.
+ * Sammelt alle einmaligen Angebots-Positionen aus einem Brief.
  *
  * Preise sind im Rechner Spannen, fürs Angebot wird je Position der Mittelwert
  * angesetzt; einmalige Posten der Detailauswahl (z. B. zusätzliche Seiten) haben
  * feste Preise und werden direkt übernommen. Laufende Kosten (Hosting, Wartung)
- * bleiben bewusst außen vor, ein Angebot ist einmalig. Der Admin kann nach dem
- * Import jede Position frei anpassen.
+ * bleiben bewusst außen vor, ein Angebot ist einmalig.
  */
-export function briefToLineItems(data: BriefData, summary: BriefSummary): LineItem[] {
+function collectBriefLineItems(data: BriefData, summary: BriefSummary): LineItem[] {
   const items: LineItem[] = [];
 
   // 1) Basis aus Projektart × Design-Faktor.
@@ -127,5 +135,95 @@ export function briefToLineItems(data: BriefData, summary: BriefSummary): LineIt
     }
   }
 
+  return items;
+}
+
+/**
+ * Itemisierte Positionen (je Leistung ein Preis) — für Rechnungen, bei denen
+ * die Aufschlüsselung gewünscht ist. Der Admin kann jede Position frei anpassen.
+ */
+export function briefToLineItems(data: BriefData, summary: BriefSummary): LineItem[] {
+  const items = collectBriefLineItems(data, summary);
   return items.length > 0 ? items : [{ description: "", quantity: 1, unit_price: 0 }];
+}
+
+/**
+ * Angebots-Positionen: bewusst KEINE Einzelpreise. Alle Leistungen werden
+ * gebündelt als ein „Komplettpaket" mit einem einzigen Gesamtpreis ausgewiesen
+ * (Summe der Einzel-Mittelwerte). Die enthaltenen Leistungen stehen im
+ * Einleitungstext (`briefToOfferText`). Der Admin kann den Preis frei anpassen.
+ */
+export function briefToOfferLineItems(data: BriefData, summary: BriefSummary): LineItem[] {
+  const items = collectBriefLineItems(data, summary);
+  if (items.length === 0) return [{ description: "", quantity: 1, unit_price: 0 }];
+
+  const total = computeTotals(items, 0).net;
+  const label = projectLabel(summary);
+  return [
+    {
+      description: label
+        ? `${label} – Komplettpaket (alle Leistungen inklusive)`
+        : "Website-Komplettpaket (alle Leistungen inklusive)",
+      quantity: 1,
+      unit_price: total,
+    },
+  ];
+}
+
+/**
+ * Herzhafte, persönliche Angebots-Einleitung: begrüßt den Kunden, listet alle
+ * enthaltenen Leistungen appetitlich auf und nennt den Gesamtpreis warm statt
+ * als nüchterne Spanne. Wird beim Import automatisch ins Angebot übernommen.
+ */
+export function briefToOfferText(brief: BriefLike): string {
+  const data = brief.data ?? {};
+  const summary = brief.data?._summary ?? { projectType: brief.project_type ?? undefined };
+
+  const firstName = (brief.name || "").trim().split(/\s+/)[0] || "";
+  const company =
+    brief.company?.trim() ||
+    (typeof data.companyName === "string" ? data.companyName.trim() : "") ||
+    "";
+  const label = projectLabel(summary);
+
+  const items = collectBriefLineItems(data, summary);
+  const services = items.map((i) => i.description);
+  const total = computeTotals(items, 0).net;
+  const estimate = computeBriefEstimate(data, summary);
+
+  const lines: string[] = [];
+
+  lines.push(firstName ? `Hallo ${firstName},` : "Hallo,");
+  lines.push("");
+  lines.push(
+    "vielen Dank für deine Anfrage über unseren Projekt-Konfigurator! Wir haben uns " +
+      `deine Wünsche${company ? ` für ${company}` : ""} ganz genau angeschaut und daraus ein ` +
+      `rundum sorgloses Komplettpaket${label ? ` als ${label}` : ""} geschnürt – ` +
+      "maßgeschneidert, ohne Schnickschnack und ohne versteckte Kosten. 🚀",
+  );
+
+  if (services.length > 0) {
+    lines.push("");
+    lines.push("Das ist alles mit dabei:");
+    for (const s of services) lines.push(`- ${s}`);
+  }
+
+  lines.push("");
+  if (total > 0) {
+    lines.push(
+      `Alles zusammen, ein fairer Festpreis: ${formatEuro(total)} (einmalig, alle oben ` +
+        "genannten Leistungen inklusive).",
+    );
+    if (estimate.monthlyMax > 0) {
+      lines.push(
+        `Hosting & Pflege halten deine Seite dauerhaft schnell und sicher – ab ` +
+          `${formatEuro(estimate.monthlyMin)}/Monat, ganz transparent und jederzeit kündbar.`,
+      );
+    }
+  }
+
+  lines.push("");
+  lines.push("Wir freuen uns riesig darauf, dein Projekt gemeinsam zum Leben zu erwecken!");
+
+  return lines.join("\n").trim();
 }

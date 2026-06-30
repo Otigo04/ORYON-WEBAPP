@@ -8,7 +8,7 @@ import { LineItemsEditor } from "@/components/admin/LineItemsEditor";
 import { ConfiguratorPicker } from "@/components/admin/ConfiguratorPicker";
 import { type Customer } from "@/lib/customer";
 import { OFFER_STATUS_LABELS, suggestDocumentNumber, type LineItem } from "@/lib/documents";
-import { briefDocumentTitle, briefToLineItems, briefToSummaryText } from "@/lib/offer-import";
+import { briefDocumentTitle, briefToOfferLineItems, briefToOfferText } from "@/lib/offer-import";
 import type { Offer } from "@/lib/offers";
 import type { Brief } from "@/lib/briefs";
 
@@ -40,9 +40,9 @@ export function OfferForm({
 
   const importFromBrief = (brief: Brief) => {
     const summary = brief.data?._summary ?? { projectType: brief.project_type ?? undefined };
-    setItems(briefToLineItems(brief.data ?? {}, summary));
+    setItems(briefToOfferLineItems(brief.data ?? {}, summary));
     setTitle(briefDocumentTitle(brief));
-    setContent(briefToSummaryText(brief));
+    setContent(briefToOfferText(brief));
   };
 
   useEffect(() => {
