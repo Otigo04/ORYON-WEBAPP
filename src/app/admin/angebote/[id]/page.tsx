@@ -4,6 +4,7 @@ import { Card, PageHeader } from "@/components/admin/PageHeader";
 import { OfferForm } from "@/components/admin/OfferForm";
 import { getOffer } from "@/lib/offers";
 import { getCustomers } from "@/lib/admin/customers";
+import { getAllBriefs } from "@/lib/briefs";
 
 export default async function EditOfferPage({
   params,
@@ -11,7 +12,7 @@ export default async function EditOfferPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [offer, customers] = await Promise.all([getOffer(id), getCustomers()]);
+  const [offer, customers, briefs] = await Promise.all([getOffer(id), getCustomers(), getAllBriefs()]);
   if (!offer) notFound();
 
   return (
@@ -63,7 +64,7 @@ export default async function EditOfferPage({
       )}
 
       <Card className="max-w-3xl">
-        <OfferForm offer={offer} customers={customers} />
+        <OfferForm offer={offer} customers={customers} briefs={briefs} />
       </Card>
     </>
   );

@@ -1,20 +1,41 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createConcept, updateConcept, type ActionState } from "@/lib/actions/admin/concepts";
 import { Field, Select, TextArea, SubmitButton, FormError } from "@/components/admin/Fields";
-import { customerLabel, type Customer } from "@/lib/customer";
+import { ConfiguratorPicker } from "@/components/admin/ConfiguratorPicker";
+import { type Customer } from "@/lib/customer";
 import { CONCEPT_STATUS_LABELS } from "@/lib/documents";
+import { briefDocumentTitle, briefToSummaryText } from "@/lib/offer-import";
 import type { Concept } from "@/lib/concepts";
+import type { Brief } from "@/lib/briefs";
 
 const STATUS_OPTIONS = Object.entries(CONCEPT_STATUS_LABELS).map(([value, label]) => ({ value, label }));
 
-export function ConceptForm({ concept, customers }: { concept?: Concept; customers: Customer[] }) {
+export function ConceptForm({
+  concept,
+  customers,
+  briefs = [],
+}: {
+  concept?: Concept;
+  customers: Customer[];
+  /** Konfigurator-Anfragen, aus denen Inhalt übernommen werden kann. */
+  briefs?: Brief[];
+}) {
   const isEdit = !!concept;
   const action = isEdit ? updateConcept : createConcept;
   const [state, formAction] = useActionState<ActionState, FormData>(action, null);
   const router = useRouter();
+
+  const [userId, setUserId] = useState(concept?.user_id ?? "");
+  const [title, setTitle] = useState(concept?.title ?? "");
+  const [content, setContent] = useState(concept?.content ?? "");
+
+  const importFromBrief = (brief: Brief) => {
+    setTitle(briefDocumentTitle(brief));
+    setContent(briefToSummaryText(brief));
+  };
 
   useEffect(() => {
     if (state?.ok && !isEdit) router.push("/admin/konzepte");
@@ -25,29 +46,29 @@ export function ConceptForm({ concept, customers }: { concept?: Concept; custome
       {isEdit && <input type="hidden" name="id" value={concept.id} />}
       {state?.error && <FormError message={state.error} />}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Select
-          name="user_id"
-          label="Kunde"
-          placeholder="Kunde auswählen …"
-          defaultValue={concept?.user_id}
-          options={customers.map((c) => ({ value: c.id, label: customerLabel(c) }))}
-          error={state?.fieldErrors?.user_id?.[0]}
-        />
-        <Select
-          name="status"
-          label="Status"
-          defaultValue={concept?.status ?? "draft"}
-          options={STATUS_OPTIONS}
-        />
-      </div>
+      <ConfiguratorPicker
+        customers={customers}
+        briefs={briefs}
+        userId={userId}
+        onUserChange={setUserId}
+        onImport={importFromBrief}
+        userError={state?.fieldErrors?.user_id?.[0]}
+      />
 
-      <Field name="title" label="Titel" defaultValue={concept?.title} placeholder="z. B. Content-Konzept Startseite" required error={state?.fieldErrors?.title?.[0]} />
+      <Select
+        name="status"
+        label="Status"
+        defaultValue={concept?.status ?? "draft"}
+        options={STATUS_OPTIONS}
+      />
+
+      <Field name="title" label="Titel" value={title} onChange={setTitle} placeholder="z. B. Content-Konzept Startseite" required error={state?.fieldErrors?.title?.[0]} />
 
       <TextArea
         name="content"
         label="Inhalt"
-        defaultValue={concept?.content ?? ""}
+        value={content}
+        onChange={setContent}
         placeholder="Konzept ausführlich beschreiben … (Markdown-Format wird als Text dargestellt)"
         rows={14}
       />

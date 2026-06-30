@@ -4,6 +4,7 @@ import { Card, PageHeader } from "@/components/admin/PageHeader";
 import { ConceptForm } from "@/components/admin/ConceptForm";
 import { getConcept } from "@/lib/concepts";
 import { getCustomers } from "@/lib/admin/customers";
+import { getAllBriefs } from "@/lib/briefs";
 
 export default async function EditConceptPage({
   params,
@@ -11,7 +12,7 @@ export default async function EditConceptPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [concept, customers] = await Promise.all([getConcept(id), getCustomers()]);
+  const [concept, customers, briefs] = await Promise.all([getConcept(id), getCustomers(), getAllBriefs()]);
   if (!concept) notFound();
 
   return (
@@ -26,7 +27,7 @@ export default async function EditConceptPage({
         </Link>
       </div>
       <Card className="max-w-3xl">
-        <ConceptForm concept={concept} customers={customers} />
+        <ConceptForm concept={concept} customers={customers} briefs={briefs} />
       </Card>
     </>
   );
