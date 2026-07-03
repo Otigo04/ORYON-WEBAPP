@@ -8,6 +8,7 @@ import {
   type ActionState,
 } from "@/lib/actions/admin/showcase";
 import { Field, TextArea, Checkbox, SubmitButton, FormError } from "@/components/admin/Fields";
+import { ShowcaseImageUploader } from "@/components/admin/ShowcaseImageUploader";
 import type { ShowcaseProject } from "@/lib/portfolio";
 
 export function ShowcaseProjectForm({ project }: { project?: ShowcaseProject }) {
@@ -15,6 +16,17 @@ export function ShowcaseProjectForm({ project }: { project?: ShowcaseProject }) 
   const action = isEdit ? updateShowcaseProject : createShowcaseProject;
   const [state, formAction] = useActionState<ActionState, FormData>(action, null);
   const router = useRouter();
+
+  // Cover zuerst, dann weitere Galeriebilder – ohne Duplikate/Leereinträge.
+  const initialImages = project
+    ? Array.from(
+        new Set(
+          [project.image_url, ...(project.images ?? [])].filter(
+            (u): u is string => typeof u === "string" && u.length > 0,
+          ),
+        ),
+      )
+    : [];
 
   useEffect(() => {
     if (state?.ok && !isEdit) router.push("/admin/referenzen");
@@ -49,18 +61,7 @@ export function ShowcaseProjectForm({ project }: { project?: ShowcaseProject }) 
         rows={4}
         error={state?.fieldErrors?.description?.[0]}
       />
-      <Field
-        name="image_url"
-        label="Bild-URL (optional)"
-        type="url"
-        defaultValue={project?.image_url ?? ""}
-        placeholder="https://…/storage/v1/object/public/showcase/projekt.jpg"
-        error={state?.fieldErrors?.image_url?.[0]}
-      />
-      <p className="-mt-2 text-xs text-white/40">
-        Tipp: Bild im Supabase-Storage-Bucket <code>showcase</code> ablegen und die öffentliche URL
-        einfügen. Ohne Bild rendert die Seite einen Verlauf.
-      </p>
+      <ShowcaseImageUploader initial={initialImages} />
       <Field
         name="project_url"
         label="Projekt-Link (optional)"

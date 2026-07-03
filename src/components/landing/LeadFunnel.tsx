@@ -14,7 +14,10 @@ const guarantees = [
 
 export function LeadFunnel() {
   return (
-    <section id="kontakt" className="border-t border-white/10 bg-black px-6 py-24">
+    <section
+      id="kontakt"
+      className="border-t border-white/10 bg-gradient-to-b from-black via-[#04120b] to-black px-6 py-24"
+    >
       <div className="mx-auto max-w-5xl">
         <div className="relative overflow-hidden rounded-3xl border border-[#09ed2d]/20 bg-gradient-to-br from-[#09ed2d]/10 via-white/[0.03] to-black px-6 py-14 sm:px-12 sm:py-16">
           <div

@@ -11,12 +11,12 @@ type Reason = {
 
 const reasons: Reason[] = [
   {
-    title: "Berliner Unternehmen",
-    metric: "Antwort < 24h",
+    title: "Mehr Kunden über Google",
+    metric: "SEO-optimiert",
     description:
-      "Du hast immer einen echten Ansprechpartner in Berlin, kein Ticket-System, kein Callcenter. Schnelle Antworten per E-Mail und Lead-Videos, in denen wir dir alles direkt zeigen.",
+      "Wir sorgen dafür, dass dich deine Kunden bei Google finden. Ohne teure Werbeanzeigen, einfach durch bessere Technik.",
     details:
-      "Regionale Präsenz kombiniert mit moderner Cloud-Infrastruktur. Direkter Draht zum Entwicklungsteam per E-Mail, kein Outsourcing ins Ausland.",
+      "Technisch sauberes, serverseitig gerendertes HTML, strukturierte Daten (Schema.org) und grüne Core Web Vitals optimieren dein organisches Ranking.",
   },
   {
     title: "Blitzschnelle Ladezeiten",
@@ -27,44 +27,12 @@ const reasons: Reason[] = [
       "Server-Side Rendering, Edge-Caching und optimierte Assets sorgen für Ladezeiten unter 1 s und grüne Core Web Vitals.",
   },
   {
-    title: "Zukunftssichere Technik",
-    metric: "Next.js · TS",
-    description:
-      "Wir bauen mit Technologie, die noch in fünf Jahren einwandfrei funktioniert! Kein teurer Umbau, keine veralteten Systeme.",
-    details:
-      "Next.js App Router, TypeScript Strict Mode und saubere, typsichere Datenflüsse garantieren langfristige Wartbarkeit und einfache Erweiterungen.",
-  },
-  {
-    title: "Mehr Kunden über Google",
-    metric: "SEO-optimiert",
-    description:
-      "Wir sorgen dafür, dass dich deine Kunden bei Google finden. Ohne teure Werbeanzeigen, einfach durch bessere Technik.",
-    details:
-      "Technisch sauberes, serverseitig gerendertes HTML, strukturierte Daten (Schema.org) und grüne Core Web Vitals optimieren dein organisches Ranking.",
-  },
-  {
-    title: "Immer online & sicher",
-    metric: "Uptime 24/7",
-    description:
-      "Deine Website ist rund um die Uhr erreichbar und alle Kundendaten sind sicher geschützt. Automatisch und ohne extra Aufwand für dich.",
-    details:
-      "Serverless-Hosting auf Vercel & Supabase mit Auto-Scaling, Row-Level Security und Ende-zu-Ende-Verschlüsselung für höchste Verfügbarkeit.",
-  },
-  {
     title: "Design, das verkauft",
     metric: "Conversion-UI",
     description:
       "Wir gestalten deine Website so, dass aus Besuchern echte Kunden werden, durch klares Design und den richtigen ersten Eindruck.",
     details:
       "Datengetriebenes UI/UX, durchdachte Call-to-Actions und Conversion-Funnels, die messbar mehr Anfragen und Käufe generieren.",
-  },
-  {
-    title: "Alles aus einer Hand",
-    metric: "1 Ansprechpartner",
-    description:
-      "Von der ersten Idee bis zur fertigen Website: ein Team, ein Ansprechpartner, kein Chaos. Du musst nichts koordinieren.",
-    details:
-      "Integrierter Prozess aus Strategie, Design, Entwicklung und Hosting, keine Schnittstellen zwischen Dienstleistern, klare Verantwortung.",
   },
   {
     title: "Transparente Festpreise",
@@ -75,12 +43,44 @@ const reasons: Reason[] = [
       "Dynamische Kostenkalkulation in Echtzeit. Feste Projektpakete statt stündlicher Abrechnungen, Planungssicherheit vom ersten Klick an.",
   },
   {
+    title: "Immer online & sicher",
+    metric: "Uptime 24/7",
+    description:
+      "Deine Website ist rund um die Uhr erreichbar und alle Kundendaten sind sicher geschützt. Automatisch und ohne extra Aufwand für dich.",
+    details:
+      "Serverless-Hosting auf Vercel & Supabase mit Auto-Scaling, Row-Level Security und Ende-zu-Ende-Verschlüsselung für höchste Verfügbarkeit.",
+  },
+  {
+    title: "Zukunftssichere Technik",
+    metric: "Next.js · TS",
+    description:
+      "Wir bauen mit Technologie, die noch in fünf Jahren einwandfrei funktioniert! Kein teurer Umbau, keine veralteten Systeme.",
+    details:
+      "Next.js App Router, TypeScript Strict Mode und saubere, typsichere Datenflüsse garantieren langfristige Wartbarkeit und einfache Erweiterungen.",
+  },
+  {
+    title: "Alles aus einer Hand",
+    metric: "1 Ansprechpartner",
+    description:
+      "Von der ersten Idee bis zur fertigen Website: ein Team, ein Ansprechpartner, kein Chaos. Du musst nichts koordinieren.",
+    details:
+      "Integrierter Prozess aus Strategie, Design, Entwicklung und Hosting, keine Schnittstellen zwischen Dienstleistern, klare Verantwortung.",
+  },
+  {
     title: "Automatisierte Prozesse",
     metric: "0 Zettelchaos",
     description:
       "Wir beenden das Zettelchaos. Ob digitale Terminbuchung, Mitarbeiter-Dashboard oder Planungs-App, wir digitalisieren und vereinfachen deinen Arbeitsalltag spürbar.",
     details:
       "Maßgeschneiderte Web-Apps mit Next.js. Automatische Workflows ersetzen manuelle Schritte und sparen deinem Team täglich wertvolle Zeit.",
+  },
+  {
+    title: "Berliner Unternehmen",
+    metric: "Antwort < 24h",
+    description:
+      "Du hast immer einen echten Ansprechpartner in Berlin, kein Ticket-System, kein Callcenter. Schnelle Antworten per E-Mail und Lead-Videos, in denen wir dir alles direkt zeigen.",
+    details:
+      "Regionale Präsenz kombiniert mit moderner Cloud-Infrastruktur. Direkter Draht zum Entwicklungsteam per E-Mail, kein Outsourcing ins Ausland.",
   },
 ];
 

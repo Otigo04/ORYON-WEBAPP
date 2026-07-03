@@ -1,5 +1,6 @@
 import { computeTotals, formatMoney, type LineItem } from "@/lib/documents";
 import { siteConfig } from "@/lib/site";
+import { BANK_DETAILS } from "@/lib/payment";
 
 type Meta = { label: string; value: string }[];
 
@@ -48,11 +49,17 @@ export function DocumentView({
   /**
    * Überweisungs-Box mit Bankverbindung. Wird gerendert, wenn gesetzt – etwa bei
    * offenen Rechnungen (Status „Versendet"). `reference` = Verwendungszweck.
+   * `note` = optionaler Zusatz-Hinweis unter der Bankverbindung (z. B.
+   * Liefer-/Freischaltungsinfo). Wird nur gerendert, wenn gesetzt – so erscheint
+   * produktspezifischer Text (etwa TAS-FLEET-Freischaltung) nicht auf jeder
+   * beliebigen Rechnung.
    */
-  payment?: { reference: string } | null;
+  payment?: { reference: string; note?: string | null } | null;
 }) {
   const totals = computeTotals(items, taxRate);
-  const bank = siteConfig.bank;
+  // Bankdaten aus den Umgebungsvariablen (payment.ts) – eine Quelle der Wahrheit,
+  // damit Rechnungen echte Kontodaten zeigen, sobald NEXT_PUBLIC_BANK_* gesetzt ist.
+  const bank = BANK_DETAILS;
 
   return (
     <article className="doc-sheet mx-auto max-w-3xl rounded-2xl bg-white p-8 text-neutral-900 shadow-xl sm:p-12">
@@ -181,10 +188,9 @@ export function DocumentView({
             <dt className="text-neutral-400">Verwendungszweck</dt>
             <dd className="font-medium text-neutral-700">{payment.reference}</dd>
           </dl>
-          <p className="mt-3 text-xs text-neutral-500">
-            Nach Zahlungseingang richten wir Ihren TAS-FLEET-Zugang innerhalb von 12 Stunden
-            ein und senden Ihnen die Zugangsdaten per E-Mail.
-          </p>
+          {payment.note && (
+            <p className="mt-3 text-xs text-neutral-500">{payment.note}</p>
+          )}
         </div>
       )}
 

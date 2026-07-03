@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { BrowserFrame } from "@/components/tas-fleet/BrowserFrame";
 import { FLEET_APP_URL, FLEET_DEMO_VIDEO_ID } from "@/lib/tas-fleet";
 
-const SideRays = dynamic(() => import("@/components/backgrounds/SideRays"), { ssr: false });
+const Particles = dynamic(() => import("@/components/backgrounds/Particles"), { ssr: false });
 
 /**
  * Hero der TAS-FLEET-Produktseite.
@@ -31,20 +31,17 @@ export function FleetHero() {
 
   return (
     <section className="relative overflow-hidden bg-black px-6 pb-20 pt-36">
-      {/* WebGL-Strahlen + Cyan-Glow */}
+      {/* WebGL-Partikel + Cyan-Glow */}
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
-        <SideRays
-          speed={0.9}
-          rayColor1="#00ff1a"
-          rayColor2="#22d3ee"
-          intensity={0.95}
-          spread={3}
-          origin="top-right"
-          tilt={0}
-          saturation={10}
-          blend={0.6}
-          falloff={3}
-          opacity={0.4}
+        <Particles
+          particleColors={["#09ed2d", "#22d3ee", "#5ef0c8"]}
+          particleCount={180}
+          particleSpread={10}
+          speed={0.1}
+          particleBaseSize={100}
+          moveParticlesOnHover={false}
+          alphaParticles={false}
+          disableRotation
         />
       </div>
       <div
@@ -97,7 +94,7 @@ export function FleetHero() {
 
           <p className="mt-6 flex items-center gap-2 text-sm text-white/40">
             <CheckIcon className="h-4 w-4 text-[#09ed2d]" />
-            Im Einsatz bei <span className="font-medium text-white/70">ON Mobility</span> · DSGVO-konform gehostet
+            Im Einsatz bei <span className="font-medium text-white/70">diversen Mietwagenunternehmen in Berlin</span> · DSGVO-konform gehostet
           </p>
         </div>
 
@@ -111,6 +108,7 @@ export function FleetHero() {
             src="/tas-fleet/screens/dashboard.png"
             alt="TAS-FLEET Dashboard, Flottenübersicht in Echtzeit"
             mock="dashboard"
+            label="Überblick"
           />
         </div>
       </div>

@@ -31,16 +31,6 @@ export const siteConfig = {
   /** Geokoordinaten (Berlin-Reinickendorf, Brunowstraße, für LocalBusiness). */
   geo: { latitude: 52.5876, longitude: 13.2887 },
   /**
-   * Bankverbindung für Überweisungen (TAS-FLEET-Rechnungen).
-   * PLATZHALTER – durch echte Daten ersetzen, bevor Rechnungen rausgehen.
-   */
-  bank: {
-    accountHolder: "Yakup Orhan Tas",
-    iban: "DE00 0000 0000 0000 0000 00",
-    bic: "XXXXXXXXXXX",
-    bankName: "Bank",
-  },
-  /**
    * Umsatzsteuer-Identifikationsnummer. `null`, da Kleinunternehmer nach
    * § 19 UStG, es wird keine USt-IdNr. geführt und keine USt. ausgewiesen.
    */

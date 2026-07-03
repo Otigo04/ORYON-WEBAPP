@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { getProjects, type Project } from "@/lib/portfolio";
+import { getProjects, projectImages, type Project } from "@/lib/portfolio";
+import { ProjectSlideshow } from "@/components/landing/ProjectSlideshow";
 
 /**
  * Portfolio-Grid: lädt die besten Projekte serverseitig aus Supabase (RSC),
@@ -86,13 +87,19 @@ export async function Portfolio() {
   );
 }
 
-/** Bildbereich: echtes Bild oder hochwertiger Browser-Mockup-Platzhalter. */
+/** Bildbereich: Diashow (mehrere Bilder), Einzelbild oder Browser-Mockup-Platzhalter. */
 function PreviewArea({ project, index }: { project: Project; index: number }) {
-  if (project.image_url) {
+  const images = projectImages(project);
+
+  if (images.length > 1) {
+    return <ProjectSlideshow images={images} title={project.title} />;
+  }
+
+  if (images.length === 1) {
     return (
       <div className="relative aspect-[16/10] overflow-hidden">
         <Image
-          src={project.image_url}
+          src={images[0]}
           alt={project.title}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

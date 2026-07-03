@@ -1,8 +1,9 @@
 import { FLEET_TESTIMONIALS } from "@/lib/tas-fleet";
 
 /**
- * Social Proof: Referenzhinweis auf ON Mobility plus 5-Sterne-Stimmen aus dem
- * Betriebsalltag. Reine Server Component.
+ * Social Proof: Referenzhinweis auf den Praxiseinsatz bei Berliner
+ * Mietwagenunternehmen plus 5-Sterne-Stimmen aus dem Betriebsalltag.
+ * Reine Server Component.
  */
 export function FleetSocialProof() {
   return (
@@ -24,7 +25,7 @@ export function FleetSocialProof() {
           </h2>
           <p className="mt-4 text-base text-white/60">
             Entwickelt in der Praxis, im täglichen Einsatz bei{" "}
-            <span className="font-medium text-white/80">ON Mobility</span>.
+            <span className="font-medium text-white/80">diversen Mietwagenunternehmen in Berlin</span>.
           </p>
         </header>
 

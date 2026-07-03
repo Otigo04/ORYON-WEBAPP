@@ -195,6 +195,46 @@ export function detectBriefIssues(brief: Brief): BriefIssue[] {
   return issues;
 }
 
+/**
+ * Verbindliche 9-Punkte-Konzept-Struktur. Jedes Kunden-Konzept folgt exakt
+ * diesem Aufbau, damit die Konzeption reproduzierbar und einheitlich ist.
+ * Wo möglich mit vorhandenen Brief-Daten vorbefüllt (Sitemap, Funktionen, Preis).
+ */
+export function conceptStructureLines(brief: Brief): string[] {
+  const data = brief.data ?? {};
+  const summary = data._summary;
+  const pages = asArray(data.pages);
+  const features = [
+    ...asArray(data.features),
+    ...(summary?.features ?? []),
+  ].filter((v, i, a) => a.indexOf(v) === i);
+  const price =
+    typeof brief.price_min === "number" && typeof brief.price_max === "number"
+      ? `${formatEuro(brief.price_min)} – ${formatEuro(brief.price_max)}`
+      : "aus Angebot übernehmen";
+
+  const sitemap = pages.length ? pages.join(", ") : "aus Projektart & Wünschen ableiten";
+  const funktionen = features.length ? features.join(", ") : "aus Auswahl übernehmen";
+  const projektart = summary?.projectType ?? "aus Brief";
+
+  return [
+    "## Konzept zuerst (verbindliche 9-Punkte-Struktur)",
+    "_Erstelle VOR der Umsetzung ein Kunden-Konzept nach exakt dieser Gliederung — " +
+      "kurz, in Kundensprache, 1–2 Seiten. Reihenfolge und Überschriften nicht ändern._",
+    "",
+    "1. **Ziel & Zielgruppe** — je ein Satz: Was soll die Seite erreichen, wer ist die Zielgruppe?",
+    `2. **Seitenstruktur (Sitemap)** — Seiten/Sections. Basis: ${sitemap}.`,
+    `3. **Funktionsumfang** — konkrete Features. Basis: ${funktionen}.`,
+    "4. **Design-Richtung** — Stil, Farben, Referenzen (aus Brief: Vision, Referenzen, Dislikes).",
+    "5. **Content-Bedarf** — was der Kunde liefern muss: Texte, Bilder, Logo, Zugänge.",
+    "6. **Technik & Hosting** — Next.js/TypeScript, Domain, DSGVO, Hosting (Vercel/Supabase).",
+    "7. **Zeitplan** — grobe Meilensteine bis Launch.",
+    `8. **Preis & Leistungsumfang** — Festpreis (${price}), was inklusive ist, was Zusatz.`,
+    "9. **Nächster Schritt** — Freigabe → 50 % Anzahlung → Projektstart.",
+    "",
+  ];
+}
+
 export function buildBriefPrompt(brief: Brief): string {
   const lines: string[] = [];
   const title = brief.company || brief.name;
@@ -247,6 +287,9 @@ export function buildBriefPrompt(brief: Brief): string {
       "annehmen.",
   );
   lines.push("");
+
+  // --- Verbindliche Konzept-Struktur (immer gleich) ---
+  lines.push(...conceptStructureLines(brief));
 
   // --- Automatisch erkannte Konflikte & Lücken ---
   const issues = detectBriefIssues(brief);

@@ -72,7 +72,12 @@ export function FleetFeatures() {
 
                 {/* Mockup */}
                 <div className={reversed ? "lg:order-1" : ""}>
-                  <BrowserFrame src={module.image} alt={module.title} mock={module.mock} />
+                  <BrowserFrame
+                    src={module.image}
+                    alt={module.title}
+                    mock={module.mock}
+                    label={module.eyebrow}
+                  />
                 </div>
               </article>
             );

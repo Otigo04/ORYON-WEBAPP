@@ -300,7 +300,7 @@ export const FLEET_TESTIMONIALS: FleetTestimonial[] = [
     quote:
       "Seit wir mit TAS-FLEET disponieren, ist die Zettelwirtschaft komplett verschwunden. Der Schichtplan ist in Minuten fertig und jeder Fahrer weiß sofort Bescheid.",
     author: "Betriebsleitung",
-    role: "ON Mobility",
+    role: "Mietwagenunternehmen, Berlin",
     rating: 5,
   },
   {

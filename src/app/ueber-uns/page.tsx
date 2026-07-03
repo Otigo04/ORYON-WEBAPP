@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
+import LightPillarBackground from "@/components/backgrounds/LightPillarBackground";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -79,8 +80,15 @@ export default function UeberUnsPage() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
 
-      {/* Hero */}
-      <section className="mx-auto max-w-5xl px-6 pb-12 pt-28 sm:pt-32">
+      {/* Hero mit WebGL-LightPillar-Hintergrund */}
+      <div className="relative isolate overflow-hidden">
+        <LightPillarBackground />
+        {/* Lesbarkeits-Overlay über dem WebGL-Hintergrund */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-black/50 via-black/30 to-black"
+        />
+        <section className="mx-auto max-w-5xl px-6 pb-12 pt-28 sm:pt-32">
         <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#09ed2d]">
           Über uns
         </p>
@@ -107,7 +115,8 @@ export default function UeberUnsPage() {
             </div>
           ))}
         </dl>
-      </section>
+        </section>
+      </div>
 
       {/* Story */}
       <section className="mx-auto max-w-5xl px-6 py-12">

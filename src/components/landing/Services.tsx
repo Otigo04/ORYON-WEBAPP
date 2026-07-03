@@ -188,9 +188,9 @@ export function Services() {
             Deine Herausforderung. Unsere Lösung.
           </h2>
           <p className="mt-4 text-base text-white/60">
-            Viele Firmen lassen online unbemerkt Kunden liegen. Wir decken die Fehler auf deiner
-            Website auf und beheben sie direkt, zum fairen Festpreis, der weit unter den Preisen
-            klassischer Agenturen liegt.
+            Wir bauen dir eine Website, die verkauft: individuell gestaltet, blitzschnell und
+            von Grund auf für Google und Conversion optimiert. Alles aus einer Hand, zum fairen
+            Festpreis, der weit unter den Preisen klassischer Agenturen liegt.
           </p>
         </header>
 

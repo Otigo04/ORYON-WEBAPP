@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { RainbowButton } from "@/components/ui/rainbow-button";
-import { BRIEF_STORAGE_KEY, BRIEF_HANDOFF_KEY, emptyDraft, type BriefDraft } from "@/lib/brief";
+import { BRIEF_STORAGE_KEY, emptyDraft, type BriefDraft } from "@/lib/brief";
 import {
   PRICING,
   PROJECT_TYPES,
@@ -89,9 +89,6 @@ export function Preisrechner() {
 
     try {
       localStorage.setItem(BRIEF_STORAGE_KEY, JSON.stringify(next));
-      // Marker: frische Übergabe → im Konfigurator hat diese Auswahl Vorrang
-      // vor einem evtl. älteren Konto-Entwurf.
-      localStorage.setItem(BRIEF_HANDOFF_KEY, "1");
     } catch {
       /* Speicher nicht verfügbar, Konfigurator startet dann leer */
     }
@@ -216,7 +213,7 @@ export function Preisrechner() {
           {/* Hosting, Pflichtauswahl (Ja/Nein), monatlich & projektabhängig */}
           <div
             className={`mt-3 rounded-xl border p-4 transition ${
-              hosting === null
+            hosting === null
                 ? "border-amber-400/40 bg-amber-400/[0.04]"
                 : "border-white/10 bg-white/5"
             }`}

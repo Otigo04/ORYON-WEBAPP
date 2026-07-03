@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export function BrandSection() {
   return (
-    <section className="bg-black py-14 flex flex-col items-center justify-center border-t border-white/5">
+    <section className="bg-gradient-to-b from-black via-[#04120b] to-black py-14 flex flex-col items-center justify-center border-t border-white/5">
       <Image
         src="/logo/tas_wordmark.svg"
         alt="TAS Webworks"

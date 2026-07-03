@@ -9,40 +9,12 @@ export type Testimonial = {
 };
 
 /**
- * Dummy-Bewertungen (alle 5 Sterne) als Fallback, falls die Supabase-Datenbank
- * leer oder nicht verbunden ist, so bleibt die Onepage immer befüllt.
- */
-const fallbackTestimonials: Testimonial[] = [
-  {
-    id: "fallback-1",
-    author: "Lena Brandt",
-    role: "Gründerin, NORDLICHT Studio",
-    quote:
-      "TAS Webworks hat unsere Plattform in Rekordzeit umgesetzt. Schnell, sauber und messbar mehr Anfragen über die Seite.",
-    rating: 5,
-  },
-  {
-    id: "fallback-2",
-    author: "Marco Vogel",
-    role: "Geschäftsführer, Vogel Logistik",
-    quote:
-      "Vom ersten Entwurf bis zum Launch alles aus einer Hand. Das Team denkt mit und liefert verlässlich.",
-    rating: 5,
-  },
-  {
-    id: "fallback-3",
-    author: "Sophie Keller",
-    role: "Marketing-Lead, Helio GmbH",
-    quote:
-      "Die neue Landingpage performt herausragend. Ladezeiten, Design und Conversion, einfach top.",
-    rating: 5,
-  },
-];
-
-/**
- * Lädt Kundenbewertungen serverseitig aus Supabase (RLS-konform, nur
- * öffentlich freigegebene Einträge). Bei fehlender Konfiguration, leerer
- * Tabelle oder Fehlern wird auf die Dummy-Bewertungen zurückgegriffen.
+ * Lädt echte, öffentlich freigegebene Kundenbewertungen serverseitig aus
+ * Supabase (RLS-konform). Bewusst OHNE Fake-/Dummy-Fallback: solange keine
+ * echten Referenzen vorliegen, gibt die Funktion ein leeres Array zurück und
+ * die Landingpage zeigt stattdessen eine ehrliche „Versprechen"-Sektion
+ * (siehe Testimonials-Komponente). Erfundene Stimmen wären nach § 5 UWG
+ * irreführend und untergraben Vertrauen.
  */
 export async function getTestimonials(): Promise<Testimonial[]> {
   const hasSupabaseEnv =
@@ -50,7 +22,7 @@ export async function getTestimonials(): Promise<Testimonial[]> {
     !!process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   if (!hasSupabaseEnv) {
-    return fallbackTestimonials;
+    return [];
   }
 
   try {
@@ -63,13 +35,13 @@ export async function getTestimonials(): Promise<Testimonial[]> {
       .order("created_at", { ascending: false })
       .limit(6);
 
-    if (error || !data || data.length === 0) {
-      return fallbackTestimonials;
+    if (error || !data) {
+      return [];
     }
 
     return data as Testimonial[];
   } catch {
-    return fallbackTestimonials;
+    return [];
   }
 }
 

@@ -5,9 +5,23 @@ export type Project = {
   title: string;
   category: string;
   description: string;
-  /** Optionaler Bild-URL; ist keiner gesetzt, rendert die UI einen Verlauf. */
+  /** Cover-Bild; ist keiner gesetzt, rendert die UI einen Verlauf. */
   image_url: string | null;
+  /** Weitere Galeriebilder für die Diashow (öffentliche Storage-URLs). */
+  images: string[] | null;
 };
+
+/**
+ * Vollständige Bildliste eines Projekts für die Diashow: Cover (`image_url`)
+ * zuerst, danach die weiteren `images` – ohne Duplikate. Leeres Array, wenn
+ * kein Bild vorliegt (die UI zeigt dann einen Verlauf-Fallback).
+ */
+export function projectImages(p: Pick<Project, "image_url" | "images">): string[] {
+  const all = [p.image_url, ...(p.images ?? [])].filter(
+    (u): u is string => typeof u === "string" && u.length > 0,
+  );
+  return Array.from(new Set(all));
+}
 
 /**
  * Dummy-Projekte als Fallback, falls die Supabase-Datenbank leer oder nicht
@@ -21,6 +35,7 @@ const fallbackProjects: Project[] = [
     description:
       "Repräsentative One-Page mit Buchungsstrecke. 40 % mehr qualifizierte Anfragen im ersten Quartal.",
     image_url: null,
+    images: null,
   },
   {
     id: "fallback-2",
@@ -29,6 +44,7 @@ const fallbackProjects: Project[] = [
     description:
       "Kundenportal mit Echtzeit-Sendungsverfolgung und abgesichertem Login via Supabase Auth.",
     image_url: null,
+    images: null,
   },
   {
     id: "fallback-3",
@@ -37,6 +53,7 @@ const fallbackProjects: Project[] = [
     description:
       "Anschauliche Galerie-Seite mit ruhigen Animationen und makelloser Bildqualität. Ladezeit unter 1 s.",
     image_url: null,
+    images: null,
   },
   {
     id: "fallback-4",
@@ -45,6 +62,7 @@ const fallbackProjects: Project[] = [
     description:
       "SEO-optimierte Mehrseiten-Präsenz mit CMS-Anbindung und Lead-Formularen.",
     image_url: null,
+    images: null,
   },
   {
     id: "fallback-5",
@@ -53,6 +71,7 @@ const fallbackProjects: Project[] = [
     description:
       "Online-Terminbuchung rund um die Uhr. Rund 60 % weniger Telefonaufwand für das Team.",
     image_url: null,
+    images: null,
   },
   {
     id: "fallback-6",
@@ -61,6 +80,7 @@ const fallbackProjects: Project[] = [
     description:
       "Unsere eigene Flottenlösung: Disposition, Compliance und Live-Dashboard in Echtzeit.",
     image_url: null,
+    images: null,
   },
 ];
 
@@ -82,7 +102,7 @@ export async function getProjects(): Promise<Project[]> {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("showcase_projects")
-      .select("id, title, category, description, image_url")
+      .select("id, title, category, description, image_url, images")
       .eq("published", true)
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: false })
@@ -107,7 +127,7 @@ export type ShowcaseProject = Project & {
 };
 
 const ADMIN_COLS =
-  "id, created_at, title, category, description, image_url, project_url, sort_order, published";
+  "id, created_at, title, category, description, image_url, images, project_url, sort_order, published";
 
 /** Alle Referenzprojekte (inkl. Entwürfe), nur für Admins (RLS). */
 export async function getAllShowcaseProjects(): Promise<ShowcaseProject[]> {
