@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { LegalShell, LegalSection } from "@/components/legal/LegalShell";
 import { siteConfig } from "@/lib/site";
 import { DEPOSIT_RATE } from "@/lib/payment";
+import { VAT_NOTE } from "../../../pricing.config";
 
 export const metadata: Metadata = {
   title: "AGB",
@@ -80,8 +81,7 @@ export default function AgbPage() {
 
       <LegalSection heading="§ 5 Preise und Zahlungsbedingungen">
         <p>
-          Es gelten die im angenommenen Angebot ausgewiesenen Festpreise. Gemäß § 19 UStG
-          (Kleinunternehmerregelung) wird keine Umsatzsteuer ausgewiesen.
+          Es gelten die im angenommenen Angebot ausgewiesenen Festpreise. {VAT_NOTE}
         </p>
         <p>
           Sofern nicht anders vereinbart, ist bei Projektbeginn eine Anzahlung in Höhe von{" "}

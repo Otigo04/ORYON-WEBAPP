@@ -32,10 +32,10 @@ export const VAT_NOTE = SMALL_BUSINESS_VAT_EXEMPT
 export const pricingConfig = {
   /** Projektarten – `base` ist die Einmalpreis-Spanne [min, max]. */
   projectTypes: {
-    onepager:    { label: "One-Pager / Landingpage", base: [95, 195],     complex: false },
-    website:     { label: "Mehrseitige Website",      base: [199, 399],    complex: false },
-    shopSimple:  { label: "Einfacher Online-Shop",    base: [450, 990],    complex: false },
-    shopComplex: { label: "Komplexer Online-Shop",    base: [1490, 4900],  complex: true  },
+    onepager:    { label: "One-Pager / Landingpage", base: [900, 1800],    complex: false },
+    website:     { label: "Mehrseitige Website",      base: [2500, 5000],   complex: false },
+    shopSimple:  { label: "Einfacher Online-Shop",    base: [4000, 8000],   complex: false },
+    shopComplex: { label: "Komplexer Online-Shop",    base: [12000, 30000], complex: true  },
   },
 
   /**
@@ -86,8 +86,8 @@ export const pricingConfig = {
 
   /**
    * Aufpreise des Detail-Konfigurators (`src/lib/brief.ts`) je Frage und Option.
-   * Schlüssel = Feldname, danach Options-Label → Betrag in Euro. Einmalig bzw.
-   * monatlich. Hier ändern, nicht im Code.
+   * Schlüssel = Feldname, danach Options-Label → Betrag in Euro. Einmalig.
+   * Hier ändern, nicht im Code.
    */
   briefAddOns: {
     oneTime: {
@@ -125,11 +125,6 @@ export const pricingConfig = {
         "Social Media (inkl. WhatsApp)": 20,
         "Google Maps": 10,
         "CRM-Anbindung": 49,
-      },
-    },
-    monthly: {
-      hostingStatus: {
-        "Nein, bitte übernehmen": 14,
       },
     },
   },

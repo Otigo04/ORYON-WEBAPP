@@ -846,10 +846,10 @@ function Summary({ draft }: { draft: BriefDraft }) {
             ca. {formatRange(estimate.oneTimeMin, estimate.oneTimeMax)}
           </span>
         </div>
-        {estimate.hosting > 0 && (
+        {estimate.hostingMax > 0 && (
           <div className="mt-1 flex items-baseline justify-between gap-3 text-xs text-white/55">
             <span>Hosting</span>
-            <span className="tabular-nums">+ {formatEuro(estimate.hosting)}/Monat</span>
+            <span className="tabular-nums">+ {formatRange(estimate.hostingMin, estimate.hostingMax)}/Monat</span>
           </div>
         )}
         {estimate.maintenanceMax > 0 && (
@@ -1022,10 +1022,12 @@ function CostCounter({ draft }: { draft: BriefDraft }) {
             </dd>
           </div>
         )}
-        {estimate.hosting > 0 && (
+        {estimate.hostingMax > 0 && (
           <div className="flex items-center justify-between gap-2">
             <dt className="text-white/50">Hosting</dt>
-            <dd className="tabular-nums text-white/80">{formatEuro(estimate.hosting)}/Mt.</dd>
+            <dd className="tabular-nums text-white/80">
+              {formatRange(estimate.hostingMin, estimate.hostingMax)}/Mt.
+            </dd>
           </div>
         )}
         {estimate.maintenanceMax > 0 && (

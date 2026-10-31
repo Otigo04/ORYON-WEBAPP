@@ -1,4 +1,4 @@
-import { PRICING, maintenanceRangeFor, type FeatureKey } from "@/lib/pricing";
+import { PRICING, hostingRangeFor, maintenanceRangeFor, type FeatureKey } from "@/lib/pricing";
 
 /**
  * Datenmodell des detaillierten Projekt-Konfigurators.
@@ -28,8 +28,6 @@ export type BriefField = {
    * eingerechnet. Nur für select-/multi-Felder sinnvoll.
    */
   prices?: Record<string, number>;
-  /** Monatlicher Aufpreis (z. B. Hosting) je Option – Schlüssel = Options-Label. */
-  monthlyPrices?: Record<string, number>;
   /** Kurze Erklärung je Option (für das „?"-Tooltip). Schlüssel = Options-Label. */
   optionHelp?: Record<string, string>;
   /**
@@ -341,7 +339,6 @@ export const BRIEF_STEPS: BriefStep[] = [
         label: "Hosting vorhanden?",
         type: "select",
         options: ["Ja, vorhanden", "Nein, bitte übernehmen", "Noch unklar"],
-        monthlyPrices: PRICING.briefAddOns.monthly.hostingStatus,
         optionHelp: {
           "Ja, vorhanden": "Du hast bereits Webspace / Hosting.",
           "Nein, bitte übernehmen": "Ich übernehme das Hosting deiner Seite.",
@@ -547,8 +544,9 @@ export type BriefEstimate = {
   /** Gesamte einmalige Richtwert-Spanne. */
   oneTimeMin: number;
   oneTimeMax: number;
-  /** Monatliches Hosting (genau einmal gezählt – nie doppelt). */
-  hosting: number;
+  /** Monatliches Hosting als Spanne je Projektart (wie im Preisrechner). */
+  hostingMin: number;
+  hostingMax: number;
   /** Monatliche Wartung & Pflege als Spanne (optional, aus dem Preisrechner). */
   maintenanceMin: number;
   maintenanceMax: number;
@@ -585,9 +583,6 @@ export function computeBriefEstimate(data: BriefData, summary: BriefSummary): Br
 
   let addOnsMin = 0;
   let addOnsMax = 0;
-  // Hosting kommt ausschließlich aus der Hosting-Frage (monthlyPrices) und wird so
-  // genau einmal gezählt – nicht doppelt zur Wartung & Pflege addiert.
-  let hosting = 0;
 
   for (const step of BRIEF_STEPS) {
     for (const field of step.fields) {
@@ -600,7 +595,6 @@ export function computeBriefEstimate(data: BriefData, summary: BriefSummary): Br
           addOnsMin += p;
           addOnsMax += p;
         }
-        if (field.monthlyPrices) hosting += field.monthlyPrices[opt] ?? 0;
       }
     }
   }
@@ -620,6 +614,20 @@ export function computeBriefEstimate(data: BriefData, summary: BriefSummary): Br
   addOnsMin += langs * PRICING.extraLanguage.price[0];
   addOnsMax += langs * PRICING.extraLanguage.price[1];
 
+  // Hosting: gleiche Logik wie im Preisrechner – Spanne je Projektart aus
+  // `pricing.config.ts`. Entfällt nur, wenn der Kunde bereits eigenes Hosting hat.
+  let hostingMin = 0;
+  let hostingMax = 0;
+  if (
+    data.hostingStatus !== "Ja, vorhanden" &&
+    summary.projectType &&
+    summary.projectType in PRICING.projectTypes
+  ) {
+    const h = hostingRangeFor(summary.projectType as keyof typeof PRICING.projectTypes);
+    hostingMin = h[0];
+    hostingMax = h[1];
+  }
+
   // Optionale Wartung aus dem Preisrechner – als eigener, klar getrennter Posten.
   let maintenanceMin = 0;
   let maintenanceMax = 0;
@@ -636,10 +644,11 @@ export function computeBriefEstimate(data: BriefData, summary: BriefSummary): Br
     addOnsMax,
     oneTimeMin: baseMin + addOnsMin,
     oneTimeMax: baseMax + addOnsMax,
-    hosting,
+    hostingMin,
+    hostingMax,
     maintenanceMin,
     maintenanceMax,
-    monthlyMin: hosting + maintenanceMin,
-    monthlyMax: hosting + maintenanceMax,
+    monthlyMin: hostingMin + maintenanceMin,
+    monthlyMax: hostingMax + maintenanceMax,
   };
 }
