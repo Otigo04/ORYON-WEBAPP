@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { computeTotals, formatMoney, type LineItem } from "@/lib/documents";
+import { SMALL_BUSINESS_VAT_EXEMPT, VAT_NOTE } from "../../../pricing.config";
 
 const inputBase =
   "rounded-lg border border-white/12 bg-black/40 px-3 py-2 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-[#09ed2d]/60";
@@ -90,7 +91,11 @@ export function LineItemsEditor({
 
       <div className="ml-auto mt-2 w-full max-w-xs space-y-1 text-sm">
         <Row label="Netto" value={formatMoney(totals.net)} />
-        <Row label={`MwSt. (${taxRate}%)`} value={formatMoney(totals.tax)} />
+        {SMALL_BUSINESS_VAT_EXEMPT ? (
+          <p className="text-xs text-white/40">{VAT_NOTE}</p>
+        ) : (
+          <Row label={`MwSt. (${taxRate}%)`} value={formatMoney(totals.tax)} />
+        )}
         <Row label="Gesamt" value={formatMoney(totals.gross)} strong />
       </div>
     </div>

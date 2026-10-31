@@ -1,4 +1,5 @@
 import { computeTotals, formatMoney, type LineItem } from "@/lib/documents";
+import { SMALL_BUSINESS_VAT_EXEMPT, VAT_NOTE } from "../../../pricing.config";
 import { siteConfig } from "@/lib/site";
 
 type Meta = { label: string; value: string }[];
@@ -107,10 +108,14 @@ export function DocumentView({
             <dt className="text-neutral-500">Netto</dt>
             <dd className="tabular-nums">{formatMoney(totals.net, currency)}</dd>
           </div>
-          <div className="flex justify-between">
-            <dt className="text-neutral-500">zzgl. MwSt. ({taxRate}%)</dt>
-            <dd className="tabular-nums">{formatMoney(totals.tax, currency)}</dd>
-          </div>
+          {SMALL_BUSINESS_VAT_EXEMPT ? (
+            <p className="text-xs text-neutral-500">{VAT_NOTE}</p>
+          ) : (
+            <div className="flex justify-between">
+              <dt className="text-neutral-500">zzgl. MwSt. ({taxRate}%)</dt>
+              <dd className="tabular-nums">{formatMoney(totals.tax, currency)}</dd>
+            </div>
+          )}
           <div className="flex justify-between border-t border-neutral-300 pt-1 text-base font-bold">
             <dt>Gesamtbetrag</dt>
             <dd className="tabular-nums">{formatMoney(totals.gross, currency)}</dd>
@@ -128,7 +133,9 @@ export function DocumentView({
         {siteConfig.legalName}
         {siteConfig.vatId
           ? ` · USt-IdNr. ${siteConfig.vatId}`
-          : " · Kleinunternehmer gemäß § 19 UStG"}
+          : SMALL_BUSINESS_VAT_EXEMPT
+            ? " · Kleinunternehmer gemäß § 19 UStG"
+            : ""}
       </footer>
     </article>
   );

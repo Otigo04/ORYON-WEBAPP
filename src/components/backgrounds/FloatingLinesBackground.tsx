@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useWebglAllowed } from "@/lib/use-webgl-allowed";
 
 /**
  * SSR-sicherer Wrapper für die WebGL-FloatingLines (three.js).
@@ -18,6 +19,9 @@ type Props = {
 };
 
 export default function FloatingLinesBackground({ className = "" }: Props) {
+  const webglAllowed = useWebglAllowed();
+  if (!webglAllowed) return null;
+
   return (
     <div className={`pointer-events-none absolute inset-0 -z-10 ${className}`} aria-hidden="true">
       <FloatingLines

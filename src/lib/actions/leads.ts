@@ -1,8 +1,10 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { calculatePrice, quoteLeadSchema } from "@/lib/pricing";
+import { calculatePrice } from "@/lib/pricing";
+import { quoteLeadSchema } from "@/lib/pricing-schemas";
 import { notifyNewLead } from "@/lib/notify";
+import { launchFlags, siteConfig } from "@/lib/site";
 
 export type SaveQuoteState = {
   ok: boolean;
@@ -26,6 +28,11 @@ export type SaveQuoteState = {
  *   Anonyme Anfragen (ohne Login) sind erlaubt (`user_id` = null).
  */
 export async function saveQuoteLead(input: unknown): Promise<SaveQuoteState> {
+  // Wie beim Konfigurator: ohne Eingangskanal keine Anfragen annehmen.
+  if (!launchFlags.configuratorSubmit) {
+    return { ok: false, error: `Anfragen laufen gerade per E-Mail: ${siteConfig.email}` };
+  }
+
   const parsed = quoteLeadSchema.safeParse(input);
   if (!parsed.success) {
     return {
@@ -42,9 +49,9 @@ export async function saveQuoteLead(input: unknown): Promise<SaveQuoteState> {
     !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
     !!process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-  // Ohne Konfiguration: nicht hart scheitern, damit die UI lokal testbar bleibt.
+  // Ohne Backend wird nichts gespeichert → niemals Erfolg melden.
   if (!hasSupabaseEnv) {
-    return { ok: true, demo: true };
+    return { ok: false, error: "Die Anfrage konnte nicht gespeichert werden. Bitte versuche es später erneut." };
   }
 
   try {

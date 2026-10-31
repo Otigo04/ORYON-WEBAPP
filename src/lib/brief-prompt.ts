@@ -24,7 +24,7 @@ export function buildBriefPrompt(brief: Brief): string {
   lines.push("");
   lines.push(
     "Du bist Web-Designer und Entwickler bei TAS Webworks. Unten steht die " +
-      "vollständige Konfiguration, die der Kunde über unseren Projekt-Konfigurator " +
+      "vollständige Konfiguration, die der Kunde über den Projekt-Konfigurator " +
       "eingegeben hat. Arbeite auf dieser Basis an der Vision des Kunden: Schlage " +
       "Struktur, Inhalte und Umsetzung der Website vor und setze sie um.",
   );

@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { customerHome, launchFlags } from "@/lib/site";
 
 /**
  * Aktualisiert die Supabase-Session bei jedem Request (Token-Refresh) und
@@ -47,7 +48,8 @@ export async function updateSession(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
   const isAdminArea = path.startsWith("/admin");
-  const isProtected = path.startsWith("/dashboard") || isAdminArea;
+  const isDashboard = path.startsWith("/dashboard");
+  const isProtected = isDashboard || isAdminArea;
   const isAuthPage = path === "/login" || path === "/register";
 
   // Hilfsfunktion: Redirect mit übertragenen Auth-Cookies.
@@ -58,6 +60,12 @@ export async function updateSession(request: NextRequest) {
     supabaseResponse.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
     return redirect;
   };
+
+  // Kundenportal ausgeschaltet → 404 aus der Seite selbst (kein Login-Redirect,
+  // damit der Pfad nicht als „existiert hinter Login" erkennbar ist).
+  if (isDashboard && !launchFlags.dashboard) {
+    return supabaseResponse;
+  }
 
   // Geschützte Route ohne Login → zur Anmeldung.
   if (!user && isProtected) {
@@ -73,14 +81,14 @@ export async function updateSession(request: NextRequest) {
       .maybeSingle();
 
     if (profile?.role !== "admin") {
-      return redirectTo("/dashboard");
+      return redirectTo(customerHome);
     }
   }
 
   // Bereits eingeloggt, aber auf Login/Register → ins Dashboard.
   if (user && isAuthPage) {
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/dashboard";
+    redirectUrl.pathname = launchFlags.dashboard ? "/dashboard" : "/admin";
     const redirect = NextResponse.redirect(redirectUrl);
     supabaseResponse.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
     return redirect;

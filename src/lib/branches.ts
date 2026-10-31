@@ -1,16 +1,18 @@
 /**
- * Branchen-Lösungen von OTIGO Digital.
+ * Branchen-Lösungen von TAS Webworks.
  *
  * Zentrale Datenquelle für das "Leistungen"-Dropdown in der Navbar sowie für die
  * dynamischen Branchenseiten unter `/branchen/[slug]`. So bleiben Navigation und
  * Landingpages immer synchron.
  */
+import { launchFlags } from "@/lib/site";
+
 export type Branche = {
   /** URL-Segment unter /branchen/<slug>. */
   slug: string;
   /** Branche – wird im Dropdown als kleine Überschrift gezeigt. */
   industry: string;
-  /** Konkrete OTIGO-Lösung für diese Branche (Card-Titel). */
+  /** Konkrete Lösung für diese Branche (Card-Titel). */
   solution: string;
   /** Kurzbeschreibung für Dropdown & SEO-Description. */
   description: string;
@@ -29,16 +31,16 @@ export type Branche = {
   href?: string;
 };
 
-export const branches: Branche[] = [
+const allBranches: Branche[] = [
   {
     slug: "personenbefoerderung",
     industry: "Personenbeförderung",
-    solution: "TAS-FLEET – Ihre Flottenlösung",
+    solution: "TAS-FLEET – deine Flottenlösung",
     description:
       "Digitale Flotten-, Buchungs- und Dispositionsverwaltung für Taxi-, Mietwagen- und Shuttle-Unternehmen.",
     headline: "TAS-FLEET – Die digitale Flottenlösung für die Personenbeförderung",
     intro:
-      "Schluss mit Zettelwirtschaft und Telefonchaos. TAS-FLEET bündelt Buchung, Disposition und Abrechnung in einer schnellen, sicheren Web-App – maßgeschneidert für Taxi-, Mietwagen- und Shuttle-Betriebe.",
+      "Schluss mit Zettelwirtschaft und Telefonchaos. TAS-FLEET bündelt Buchung, Disposition und Abrechnung in einer Web-App für Taxi-, Mietwagen- und Shuttle-Betriebe.",
     features: [
       "Online-Buchung & automatische Disposition",
       "Fahrer-, Fahrzeug- und Schichtverwaltung",
@@ -50,17 +52,17 @@ export const branches: Branche[] = [
   {
     slug: "handel",
     industry: "Einzel- & Großhandel",
-    solution: "Ihr eigener One-Pager oder Online-Shop",
+    solution: "Dein eigener One-Pager oder Online-Shop",
     description:
       "Vom repräsentativen One-Pager bis zum vollwertigen Online-Shop mit Zahlungsanbindung und Lagerübersicht.",
     headline: "Online-Präsenz & Shop für Einzel- und Großhandel",
     intro:
-      "Ob digitale Visitenkarte oder voller Verkaufskanal: Wir bauen Ihnen eine blitzschnelle, conversion-starke Präsenz – vom eleganten One-Pager bis zum skalierbaren Online-Shop mit Zahlungs- und Warenwirtschaftsanbindung.",
+      "Ob digitale Visitenkarte oder voller Verkaufskanal: Ich baue dir eine Webpräsenz, die zu deinem Geschäft passt – vom One-Pager bis zum Online-Shop mit Zahlungsanbindung und Lagerübersicht.",
     features: [
       "Repräsentativer One-Pager oder vollwertiger Shop",
       "Sichere Zahlungsanbindung (Stripe & Co.)",
       "Produkt- & Lagerverwaltung",
-      "SEO-optimiert für lokale & überregionale Reichweite",
+      "Grundlegende SEO für lokale und überregionale Suche",
     ],
   },
   {
@@ -68,18 +70,26 @@ export const branches: Branche[] = [
     industry: "Handwerk",
     solution: "One-Pager mit Online-Terminbuchung",
     description:
-      "Moderne Webpräsenz mit integrierter Terminbuchung – Kunden buchen rund um die Uhr, ganz ohne Telefon.",
+      "Webpräsenz mit integrierter Terminbuchung – Kunden können Termine online anfragen, auch außerhalb deiner Arbeitszeit.",
     headline: "Moderne Webpräsenz mit Online-Terminbuchung fürs Handwerk",
     intro:
-      "Gewinnen Sie Aufträge, während Sie arbeiten. Wir verbinden einen modernen One-Pager mit einer integrierten Online-Terminbuchung – damit Ihre Kunden rund um die Uhr buchen und Sie sich aufs Handwerk konzentrieren.",
+      "Kunden finden dich online und buchen direkt einen Termin, während du auf der Baustelle bist. Ich verbinde einen One-Pager mit einer Online-Terminbuchung, damit du dich aufs Handwerk konzentrieren kannst.",
     features: [
-      "Moderner, mobil-optimierter One-Pager",
-      "Integrierte Online-Terminbuchung 24/7",
+      "One-Pager für Handy und Desktop",
+      "Integrierte Online-Terminbuchung",
       "Automatische Termin-Erinnerungen",
-      "Galerie für Referenzen & Projekte",
+      "Galerie für deine Arbeiten",
     ],
   },
 ];
+
+/**
+ * Sichtbare Branchen. TAS-FLEET erscheint erst, wenn `launchFlags.tasFleet`
+ * aktiv ist (siehe `src/lib/site.ts`).
+ */
+export const branches: Branche[] = allBranches.filter(
+  (b) => launchFlags.tasFleet || b.href !== "/leistungen/tas-fleet",
+);
 
 export function getBranche(slug: string): Branche | undefined {
   return branches.find((b) => b.slug === slug);

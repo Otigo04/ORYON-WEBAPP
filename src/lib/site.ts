@@ -1,3 +1,5 @@
+import { SMALL_BUSINESS_VAT_EXEMPT } from "../../pricing.config";
+
 /**
  * Zentrale Stammdaten der Firma & Website.
  *
@@ -13,11 +15,17 @@ export const siteConfig = {
   legalName: "TAS Webworks (Inhaber: Yakup Orhan Tas)",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.tas-webworks.de",
   description:
-    "TAS Webworks ist deine Webagentur aus Berlin für blitzschnelle, SEO-optimierte Websites, Online-Shops und Landingpages – preiswert, modern und conversion-stark. Richtpreis in 60 Sekunden berechnen.",
+    "TAS Webworks baut Websites, Landingpages und Online-Shops für kleine Unternehmen. Mit dem Preisrechner erhältst du in einer Minute einen unverbindlichen Richtpreis.",
   /** Kurze Tagline für OG-Bild & Social. */
-  tagline: "Preiswerte Webagentur aus Berlin",
+  tagline: "Websites und Online-Shops aus Berlin",
   locale: "de_DE",
-  email: "kontakt@tas-webworks.de",
+  /**
+   * Kontakt-E-Mail. Noch kein Postfach eingerichtet → sichtbarer Platzhalter.
+   * Sobald es existiert: Adresse eintragen und `hasEmail` auf `true` setzen
+   * (aktiviert mailto-Links, JSON-LD und Lead-Benachrichtigung).
+   */
+  email: "[PLATZHALTER: Kontakt-E-Mail]",
+  hasEmail: false,
   /** Kontakt-/Impressum-Telefonnummer. */
   telephone: "+49 159 01054910",
   /** Ladungsfähige Anschrift (Impressum § 5 TMG). */
@@ -35,22 +43,41 @@ export const siteConfig = {
    * § 19 UStG – es wird keine USt-IdNr. geführt und keine USt. ausgewiesen.
    */
   vatId: null,
-  /** Kleinunternehmer-Regelung nach § 19 UStG. */
-  smallBusiness: true,
+  /** Kleinunternehmer-Regelung nach § 19 UStG – gesteuert in `pricing.config.ts`. */
+  smallBusiness: SMALL_BUSINESS_VAT_EXEMPT,
   founder: "Yakup Orhan Tas",
   foundingYear: "2024",
-  social: {
-    twitter: "@taswebworks",
-    linkedin: "https://www.linkedin.com/company/tas-webworks",
-    instagram: "https://www.instagram.com/tas.webworks",
-  },
 } as const;
 
-/** Häufige Service-/SEO-Keywords (Berlin & preiswert betont). */
+/**
+ * Schalter für Inhalte, die erst nach Bestätigung live gehen.
+ * `tasFleet`: erst aktivieren, wenn das Produkt nachweislich live ist.
+ * `dashboard`: Kundenportal erst freischalten, wenn es Kunden und Inhalte gibt.
+ */
+export const launchFlags = {
+  /** TAS-FLEET-Produktseite + Navigation. */
+  tasFleet: false,
+  /** Kundenportal (/dashboard, Registrierung, Nav/Footer-Einträge). Code bleibt erhalten. */
+  dashboard: false,
+  /** Absenden im Konfigurator. Aus, solange es keine Kontakt-E-Mail für Anfragen gibt. */
+  configuratorSubmit: false,
+} as const;
+
+/**
+ * Zielseite nach Login / Passwort-Reset / Link-Bestätigung. Solange das
+ * Kundenportal aus ist, gibt es für Kunden kein Ziel – dann zur Startseite.
+ */
+export const customerHome: string = launchFlags.dashboard ? "/dashboard" : "/";
+
+/**
+ * Ziel direkt nach dem Login. Ohne Kundenportal landen alle im Admin-Bereich;
+ * Nicht-Admins leitet die Middleware von dort auf `customerHome` um.
+ */
+export const postLoginPath: string = launchFlags.dashboard ? "/dashboard" : "/admin";
+
+/** Häufige Service-/SEO-Keywords. */
 export const siteKeywords = [
   "Webagentur Berlin",
-  "günstige Webagentur",
-  "preiswerte Webagentur Berlin",
   "Webdesign Berlin",
   "Website erstellen lassen",
   "Homepage erstellen lassen",
@@ -58,8 +85,6 @@ export const siteKeywords = [
   "Landingpage erstellen",
   "One-Pager Agentur",
   "SEO Optimierung Berlin",
-  "Next.js Agentur",
   "Webentwicklung Berlin",
-  "professionelle Website günstig",
   "TAS Webworks",
 ];

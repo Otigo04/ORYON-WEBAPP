@@ -1,13 +1,11 @@
-import { z } from "zod";
 import { pricingConfig } from "../../pricing.config";
 
 /**
- * Preislogik des OTIGO-Preisrechners.
+ * Preislogik des TAS-Preisrechners (Berechnung + Formatierung).
  *
- * Eine einzige Quelle der Wahrheit für Validierung UND Berechnung – genutzt
- * sowohl im Client (Live-Berechnung, React-Hook-Form) als auch in der Server
- * Action (erneute Validierung + Speicherung). Reines Modul ohne
- * "use client"/"use server", damit beide Seiten es importieren können.
+ * Reines Modul ohne "use client"/"use server" und ohne zod, damit es im
+ * Client-Bundle klein bleibt. Die Validierungs-Schemas stehen in
+ * `pricing-schemas.ts` (nur Server/Formulare).
  *
  * Die eigentlichen Preise stehen bewusst in `pricing.config.ts` im
  * Projekt-Hauptverzeichnis und können dort ohne Code-Kenntnisse angepasst
@@ -25,38 +23,27 @@ export const PRICING = {
   ...pricingConfig,
 } as const;
 
+/** Einstiegspreise für Texte auf der Website – ausschließlich aus der Config. */
+export const ENTRY_PRICE = PRICING.projectTypes.onepager.base[0];
+export const WEBSITE_PRICE = PRICING.projectTypes.website.base[0];
+export const SHOP_PRICE = PRICING.projectTypes.shopSimple.base[0];
+export const SHOP_COMPLEX_PRICE = PRICING.projectTypes.shopComplex.base[0];
+
 export type ProjectType = keyof typeof PRICING.projectTypes;
-export type DesignType = keyof typeof PRICING.designMultiplier;
+export type DesignType = keyof typeof PRICING.designLabel;
 export type FeatureKey = keyof typeof PRICING.features;
 
 export const PROJECT_TYPES = Object.keys(PRICING.projectTypes) as ProjectType[];
 export const FEATURE_KEYS = Object.keys(PRICING.features) as FeatureKey[];
 
-// ---------------------------------------------------------------------------
-// Validierung (Zod) – identisch im Client (RHF) und auf dem Server.
-// ---------------------------------------------------------------------------
-
-export const quoteSelectionSchema = z.object({
-  projectType: z.enum(PROJECT_TYPES as [ProjectType, ...ProjectType[]]),
-  design: z.enum(["custom", "template"]),
-  features: z.array(z.enum(FEATURE_KEYS as [FeatureKey, ...FeatureKey[]])),
-  extraLanguages: z.number().int().min(0).max(PRICING.extraLanguage.max),
-  maintenance: z.boolean(),
-});
-
-export const contactSchema = z.object({
-  name: z.string().min(2, "Bitte gib deinen Namen an."),
-  email: z.email("Bitte gib eine gültige E-Mail-Adresse an."),
-  phone: z.string().max(40).optional(),
-  company: z.string().max(120).optional(),
-  message: z.string().max(1000).optional(),
-});
-
-/** Vollständige Eingabe, die an die Server Action gesendet wird. */
-export const quoteLeadSchema = quoteSelectionSchema.extend(contactSchema.shape);
-
-export type QuoteSelection = z.infer<typeof quoteSelectionSchema>;
-export type QuoteLeadInput = z.infer<typeof quoteLeadSchema>;
+/** Auswahl des Preisrechners (Client + Server). Zod-Schema: `pricing-schemas.ts`. */
+export type QuoteSelection = {
+  projectType: ProjectType;
+  design: DesignType;
+  features: FeatureKey[];
+  extraLanguages: number;
+  maintenance: boolean;
+};
 
 // ---------------------------------------------------------------------------
 // Berechnung
@@ -86,11 +73,10 @@ const roundTo = (value: number) => {
 
 export function calculatePrice(selection: QuoteSelection): PriceResult {
   const project = PRICING.projectTypes[selection.projectType];
-  const factor = PRICING.designMultiplier[selection.design];
 
   const base: Range = project.base;
-  let min = base[0] * factor;
-  let max = base[1] * factor;
+  let min = base[0];
+  let max = base[1];
 
   for (const feature of selection.features) {
     const [fMin, fMax] = PRICING.features[feature].price;

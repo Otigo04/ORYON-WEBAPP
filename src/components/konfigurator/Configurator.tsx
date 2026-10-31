@@ -5,6 +5,7 @@ import Link from "next/link";
 import { LogoWordmark } from "@/components/Logo";
 import { createClient } from "@/lib/supabase/client";
 import { saveBrief } from "@/lib/actions/brief";
+import { launchFlags, siteConfig } from "@/lib/site";
 import {
   BRIEF_STEPS,
   BRIEF_STORAGE_KEY,
@@ -152,6 +153,8 @@ export function Configurator() {
   };
 
   const submit = () => {
+    // Zusätzlich zum deaktivierten Button: ohne Eingangskanal nie senden.
+    if (!launchFlags.configuratorSubmit) return;
     const fieldErrors: { name?: string; email?: string } = {};
     if (draft.contact.name.trim().length < 2) fieldErrors.name = "Bitte gib deinen Namen an.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(draft.contact.email))
@@ -203,11 +206,8 @@ export function Configurator() {
 
       {/* Titel */}
       <div className="mt-8 text-center">
-        <span className="text-xs font-medium uppercase tracking-[0.2em] text-[#09ed2d]">
-          Projekt-Konfigurator
-        </span>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-          Erzähl uns alles über dein Projekt
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+          Erzähl mir alles über dein Projekt
         </h1>
         <p className="mx-auto mt-2 max-w-xl text-sm text-white/55">
           Je genauer, desto besser dein Angebot. Du kannst jederzeit vor- und
@@ -223,7 +223,7 @@ export function Configurator() {
       <div className="mt-8 flex flex-col-reverse gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_330px] lg:items-start">
         {/* Linke Spalte: Eingaben */}
         <div className="flex flex-col gap-4">
-          <div className="rounded-3xl border border-white/10 bg-black p-6 shadow-[0_20px_60px_-25px_rgba(0,0,0,0.95)] sm:p-8">
+          <div className="rounded-2xl border border-white/10 bg-black p-6 sm:p-8">
             {!loaded ? (
               <div className="py-16 text-center text-sm text-white/40">Lädt …</div>
             ) : isPackageStep ? (
@@ -270,8 +270,8 @@ export function Configurator() {
                 <button
                   type="button"
                   onClick={submit}
-                  disabled={isPending}
-                  className="rounded-full bg-[#09ed2d] px-7 py-2.5 text-sm font-semibold text-black shadow-[0_0_24px_-4px_rgba(9,237,45,0.6)] transition hover:bg-[#09ed2d]/90 disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={isPending || !launchFlags.configuratorSubmit}
+                  className="rounded-full bg-[#09ed2d] px-7 py-2.5 text-sm font-semibold text-black transition hover:bg-[#09ed2d]/90 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   {isPending ? "Wird gesendet …" : "Anfrage absenden"}
                 </button>
@@ -279,7 +279,7 @@ export function Configurator() {
                 <button
                   type="button"
                   onClick={() => goTo(step + 1)}
-                  className="rounded-full bg-[#09ed2d] px-7 py-2.5 text-sm font-semibold text-black shadow-[0_0_24px_-4px_rgba(9,237,45,0.6)] transition hover:bg-[#09ed2d]/90"
+                  className="rounded-full bg-[#09ed2d] px-7 py-2.5 text-sm font-semibold text-black transition hover:bg-[#09ed2d]/90"
                 >
                   Weiter →
                 </button>
@@ -288,7 +288,7 @@ export function Configurator() {
           </div>
 
           <p className="text-center text-xs text-white/35">
-            💾 Automatisch gespeichert{userId ? " – auch in deinem Konto" : ""}.
+            Automatisch gespeichert{userId ? " – auch in deinem Konto" : ""}.
           </p>
         </div>
 
@@ -507,7 +507,7 @@ function ChipHelp({ text }: { text: string }) {
       </span>
       <span
         role="tooltip"
-        className="pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 z-50 w-48 -translate-x-1/2 translate-y-1 rounded-lg border border-[#09ed2d]/25 bg-black/95 px-3 py-2 text-center text-xs font-normal leading-relaxed text-white/85 opacity-0 shadow-[0_10px_30px_-12px_rgba(9,237,45,0.5)] transition-all duration-150 group-hover/tip:translate-y-0 group-hover/tip:opacity-100 group-active/tip:translate-y-0 group-active/tip:opacity-100"
+        className="pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 z-50 w-48 -translate-x-1/2 translate-y-1 rounded-lg border border-[#09ed2d]/25 bg-black/95 px-3 py-2 text-center text-xs font-normal leading-relaxed text-white/85 opacity-0 transition-all duration-150 group-hover/tip:translate-y-0 group-hover/tip:opacity-100 group-active/tip:translate-y-0 group-active/tip:opacity-100"
       >
         {text}
       </span>
@@ -556,7 +556,7 @@ function PackageStep({
 
       {/* Projektart */}
       <div className="flex flex-col gap-3">
-        <span className="text-sm font-semibold uppercase tracking-wider text-[#09ed2d]">
+        <span className="text-sm font-semibold text-[#09ed2d]">
           Projektart
         </span>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -577,7 +577,7 @@ function PackageStep({
 
       {/* Design */}
       <div className="flex flex-col gap-3">
-        <span className="text-sm font-semibold uppercase tracking-wider text-[#09ed2d]">
+        <span className="text-sm font-semibold text-[#09ed2d]">
           Design
         </span>
         <div className="grid grid-cols-2 gap-3">
@@ -587,7 +587,7 @@ function PackageStep({
               <PackageCard key={key} active={active} onSelect={() => onChange({ design: key })}>
                 <span className="font-medium text-white">{PRICING.designLabel[key]}</span>
                 <span className="text-xs text-white/50">
-                  {key === "template" ? "günstiger (−20 %)" : "voller Funktionsumfang"}
+                  {key === "template" ? "auf Vorlagen-Basis" : "komplett individuell"}
                 </span>
               </PackageCard>
             );
@@ -597,7 +597,7 @@ function PackageStep({
 
       {/* Features */}
       <div className="flex flex-col gap-3">
-        <span className="text-sm font-semibold uppercase tracking-wider text-[#09ed2d]">
+        <span className="text-sm font-semibold text-[#09ed2d]">
           Features
         </span>
         <div className="flex flex-wrap gap-2">
@@ -729,11 +729,22 @@ function ContactStep({
       <div>
         <h2 className="text-xl font-semibold text-white">Fast geschafft!</h2>
         <p className="mt-1 text-sm text-white/55">
-          Wohin dürfen wir dein persönliches Angebot schicken?
+          {launchFlags.configuratorSubmit
+            ? "Wohin darf ich dein persönliches Angebot schicken?"
+            : "Hier ist die Zusammenfassung deiner Konfiguration."}
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      {!launchFlags.configuratorSubmit && (
+        <p
+          role="status"
+          className="rounded-xl border border-white/15 px-4 py-3 text-sm text-white/80"
+        >
+          Anfragen laufen gerade per E-Mail: {siteConfig.email}
+        </p>
+      )}
+
+      <div className={`grid gap-4 sm:grid-cols-2 ${launchFlags.configuratorSubmit ? "" : "hidden"}`}>
         <label className="flex flex-col gap-2">
           <span className="text-sm font-medium text-white">Name</span>
           <input
@@ -855,7 +866,7 @@ function Summary({ draft }: { draft: BriefDraft }) {
         <dl className="mt-4 grid gap-2 sm:grid-cols-2">
           {answered.map((r) => (
             <div key={r.label} className="rounded-lg bg-white/[0.03] px-3 py-2">
-              <dt className="text-[11px] uppercase tracking-wide text-white/35">{r.label}</dt>
+              <dt className="text-[11px] text-white/35">{r.label}</dt>
               <dd className="mt-0.5 text-sm text-white/80">{displayValue(r.value)}</dd>
             </div>
           ))}
@@ -891,9 +902,8 @@ function SuccessScreen({ draft }: { draft: BriefDraft }) {
       </div>
       <h1 className="mt-6 text-3xl font-semibold">Anfrage erhalten!</h1>
       <p className="mt-3 text-white/60">
-        Vielen Dank{draft.contact.name ? `, ${draft.contact.name.split(" ")[0]}` : ""}! Wir
-        prüfen deine Konfiguration und melden uns innerhalb von 24 Stunden mit einem
-        persönlichen Angebot.
+        Vielen Dank{draft.contact.name ? `, ${draft.contact.name.split(" ")[0]}` : ""}! Ich
+        prüfe deine Konfiguration und melde mich mit einem persönlichen Angebot bei dir.
       </p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Link
@@ -920,14 +930,6 @@ function SuccessScreen({ draft }: { draft: BriefDraft }) {
 const inputClass =
   "w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-white/30 outline-none transition focus:border-[#09ed2d]/60 focus:ring-1 focus:ring-[#09ed2d]/40";
 
-/** Spielerische „Level"-Stufe je nach geschätzter Investition. */
-function projectLevel(oneTime: number): { label: string; emoji: string } {
-  if (oneTime >= 7000) return { label: "Deluxe", emoji: "👑" };
-  if (oneTime >= 4000) return { label: "Premium", emoji: "💎" };
-  if (oneTime >= 2000) return { label: "Solide", emoji: "🚀" };
-  return { label: "Starter", emoji: "🌱" };
-}
-
 /** Zählt gewählte vs. verfügbare bepreiste Optionen (für den „Ausstattung"-Balken). */
 function countPricedOptions(data: BriefDraft["data"]): { chosen: number; total: number } {
   let total = 0;
@@ -947,8 +949,8 @@ function countPricedOptions(data: BriefDraft["data"]): { chosen: number; total: 
 
 /**
  * Live-Kosten-Zähler des Konfigurators. Bewusst ruhig & aufgeräumt: klare Summe
- * mit sanftem Pop bei Änderung, dezenter statischer Grün-Glow, „Ausstattung"-
- * Fortschritt, Level-Stufe und eine saubere Aufschlüsselung. Auf dem Desktop
+ * (immer als unverbindliche Spanne), „Ausstattung"-Fortschritt und eine
+ * saubere Aufschlüsselung. Auf dem Desktop
  * sticky rechts, auf Mobil kompakt oben.
  */
 function CostCounter({ draft }: { draft: BriefDraft }) {
@@ -959,29 +961,18 @@ function CostCounter({ draft }: { draft: BriefDraft }) {
       ? PRICING.projectTypes[pt as keyof typeof PRICING.projectTypes].label
       : "—";
 
-  const midpoint = Math.round((estimate.oneTimeMin + estimate.oneTimeMax) / 2);
-  const level = projectLevel(midpoint);
   const { chosen, total } = countPricedOptions(draft.data);
   const fill = total > 0 ? Math.round((chosen / total) * 100) : 0;
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-[#09ed2d]/25 bg-gradient-to-br from-[#0a2e15]/70 via-black to-black p-5 shadow-[0_0_40px_-14px_rgba(9,237,45,0.3)] sm:p-6">
-      {/* Kopf: Titel + Level */}
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#09ed2d]">
-          Deine Kalkulation
-        </p>
-        <span className="inline-flex items-center gap-1 rounded-full border border-[#09ed2d]/30 bg-[#09ed2d]/10 px-2.5 py-0.5 text-[11px] font-bold text-[#09ed2d]">
-          <span aria-hidden="true">{level.emoji}</span>
-          {level.label}
-        </span>
-      </div>
+    <div className="rounded-2xl border border-white/15 p-5 sm:p-6">
+      <p className="text-sm font-semibold text-white">Deine Kalkulation</p>
 
       {/* Summe – immer als unverbindliche Spanne */}
       <div className="mt-4">
         <span className="text-xs text-white/45">geschätzt, einmalig</span>
         <div key={`${estimate.oneTimeMin}-${estimate.oneTimeMax}`} className="animate-cost-pop mt-0.5 origin-left">
-          <span className="text-[2rem] font-bold leading-none tabular-nums text-[#09ed2d] drop-shadow-[0_0_18px_rgba(9,237,45,0.35)] sm:text-[2.4rem]">
+          <span className="text-[2rem] font-bold leading-none tabular-nums text-[#09ed2d] sm:text-[2.4rem]">
             ca. <AnimatedEuro value={estimate.oneTimeMin} />
             {estimate.oneTimeMax !== estimate.oneTimeMin && (
               <> – <AnimatedEuro value={estimate.oneTimeMax} /></>
@@ -1002,7 +993,7 @@ function CostCounter({ draft }: { draft: BriefDraft }) {
       {/* Ausstattungs-Fortschritt */}
       <div className="mt-5">
         <div className="flex items-center justify-between text-[11px] text-white/55">
-          <span className="font-medium uppercase tracking-wide">Ausstattung</span>
+          <span className="font-medium">Ausstattung</span>
           <span className="tabular-nums text-[#09ed2d]">
             {chosen}/{total}
           </span>
@@ -1048,7 +1039,7 @@ function CostCounter({ draft }: { draft: BriefDraft }) {
       </dl>
 
       <p className="mt-4 text-[11px] leading-relaxed text-white/40">
-        Unverbindlicher Richtwert. Dein finales Angebot erstellen wir individuell.
+        Unverbindlicher Richtwert. Dein finales Angebot erstelle ich individuell. {PRICING.vatNote}
       </p>
     </div>
   );

@@ -1,8 +1,9 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { briefSubmitSchema } from "@/lib/brief";
+import { briefSubmitSchema } from "@/lib/brief-schema";
 import { notifyNewLead } from "@/lib/notify";
+import { launchFlags, siteConfig } from "@/lib/site";
 
 export type SaveBriefState = {
   ok: boolean;
@@ -24,6 +25,15 @@ export type SaveBriefState = {
  *   Nutzers auf (brief_drafts).
  */
 export async function saveBrief(input: unknown): Promise<SaveBriefState> {
+  // Absenden ist ausgeschaltet, solange es keinen Eingangskanal gibt (siehe
+  // `launchFlags.configuratorSubmit`). Serverseitig erzwungen, nicht nur im UI.
+  if (!launchFlags.configuratorSubmit) {
+    return {
+      ok: false,
+      error: `Anfragen laufen gerade per E-Mail: ${siteConfig.email}`,
+    };
+  }
+
   const parsed = briefSubmitSchema.safeParse(input);
   if (!parsed.success) {
     return {
@@ -39,8 +49,9 @@ export async function saveBrief(input: unknown): Promise<SaveBriefState> {
     !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
     !!process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
+  // Ohne Backend wird nichts gespeichert → niemals Erfolg melden.
   if (!hasSupabaseEnv) {
-    return { ok: true, demo: true };
+    return { ok: false, error: "Die Anfrage konnte nicht gespeichert werden. Bitte versuche es später erneut." };
   }
 
   try {

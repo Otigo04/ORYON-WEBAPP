@@ -4,24 +4,22 @@ import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Impressum",
-  description: `Impressum von ${siteConfig.name} – Anbieterkennzeichnung gemäß § 5 TMG.`,
+  description: `Impressum von ${siteConfig.name} – Anbieterkennzeichnung nach § 5 DDG.`,
   alternates: { canonical: "/impressum" },
   robots: { index: true, follow: true },
 };
 
 /**
- * Impressum (Anbieterkennzeichnung) nach § 5 TMG und § 18 Abs. 2 MStV.
- * Die personen-/firmenbezogenen Angaben werden zentral aus `siteConfig` bezogen.
+ * Impressum (Anbieterkennzeichnung) nach § 5 DDG und § 18 Abs. 2 MStV.
+ * Angaben kommen zentral aus `siteConfig`. Noch offene Angaben stehen als
+ * sichtbarer [PLATZHALTER].
  */
 export default function ImpressumPage() {
   const { address } = siteConfig;
 
   return (
-    <LegalShell
-      title="Impressum"
-      intro="Angaben gemäß § 5 TMG."
-    >
-      <LegalSection heading="Diensteanbieter">
+    <LegalShell title="Impressum" intro="Angaben nach § 5 Digitale-Dienste-Gesetz (DDG).">
+      <LegalSection heading="Anbieter">
         <p>
           <strong>{siteConfig.name}</strong>
           <br />
@@ -39,79 +37,62 @@ export default function ImpressumPage() {
         <p>
           Telefon: {siteConfig.telephone}
           <br />
-          E-Mail: <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
-          <br />
-          Web: <a href={siteConfig.url}>{siteConfig.url.replace("https://", "")}</a>
+          E-Mail: {siteConfig.email}
         </p>
       </LegalSection>
 
       <LegalSection heading="Umsatzsteuer">
-        <p>
-          Gemäß § 19 Abs. 1 Umsatzsteuergesetz (UStG) wird als Kleinunternehmer
-          keine Umsatzsteuer berechnet und daher auch nicht ausgewiesen.
-        </p>
+        {siteConfig.smallBusiness ? (
+          <p>
+            Gemäß § 19 UStG wird keine Umsatzsteuer berechnet (Kleinunternehmerregelung).
+            Eine Umsatzsteuer-Identifikationsnummer wird nicht geführt.
+          </p>
+        ) : (
+          <p>
+            Umsatzsteuer-Identifikationsnummer nach § 27a UStG:{" "}
+            {siteConfig.vatId ?? "[PLATZHALTER: USt-IdNr.]"}
+          </p>
+        )}
       </LegalSection>
 
-      <LegalSection heading="Redaktionell verantwortlich (§ 18 Abs. 2 MStV)">
+      <LegalSection heading="Verantwortlich für Inhalte (§ 18 Abs. 2 MStV)">
         <p>
           {siteConfig.founder}
           <br />
-          {address.street}
-          <br />
-          {address.postalCode} {address.city}
+          {address.street}, {address.postalCode} {address.city}
         </p>
       </LegalSection>
 
-      <LegalSection heading="EU-Streitschlichtung">
+      <LegalSection heading="Streitbeilegung">
         <p>
-          Die Europäische Kommission stellt eine Plattform zur
-          Online-Streitbeilegung (OS) bereit:{" "}
-          <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer">
-            https://ec.europa.eu/consumers/odr/
-          </a>
-          . Unsere E-Mail-Adresse findest du oben im Impressum.
-        </p>
-      </LegalSection>
-
-      <LegalSection heading="Verbraucherstreitbeilegung / Universalschlichtungsstelle">
-        <p>
-          Wir sind nicht bereit und nicht verpflichtet, an
-          Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle
-          teilzunehmen.
+          [PLATZHALTER: Hinweis zur außergerichtlichen Streitbeilegung – rechtliche Prüfung
+          ausstehend. Offen ist u. a., ob und wie auf die frühere EU-Plattform zur
+          Online-Streitbeilegung hingewiesen wird und ob Bereitschaft zur Teilnahme an einem
+          Verbraucherschlichtungsverfahren besteht.]
         </p>
       </LegalSection>
 
       <LegalSection heading="Haftung für Inhalte">
         <p>
-          Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte
-          auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach
-          §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet,
-          übermittelte oder gespeicherte fremde Informationen zu überwachen oder
-          nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit
-          hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von
-          Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt.
+          Für eigene Inhalte auf dieser Website bin ich nach den allgemeinen Gesetzen
+          verantwortlich (§ 7 Abs. 1 DDG). Fremde Informationen, die ich übermittle oder
+          speichere, bin ich nach §§ 8 bis 10 DDG nicht verpflichtet zu überwachen. Wird mir
+          eine Rechtsverletzung bekannt, entferne ich die betroffenen Inhalte umgehend.
         </p>
       </LegalSection>
 
       <LegalSection heading="Haftung für Links">
         <p>
-          Unser Angebot enthält Links zu externen Websites Dritter, auf deren
-          Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden
-          Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten
-          Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten
-          verantwortlich. Bei Bekanntwerden von Rechtsverletzungen werden wir
-          derartige Links umgehend entfernen.
+          Diese Website kann auf externe Seiten verweisen, auf deren Inhalte ich keinen Einfluss
+          habe. Verantwortlich ist immer der jeweilige Betreiber. Bei bekannt werdenden
+          Rechtsverletzungen entferne ich den Link.
         </p>
       </LegalSection>
 
       <LegalSection heading="Urheberrecht">
         <p>
-          Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen
-          Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung,
-          Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der
-          Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des
-          jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite
-          sind nur für den privaten, nicht kommerziellen Gebrauch gestattet.
+          Texte, Gestaltung und Quellcode dieser Website unterliegen dem deutschen Urheberrecht.
+          Eine Nutzung außerhalb der gesetzlichen Grenzen bedarf meiner schriftlichen Zustimmung.
         </p>
       </LegalSection>
     </LegalShell>

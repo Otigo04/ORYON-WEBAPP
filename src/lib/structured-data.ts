@@ -23,7 +23,7 @@ export function organizationSchema() {
     // Schreibweise sauber dem Knowledge-Graph-Eintrag zugeordnet wird.
     alternateName: ["TAS Webworks Berlin", "Tas Webworks", "TAS Web Works", "TAS"],
     url: siteConfig.url,
-    email: siteConfig.email,
+    ...(siteConfig.hasEmail ? { email: siteConfig.email } : {}),
     telephone: siteConfig.telephone,
     image: `${siteConfig.url}/logo/tas_wordmark.svg`,
     logo: `${siteConfig.url}/logo/tas_mark.svg`,
@@ -47,19 +47,12 @@ export function organizationSchema() {
       latitude: siteConfig.geo.latitude,
       longitude: siteConfig.geo.longitude,
     },
-    priceRange: "€€",
-    sameAs: [
-      siteConfig.social.linkedin,
-      siteConfig.social.instagram,
-      `https://x.com/${siteConfig.social.twitter.replace("@", "")}`,
-    ],
     knowsAbout: [
       "Webentwicklung",
       "Webdesign",
       "Suchmaschinenoptimierung (SEO)",
       "Online-Shops",
       "Landingpages",
-      "Next.js",
     ],
   };
 }

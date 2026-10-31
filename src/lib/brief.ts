@@ -1,5 +1,4 @@
-import { z } from "zod";
-import { PRICING, maintenanceRangeFor, type DesignType, type FeatureKey } from "@/lib/pricing";
+import { PRICING, maintenanceRangeFor, type FeatureKey } from "@/lib/pricing";
 
 /**
  * Datenmodell des detaillierten Projekt-Konfigurators.
@@ -55,7 +54,7 @@ export const BRIEF_STEPS: BriefStep[] = [
   {
     id: "unternehmen",
     title: "Unternehmen & Marke",
-    description: "Erzähl uns, wer ihr seid und was die Website erreichen soll.",
+    description: "Erzähl mir, wer du bist und was die Website erreichen soll.",
     icon: "building",
     fields: [
       { name: "companyName", label: "Firmenname", type: "text", placeholder: "Mustermann GmbH" },
@@ -71,7 +70,7 @@ export const BRIEF_STEPS: BriefStep[] = [
         label: "Wunsch-Domain",
         type: "text",
         placeholder: "meinefirma.de",
-        hint: "Falls noch keine vorhanden ist, registrieren wir deine Wunsch-Domain – inklusive.",
+        hint: "Falls noch keine vorhanden ist, registriere ich deine Wunsch-Domain – inklusive.",
         optional: true,
       },
       {
@@ -81,8 +80,8 @@ export const BRIEF_STEPS: BriefStep[] = [
         options: ["Ja, vorhanden", "Nein, bitte besorgen", "Noch unklar"],
         optionHelp: {
           "Ja, vorhanden": "Du hast die Internetadresse (z. B. firma.de) bereits.",
-          "Nein, bitte besorgen": "Wir registrieren deine Wunsch-Domain für dich – inklusive.",
-          "Noch unklar": "Du bist dir nicht sicher – wir klären das gemeinsam.",
+          "Nein, bitte besorgen": "Ich registriere deine Wunsch-Domain für dich – inklusive.",
+          "Noch unklar": "Du bist dir nicht sicher – ich kläre das gern mit dir.",
         },
         optional: true,
       },
@@ -107,10 +106,10 @@ export const BRIEF_STEPS: BriefStep[] = [
         label: "Logo vorhanden?",
         type: "select",
         options: ["Ja, vorhanden", "Nein, brauche eins", "In Arbeit"],
-        prices: { "Nein, brauche eins": 350 },
+        prices: PRICING.briefAddOns.oneTime.logoStatus,
         optionHelp: {
           "Ja, vorhanden": "Du hast bereits ein fertiges Logo.",
-          "Nein, brauche eins": "Wir gestalten ein professionelles Logo für dich.",
+          "Nein, brauche eins": "Ich gestalte ein Logo für dich.",
           "In Arbeit": "Dein Logo entsteht gerade / kommt später.",
         },
         optional: true,
@@ -192,7 +191,7 @@ export const BRIEF_STEPS: BriefStep[] = [
         name: "dislikes",
         label: "Was gefällt dir gar nicht?",
         type: "textarea",
-        placeholder: "Stile, Farben oder Elemente, die wir vermeiden sollen",
+        placeholder: "Stile, Farben oder Elemente, die ich vermeiden soll",
         optional: true,
       },
       {
@@ -211,42 +210,33 @@ export const BRIEF_STEPS: BriefStep[] = [
           "Karriere / Jobs",
           "Preise",
         ],
-        prices: {
-          "Über uns": 39,
-          "Leistungen / Produkte": 39,
-          "Portfolio / Referenzen": 250,
-          Kontakt: 39,
-          FAQ: 39,
-          Team: 39,
-          "Karriere / Jobs": 39,
-          Preise: 39,
-        },
+        prices: PRICING.briefAddOns.oneTime.pages,
         optionHelp: {
           Startseite: "Die Hauptseite – der erste Eindruck (inklusive).",
-          "Über uns": "Wer ihr seid, eure Geschichte.",
-          "Leistungen / Produkte": "Was ihr anbietet, im Überblick.",
-          "Portfolio / Referenzen": "Beispiele eurer Arbeit / Projekte.",
+          "Über uns": "Wer du bist, deine Geschichte.",
+          "Leistungen / Produkte": "Was du anbietest, im Überblick.",
+          "Portfolio / Referenzen": "Beispiele deiner Arbeit / Projekte.",
           Kontakt: "Eigene Kontaktseite mit Adresse & Anfahrt. Das Formular selbst wählst du unter „Funktionen“.",
           FAQ: "Häufige Fragen & Antworten.",
-          Team: "Vorstellung eures Teams.",
+          Team: "Vorstellung deines Teams.",
           "Karriere / Jobs": "Stellenangebote & Bewerbung.",
-          Preise: "Preisübersicht eurer Angebote.",
+          Preise: "Preisübersicht deiner Angebote.",
         },
         optionDetails: {
           Startseite:
-            "Aufmerksamkeitsstarker Hero mit klarer Botschaft, Highlights eurer Leistungen, Vertrauenselemente (Bewertungen/Logos) und ein deutlicher Call-to-Action. Der erste Eindruck, der überzeugt.",
+            "Aufmerksamkeitsstarker Hero mit klarer Botschaft, Highlights deiner Leistungen, Vertrauenselemente (Bewertungen/Logos) und ein deutlicher Call-to-Action. Der erste Eindruck, der überzeugt.",
           "Über uns":
-            "Eure Geschichte, Mission & Werte, was euch ausmacht und – auf Wunsch – eine kurze Team-Vorstellung. Schafft Vertrauen und Nähe.",
+            "Deine Geschichte, Mission & Werte, was dich ausmacht und – auf Wunsch – eine kurze Team-Vorstellung. Schafft Vertrauen und Nähe.",
           "Leistungen / Produkte":
-            "Übersichtliche Darstellung eurer Angebote mit Beschreibung, Vorteilen und je einem Call-to-Action pro Leistung – ideal als einzelne Karten oder Abschnitte.",
+            "Übersichtliche Darstellung deiner Angebote mit Beschreibung, Vorteilen und je einem Call-to-Action pro Leistung – ideal als einzelne Karten oder Abschnitte.",
           "Portfolio / Referenzen":
-            "Galerie eurer besten Projekte mit Bildern, kurzer Beschreibung und optional Kundenstimmen. Belegt eure Qualität sichtbar.",
+            "Galerie deiner besten Projekte mit Bildern, kurzer Beschreibung und optional Kundenstimmen. Belegt deine Qualität sichtbar.",
           Kontakt:
             "Eigene Kontaktseite mit Adresse, Öffnungszeiten und allen Kontaktwegen auf einen Blick. Das interaktive Kontaktformular und die Karte fügst du als Funktion hinzu.",
           FAQ: "Häufige Fragen in sauber aufklappbaren Abschnitten (Akkordeon) – reduziert Rückfragen und schafft Klarheit.",
           Team: "Vorstellung der Teammitglieder mit Foto, Position und kurzer Beschreibung – persönlich und sympathisch.",
           "Karriere / Jobs":
-            "Stellenangebote, Infos zu euch als Arbeitgeber und ein Bewerbungsformular mit Datei-Upload.",
+            "Stellenangebote, Infos zu dir als Arbeitgeber und ein Bewerbungsformular mit Datei-Upload.",
           Preise:
             "Transparente Preis- bzw. Paketübersicht mit Vergleich der Optionen und klarem Call-to-Action.",
         },
@@ -257,11 +247,11 @@ export const BRIEF_STEPS: BriefStep[] = [
         label: "Texte vorhanden?",
         type: "select",
         options: ["Ja, liegen vor", "Teilweise", "Nein, bitte übernehmen"],
-        prices: { Teilweise: 50, "Nein, bitte übernehmen": 95 },
+        prices: PRICING.briefAddOns.oneTime.contentStatus,
         optionHelp: {
           "Ja, liegen vor": "Alle Texte sind fertig vorhanden.",
-          Teilweise: "Ein Teil ist da, wir ergänzen den Rest.",
-          "Nein, bitte übernehmen": "Wir schreiben alle Texte für dich.",
+          Teilweise: "Ein Teil ist da, ich ergänze den Rest.",
+          "Nein, bitte übernehmen": "Ich schreibe alle Texte für dich.",
         },
         optional: true,
       },
@@ -298,19 +288,7 @@ export const BRIEF_STEPS: BriefStep[] = [
           "Bewertungen",
           "Downloadbereich",
         ],
-        prices: {
-          Kontaktformular: 39,
-          Terminbuchung: 99,
-          Onlineshop: 1500,
-          "Blog / CMS": 149,
-          Mehrsprachigkeit: 39,
-          "Mitgliederbereich / Login": 199,
-          "Newsletter-Anmeldung": 39,
-          "Live-Chat": 79,
-          "Karte / Anfahrt": 39,
-          Bewertungen: 59,
-          Downloadbereich: 49,
-        },
+        prices: PRICING.briefAddOns.oneTime.features,
         optionHelp: {
           Kontaktformular: "Besucher schreiben dir direkt über ein Formular.",
           Terminbuchung: "Kunden buchen Termine online über einen Kalender.",
@@ -326,23 +304,23 @@ export const BRIEF_STEPS: BriefStep[] = [
         },
         optionDetails: {
           Kontaktformular:
-            "Formular mit Feldern nach Wunsch, Spam-Schutz und automatischer Weiterleitung an euer Postfach – inkl. Datenschutz-Checkbox.",
+            "Formular mit Feldern nach Wunsch, Spam-Schutz und automatischer Weiterleitung an dein Postfach – inkl. Datenschutz-Checkbox.",
           Terminbuchung:
-            "Integrierter Kalender mit euren Verfügbarkeiten, automatischer Bestätigungs-E-Mail und optionaler Erinnerung. Anbindung an gängige Tools möglich.",
+            "Integrierter Kalender mit deinen Verfügbarkeiten, automatischer Bestätigungs-E-Mail und optionaler Erinnerung. Anbindung an gängige Tools möglich.",
           Onlineshop:
             "Produktverwaltung, Warenkorb, sichere Bezahlung (z. B. Stripe/PayPal) und Bestellübersicht. Umfang richtet sich nach Sortiment & Varianten.",
           "Blog / CMS":
-            "Redaktionssystem, mit dem ihr Beiträge, Bilder und Seiten selbst pflegt – ganz ohne Technikkenntnisse.",
+            "Redaktionssystem, mit dem du Beiträge, Bilder und Seiten selbst pflegst – ganz ohne Technikkenntnisse.",
           Mehrsprachigkeit:
             "Saubere Sprachumschaltung, übersetzte Inhalte und suchmaschinenfreundliche Sprachversionen (je Sprache abgerechnet).",
           "Mitgliederbereich / Login":
             "Geschützter Bereich mit Registrierung, Login und individuell sichtbaren Inhalten je Nutzer.",
           "Newsletter-Anmeldung":
-            "Anmeldeformular mit Double-Opt-in (DSGVO-konform) und Anbindung an euer Newsletter-Tool (z. B. Mailchimp, Brevo).",
+            "Anmeldeformular mit Double-Opt-in und Anbindung an dein Newsletter-Tool (z. B. Mailchimp, Brevo).",
           "Live-Chat":
             "Chat-Fenster für direkte Fragen – wahlweise per Tool (z. B. Tidio) oder als WhatsApp-Direktkontakt.",
           "Karte / Anfahrt":
-            "Eingebettete, interaktive Karte mit eurem Standort und optionaler Routenführung.",
+            "Eingebettete, interaktive Karte mit deinem Standort und optionaler Routenführung.",
           Bewertungen:
             "Anzeige von Kundenbewertungen / Sternen – manuell gepflegt oder automatisch z. B. aus Google eingebunden.",
           Downloadbereich:
@@ -363,11 +341,11 @@ export const BRIEF_STEPS: BriefStep[] = [
         label: "Hosting vorhanden?",
         type: "select",
         options: ["Ja, vorhanden", "Nein, bitte übernehmen", "Noch unklar"],
-        monthlyPrices: { "Nein, bitte übernehmen": 14 },
+        monthlyPrices: PRICING.briefAddOns.monthly.hostingStatus,
         optionHelp: {
           "Ja, vorhanden": "Du hast bereits Webspace / Hosting.",
-          "Nein, bitte übernehmen": "Wir übernehmen das Hosting deiner Seite.",
-          "Noch unklar": "Unsicher? Wir empfehlen dir das Passende.",
+          "Nein, bitte übernehmen": "Ich übernehme das Hosting deiner Seite.",
+          "Noch unklar": "Unsicher? Ich empfehle dir das Passende.",
         },
         optional: true,
       },
@@ -375,12 +353,12 @@ export const BRIEF_STEPS: BriefStep[] = [
         name: "emailStatus",
         label: "Professionelle E-Mail-Adresse (z. B. info@deinedomain.de)?",
         type: "select",
-        // Nur sinnvoll, wenn wir die Domain für dich besorgen (wir kaufen z. B.
-        // bei Strato und richten dort gleich das Postfach ein).
+        // Nur sinnvoll, wenn ich die Domain für dich besorge (ich kaufe z. B.
+        // bei Strato und richte dort gleich das Postfach ein).
         showIf: { field: "domainStatus", equals: "Nein, bitte besorgen" },
         options: ["Ja, bitte einrichten", "Nein, nicht nötig"],
         optionHelp: {
-          "Ja, bitte einrichten": "Wir richten z. B. info@deinedomain.de für dich ein.",
+          "Ja, bitte einrichten": "Ich richte z. B. info@deinedomain.de für dich ein.",
           "Nein, nicht nötig": "Du brauchst keine eigene E-Mail-Adresse.",
         },
         optional: true,
@@ -390,11 +368,7 @@ export const BRIEF_STEPS: BriefStep[] = [
         label: "Integrationen / Tools",
         type: "multi",
         options: ["Social Media (inkl. WhatsApp)", "Google Maps", "CRM-Anbindung"],
-        prices: {
-          "Social Media (inkl. WhatsApp)": 20,
-          "Google Maps": 10,
-          "CRM-Anbindung": 49,
-        },
+        prices: PRICING.briefAddOns.oneTime.integrations,
         optionHelp: {
           "Social Media (inkl. WhatsApp)": "Verlinkung zu Instagram, Facebook, WhatsApp & Co.",
           "Google Maps": "Interaktive Karte mit deinem Standort.",
@@ -402,11 +376,11 @@ export const BRIEF_STEPS: BriefStep[] = [
         },
         optionDetails: {
           "Social Media (inkl. WhatsApp)":
-            "Verlinkte Icons zu euren Profilen (Instagram, Facebook & Co.) und ein WhatsApp-Direktkontakt-Button für schnelle Anfragen.",
+            "Verlinkte Icons zu deinen Profilen (Instagram, Facebook & Co.) und ein WhatsApp-Direktkontakt-Button für schnelle Anfragen.",
           "Google Maps":
-            "Interaktive Karte mit eurem Standort, eingebettet auf der Kontaktseite – inkl. Marker und Routenlink.",
+            "Interaktive Karte mit deinem Standort, eingebettet auf der Kontaktseite – inkl. Marker und Routenlink.",
           "CRM-Anbindung":
-            "Automatische Übergabe von Formular-Leads an euer CRM (z. B. HubSpot, Pipedrive) – kein manuelles Übertragen mehr.",
+            "Automatische Übergabe von Formular-Leads an dein CRM (z. B. HubSpot, Pipedrive) – kein manuelles Übertragen mehr.",
         },
         optional: true,
       },
@@ -453,7 +427,7 @@ export const BRIEF_STEPS: BriefStep[] = [
         type: "select",
         options: ["So schnell wie möglich", "In 1–2 Monaten", "In 3–6 Monaten", "Kein fester Termin"],
         optionHelp: {
-          "So schnell wie möglich": "Es eilt – wir priorisieren.",
+          "So schnell wie möglich": "Es eilt – ich priorisiere.",
           "In 1–2 Monaten": "Zeitnaher Start gewünscht.",
           "In 3–6 Monaten": "Etwas mehr Vorlauf.",
           "Kein fester Termin": "Flexibel, ohne Deadline.",
@@ -497,7 +471,7 @@ export const BRIEF_STEPS: BriefStep[] = [
         name: "notes",
         label: "Sonstiges",
         type: "textarea",
-        placeholder: "Alles, was wir noch wissen sollten.",
+        placeholder: "Alles, was ich noch wissen sollte.",
         optional: true,
       },
     ],
@@ -554,36 +528,6 @@ export function isFieldVisible(field: BriefField, data: BriefData): boolean {
   return values.includes(expected);
 }
 
-// ---- Validierung (Server) ---------------------------------------------
-
-const valueSchema = z.union([
-  z.string().max(5000),
-  z.array(z.string().max(300)).max(50),
-]);
-
-export const briefSubmitSchema = z.object({
-  contact: z.object({
-    name: z.string().min(2, "Bitte gib deinen Namen an.").max(120),
-    email: z.string().email("Bitte gib eine gültige E-Mail-Adresse an.").max(200),
-    phone: z.string().max(60).optional().default(""),
-    company: z.string().max(160).optional().default(""),
-  }),
-  data: z.record(z.string(), valueSchema).default({}),
-  summary: z
-    .object({
-      projectType: z.string().max(60).optional(),
-      design: z.string().max(60).optional(),
-      features: z.array(z.string().max(60)).max(30).optional(),
-      extraLanguages: z.number().int().min(0).max(50).optional(),
-      maintenance: z.boolean().optional(),
-      priceMin: z.number().int().min(0).optional(),
-      priceMax: z.number().int().min(0).optional(),
-    })
-    .default({}),
-});
-
-export type BriefSubmitInput = z.infer<typeof briefSubmitSchema>;
-
 /** Hübsche Anzeige eines Antwortwerts (für Zusammenfassung & Admin). */
 export function displayValue(value: BriefValue | undefined): string {
   if (value == null) return "—";
@@ -636,12 +580,8 @@ const roundEuro = (value: number) => Math.round(value);
  */
 export function computeBriefEstimate(data: BriefData, summary: BriefSummary): BriefEstimate {
   const [baseLow, baseHigh] = baseRangeForProjectType(summary.projectType);
-  const factor =
-    summary.design && summary.design in PRICING.designMultiplier
-      ? PRICING.designMultiplier[summary.design as DesignType]
-      : 1;
-  const baseMin = roundEuro(baseLow * factor);
-  const baseMax = roundEuro(baseHigh * factor);
+  const baseMin = roundEuro(baseLow);
+  const baseMax = roundEuro(baseHigh);
 
   let addOnsMin = 0;
   let addOnsMax = 0;

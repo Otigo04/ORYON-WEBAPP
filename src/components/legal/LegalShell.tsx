@@ -4,7 +4,7 @@ import { Footer } from "@/components/landing/Footer";
 
 /**
  * Einheitlicher Rahmen für Rechtstexte (Impressum, Datenschutz).
- * Server Component – ruhiges, gut lesbares Layout im Markendesign.
+ * Server Component – flaches, gut lesbares Layout im Stil der Startseite.
  */
 export function LegalShell({
   title,
@@ -20,12 +20,8 @@ export function LegalShell({
   return (
     <>
       <Navbar />
-      <main className="relative overflow-hidden bg-gradient-to-b from-black via-[#03100a] to-black px-6 pb-24 pt-36">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute right-0 top-1/4 h-80 w-80 rounded-full bg-[#09ed2d]/[0.06] blur-[120px]"
-        />
-        <article className="relative mx-auto max-w-3xl">
+      <main className="bg-black px-6 pb-24 pt-36">
+        <article className="mx-auto max-w-3xl">
           <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
             {title}
           </h1>

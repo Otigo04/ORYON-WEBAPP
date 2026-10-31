@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SMALL_BUSINESS_VAT_EXEMPT } from "../../pricing.config";
 
 /**
  * Gemeinsame Typen & Berechnungen für Dokumente (Rechnungen & Angebote).
@@ -24,7 +25,9 @@ export function computeTotals(items: LineItem[], taxRate: number): DocumentTotal
     (sum, item) => sum + (Number(item.quantity) || 0) * (Number(item.unit_price) || 0),
     0,
   );
-  const tax = (net * (Number(taxRate) || 0)) / 100;
+  // Kleinunternehmer (§ 19 UStG): nie Umsatzsteuer aufschlagen, egal was in der DB steht.
+  const rate = SMALL_BUSINESS_VAT_EXEMPT ? 0 : Number(taxRate) || 0;
+  const tax = (net * rate) / 100;
   return { net, tax, gross: net + tax };
 }
 

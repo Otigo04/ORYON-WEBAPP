@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
@@ -11,7 +12,7 @@ import { FleetSocialProof } from "@/components/tas-fleet/FleetSocialProof";
 import { FleetFaq } from "@/components/tas-fleet/FleetFaq";
 import { FleetCta } from "@/components/tas-fleet/FleetCta";
 import { breadcrumbSchema, faqSchema } from "@/lib/structured-data";
-import { siteConfig } from "@/lib/site";
+import { launchFlags, siteConfig } from "@/lib/site";
 import { FLEET_APP_URL, FLEET_FAQS, FLEET_TIERS } from "@/lib/tas-fleet";
 
 const PATH = "/leistungen/tas-fleet";
@@ -20,6 +21,7 @@ const DESCRIPTION =
   "TAS-FLEET ist die All-in-One-Web-App für Fuhrpark-, Fahrer- und Dispositionsverwaltung. Schichtplanung in Echtzeit, Compliance-Center, OCR-Massenimport und Incident-Log – für Taxi-, Mietwagen- und Shuttle-Betriebe.";
 
 export const metadata: Metadata = {
+  robots: launchFlags.tasFleet ? undefined : { index: false, follow: false },
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: PATH },
@@ -55,6 +57,9 @@ function softwareApplicationSchema() {
 }
 
 export default function TasFleetPage() {
+  // Erst freischalten, wenn TAS-FLEET nachweislich live ist (siehe `launchFlags`).
+  if (!launchFlags.tasFleet) notFound();
+
   return (
     <>
       <JsonLd

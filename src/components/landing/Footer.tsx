@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { LogoWordmark } from "@/components/Logo";
+import { launchFlags, siteConfig } from "@/lib/site";
 
 const footerNav = [
   { label: "Leistungen", href: "/#leistungen" },
-  { label: "Portfolio", href: "/#portfolio" },
-  { label: "Referenzen", href: "/#referenzen" },
+  { label: "Projekt", href: "/#projekt" },
+  { label: "Preisrechner", href: "/#preisrechner" },
   { label: "Über uns", href: "/ueber-uns" },
   { label: "Kontakt", href: "/#kontakt" },
 ];
@@ -18,8 +19,10 @@ export function Footer() {
             <LogoWordmark className="h-12 w-auto" />
           </Link>
           <p className="mt-4 text-sm text-white/60">
-            Software, die dein Unternehmen wachsen lässt. Performance, Design und
-            Conversion aus einer Hand.
+            Websites und Online-Shops für kleine Unternehmen.
+          </p>
+          <p className="mt-3 text-xs text-white/40">
+            Gebaut mit Next.js, TypeScript, Supabase und Vercel.
           </p>
         </div>
 
@@ -43,17 +46,20 @@ export function Footer() {
             Kontakt
           </span>
           <a
-            href="mailto:hello@tas-webworks.de"
+            href={`tel:${siteConfig.telephone.replace(/\s+/g, "")}`}
             className="text-sm text-white/60 transition hover:text-white"
           >
-            hello@tas-webworks.de
+            {siteConfig.telephone}
           </a>
-          <Link
-            href="/dashboard"
-            className="text-sm text-white/60 transition hover:text-white"
-          >
-            Kundenportal
-          </Link>
+          <span className="text-sm text-white/60">{siteConfig.email}</span>
+          {launchFlags.dashboard && (
+            <Link
+              href="/dashboard"
+              className="text-sm text-white/60 transition hover:text-white"
+            >
+              Kundenportal
+            </Link>
+          )}
         </div>
       </div>
 

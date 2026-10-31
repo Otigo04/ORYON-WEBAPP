@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
-import { siteConfig } from "@/lib/site";
+import { launchFlags, postLoginPath, siteConfig } from "@/lib/site";
 
 /**
  * Auth-Server-Actions (Login & Registrierung) über Supabase Auth.
@@ -101,13 +101,17 @@ export async function signInAction(
   }
 
   // Erfolgreich: außerhalb des try/catch umleiten (redirect wirft intern).
-  redirect("/dashboard");
+  redirect(postLoginPath);
 }
 
 export async function signUpAction(
   _prev: AuthState,
   formData: FormData,
 ): Promise<AuthState> {
+  if (!launchFlags.dashboard) {
+    return { error: "Die Registrierung ist derzeit nicht verfügbar." };
+  }
+
   const parsed = registerSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -130,7 +134,7 @@ export async function signUpAction(
       password,
       options: {
         data: { full_name: name },
-        emailRedirectTo: `${siteConfig.url}/dashboard`,
+        emailRedirectTo: `${siteConfig.url}${postLoginPath}`,
       },
     });
 
@@ -142,7 +146,7 @@ export async function signUpAction(
     if (!data.session) {
       return {
         success:
-          "Fast geschafft! Wir haben dir eine E-Mail zur Bestätigung deines Kontos geschickt.",
+          "Fast geschafft! Dir wurde eine E-Mail zur Bestätigung deines Kontos geschickt.",
       };
     }
   } catch {
@@ -150,7 +154,7 @@ export async function signUpAction(
   }
 
   // Session direkt vorhanden (E-Mail-Bestätigung deaktiviert): ins Dashboard.
-  redirect("/dashboard");
+  redirect(postLoginPath);
 }
 
 /**
@@ -185,7 +189,7 @@ export async function requestPasswordResetAction(
   }
 
   const successMessage =
-    "Falls ein Konto mit dieser E-Mail existiert, haben wir dir einen Link zum Zurücksetzen geschickt.";
+    "Falls ein Konto mit dieser E-Mail existiert, wurde ein Link zum Zurücksetzen verschickt.";
 
   if (!hasSupabaseEnv()) {
     return { success: successMessage };
@@ -247,5 +251,5 @@ export async function updatePasswordAction(
     return { error: "Unerwarteter Fehler. Bitte versuche es erneut." };
   }
 
-  redirect("/dashboard");
+  redirect(postLoginPath);
 }

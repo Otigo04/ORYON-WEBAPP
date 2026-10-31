@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "TAS Webworks – Preiswerte Webagentur aus Berlin",
+    default: "TAS Webworks – Websites & Online-Shops aus Berlin",
     template: "%s | TAS Webworks",
   },
   description: siteConfig.description,
@@ -37,14 +37,12 @@ export const metadata: Metadata = {
     locale: siteConfig.locale,
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: "TAS Webworks – Preiswerte Webagentur aus Berlin",
+    title: "TAS Webworks – Websites & Online-Shops aus Berlin",
     description: siteConfig.description,
   },
   twitter: {
     card: "summary_large_image",
-    site: siteConfig.social.twitter,
-    creator: siteConfig.social.twitter,
-    title: "TAS Webworks – Preiswerte Webagentur aus Berlin",
+    title: "TAS Webworks – Websites & Online-Shops aus Berlin",
     description: siteConfig.description,
   },
   robots: {

@@ -6,8 +6,8 @@ import { LogoMark } from "@/components/Logo";
 import { ServicesMenu } from "@/components/landing/ServicesMenu";
 import { ProductsMenu, navProducts } from "@/components/landing/ProductsMenu";
 import { branches, brancheHref } from "@/lib/branches";
+import { launchFlags } from "@/lib/site";
 import { signOutAction } from "@/lib/actions/auth";
-import { createClient } from "@/lib/supabase/client";
 
 // Absolute Anker (/#...) statt reiner Hashes, damit die Links auch von
 // Unterseiten wie /ueber-uns oder /agb korrekt zur Startseite springen.
@@ -42,46 +42,56 @@ export function Navbar() {
 
   // Auth-Status client-seitig ermitteln, damit die öffentlichen Seiten statisch
   // (SEO-optimal) bleiben. Reagiert live auf Login/Logout in anderen Tabs.
+  // Performance: Besucher ohne Session-Cookie (fast alle) laden den Supabase-
+  // Client gar nicht erst – er wird nur bei vorhandenem Auth-Cookie per
+  // dynamischem Import nachgeladen.
   useEffect(() => {
     const hasSupabaseEnv =
       !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
       !!process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
     if (!hasSupabaseEnv) return;
+    if (!/(?:^|;\s*)sb-[^=]*-auth-token/.test(document.cookie)) return;
 
-    const supabase = createClient();
     let active = true;
+    let unsubscribe: (() => void) | undefined;
 
-    // Rolle des Nutzers laden (für den Admin-Direktlink). RLS erlaubt jedem
-    // Nutzer, seine eigene Profilzeile zu lesen.
-    const loadRole = async (userId: string | undefined) => {
-      if (!userId) {
-        if (active) setIsAdmin(false);
-        return;
-      }
-      const { data } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", userId)
-        .maybeSingle();
-      if (active) setIsAdmin(data?.role === "admin");
-    };
-
-    supabase.auth.getUser().then(({ data }) => {
+    import("@/lib/supabase/client").then(({ createClient }) => {
       if (!active) return;
-      setIsAuthenticated(!!data.user);
-      loadRole(data.user?.id);
-    });
+      const supabase = createClient();
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthenticated(!!session?.user);
-      loadRole(session?.user?.id);
+      // Rolle des Nutzers laden (für den Admin-Direktlink). RLS erlaubt jedem
+      // Nutzer, seine eigene Profilzeile zu lesen.
+      const loadRole = async (userId: string | undefined) => {
+        if (!userId) {
+          if (active) setIsAdmin(false);
+          return;
+        }
+        const { data } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", userId)
+          .maybeSingle();
+        if (active) setIsAdmin(data?.role === "admin");
+      };
+
+      supabase.auth.getUser().then(({ data }) => {
+        if (!active) return;
+        setIsAuthenticated(!!data.user);
+        loadRole(data.user?.id);
+      });
+
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        setIsAuthenticated(!!session?.user);
+        loadRole(session?.user?.id);
+      });
+      unsubscribe = () => subscription.unsubscribe();
     });
 
     return () => {
       active = false;
-      subscription.unsubscribe();
+      unsubscribe?.();
     };
   }, []);
 
@@ -113,9 +123,11 @@ export function Navbar() {
             <li>
               <ServicesMenu />
             </li>
-            <li>
-              <ProductsMenu />
-            </li>
+            {launchFlags.tasFleet && (
+              <li>
+                <ProductsMenu />
+              </li>
+            )}
             {navLinks.map((link) => (
               <li key={link.href}>
                 <a href={link.href} className="transition-colors hover:text-white">
@@ -139,12 +151,14 @@ export function Navbar() {
                     Admin
                   </Link>
                 )}
-                <Link
-                  href="/dashboard"
-                  className="rounded-full px-4 py-2 text-sm font-semibold text-white/80 transition hover:text-white"
-                >
-                  Dashboard
-                </Link>
+                {launchFlags.dashboard && (
+                  <Link
+                    href="/dashboard"
+                    className="rounded-full px-4 py-2 text-sm font-semibold text-white/80 transition hover:text-white"
+                  >
+                    Dashboard
+                  </Link>
+                )}
                 <form action={signOutAction}>
                   <button
                     type="submit"
@@ -155,27 +169,29 @@ export function Navbar() {
                 </form>
               </>
             ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="rounded-full px-4 py-2 text-sm font-semibold text-white/80 transition hover:text-white"
-                >
-                  Anmelden
-                </Link>
-                <Link
-                  href="/register"
-                  className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/25 hover:bg-white/10"
-                >
-                  Registrieren
-                </Link>
-              </>
+              launchFlags.dashboard && (
+                <>
+                  <Link
+                    href="/login"
+                    className="rounded-full px-4 py-2 text-sm font-semibold text-white/80 transition hover:text-white"
+                  >
+                    Anmelden
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/25 hover:bg-white/10"
+                  >
+                    Registrieren
+                  </Link>
+                </>
+              )
             )}
-            <a
+            <Link
               href="/#kontakt"
-              className="rounded-full bg-[#09ed2d] px-4 py-2 text-sm font-semibold text-black shadow-[0_0_20px_-4px_rgba(9,237,45,0.6)] transition hover:bg-[#09ed2d]/90"
+              className="rounded-full bg-[#09ed2d] px-4 py-2 text-sm font-semibold text-black transition hover:bg-[#09ed2d]/90"
             >
               Projekt starten
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -259,50 +275,52 @@ export function Navbar() {
                 </ul>
               )}
             </li>
-            <li>
-              <button
-                type="button"
-                onClick={() => setMobileProductsOpen((open) => !open)}
-                aria-expanded={mobileProductsOpen}
-                className="flex w-full items-center justify-between rounded-lg px-3 py-2 transition hover:bg-white/5 hover:text-white"
-              >
-                Produkte
-                <svg
-                  viewBox="0 0 16 16"
-                  aria-hidden="true"
-                  className={`h-3.5 w-3.5 transition-transform duration-300 ${
-                    mobileProductsOpen ? "rotate-180" : ""
-                  }`}
+            {launchFlags.tasFleet && (
+              <li>
+                <button
+                  type="button"
+                  onClick={() => setMobileProductsOpen((open) => !open)}
+                  aria-expanded={mobileProductsOpen}
+                  className="flex w-full items-center justify-between rounded-lg px-3 py-2 transition hover:bg-white/5 hover:text-white"
                 >
-                  <path
-                    d="m4 6 4 4 4-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.75"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-              {mobileProductsOpen && (
-                <ul className="mb-1 ml-2 flex flex-col gap-1 border-l border-white/10 pl-2">
-                  {navProducts.map((product) => (
-                    <li key={product.slug}>
-                      <Link
-                        href={product.href}
-                        onClick={() => setMenuOpen(false)}
-                        className="block rounded-lg px-3 py-2 transition hover:bg-white/5 hover:text-white"
-                      >
-                        <span className="block text-[0.7rem] font-medium uppercase tracking-wider text-[#22d3ee]">
-                          {product.eyebrow}
-                        </span>
-                        <span className="text-sm text-white/80">{product.name}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
+                  Produkte
+                  <svg
+                    viewBox="0 0 16 16"
+                    aria-hidden="true"
+                    className={`h-3.5 w-3.5 transition-transform duration-300 ${
+                      mobileProductsOpen ? "rotate-180" : ""
+                    }`}
+                  >
+                    <path
+                      d="m4 6 4 4 4-4"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.75"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                {mobileProductsOpen && (
+                  <ul className="mb-1 ml-2 flex flex-col gap-1 border-l border-white/10 pl-2">
+                    {navProducts.map((product) => (
+                      <li key={product.slug}>
+                        <Link
+                          href={product.href}
+                          onClick={() => setMenuOpen(false)}
+                          className="block rounded-lg px-3 py-2 transition hover:bg-white/5 hover:text-white"
+                        >
+                          <span className="block text-[0.7rem] font-medium uppercase tracking-wider text-[#22d3ee]">
+                            {product.eyebrow}
+                          </span>
+                          <span className="text-sm text-white/80">{product.name}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            )}
             {navLinks.map((link) => (
               <li key={link.href}>
                 <a
@@ -328,13 +346,15 @@ export function Navbar() {
                     Admin-Bereich
                   </Link>
                 )}
-                <Link
-                  href="/dashboard"
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded-full px-4 py-2.5 text-center text-sm font-semibold text-white/80 transition hover:text-white"
-                >
-                  Dashboard
-                </Link>
+                {launchFlags.dashboard && (
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-full px-4 py-2.5 text-center text-sm font-semibold text-white/80 transition hover:text-white"
+                  >
+                    Dashboard
+                  </Link>
+                )}
                 <form action={signOutAction} className="contents">
                   <button
                     type="submit"
@@ -346,30 +366,32 @@ export function Navbar() {
                 </form>
               </>
             ) : (
-              <>
-                <Link
-                  href="/login"
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded-full px-4 py-2.5 text-center text-sm font-semibold text-white/80 transition hover:text-white"
-                >
-                  Anmelden
-                </Link>
-                <Link
-                  href="/register"
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded-full border border-white/15 bg-white/5 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-white/10"
-                >
-                  Registrieren
-                </Link>
-              </>
+              launchFlags.dashboard && (
+                <>
+                  <Link
+                    href="/login"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-full px-4 py-2.5 text-center text-sm font-semibold text-white/80 transition hover:text-white"
+                  >
+                    Anmelden
+                  </Link>
+                  <Link
+                    href="/register"
+                    onClick={() => setMenuOpen(false)}
+                    className="rounded-full border border-white/15 bg-white/5 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-white/10"
+                  >
+                    Registrieren
+                  </Link>
+                </>
+              )
             )}
-            <a
+            <Link
               href="/#kontakt"
               onClick={() => setMenuOpen(false)}
               className="rounded-full bg-[#09ed2d] px-4 py-2.5 text-center text-sm font-semibold text-black transition hover:bg-[#09ed2d]/90"
             >
               Projekt starten
-            </a>
+            </Link>
           </div>
         </div>
       )}

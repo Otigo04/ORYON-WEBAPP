@@ -59,11 +59,7 @@ export default async function BranchePage({ params }: { params: Promise<Params> 
       />
       <Navbar />
       <main>
-        <section className="relative overflow-hidden bg-gradient-to-b from-black via-[#03100a] to-black px-6 pb-24 pt-36">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute right-0 top-1/4 h-80 w-80 rounded-full bg-[#09ed2d]/[0.08] blur-[120px]"
-          />
+        <section className="bg-black px-6 pb-24 pt-36">
           <div className="relative mx-auto max-w-3xl">
             <Link
               href="/#leistungen"
@@ -82,7 +78,7 @@ export default async function BranchePage({ params }: { params: Promise<Params> 
               Zurück zu den Leistungen
             </Link>
 
-            <span className="mt-8 block text-sm font-medium uppercase tracking-[0.2em] text-[#09ed2d]">
+            <span className="mt-8 block text-sm font-medium text-[#09ed2d]">
               {branche.industry}
             </span>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
@@ -94,7 +90,7 @@ export default async function BranchePage({ params }: { params: Promise<Params> 
               {branche.features.map((feature) => (
                 <li
                   key={feature}
-                  className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-5 text-white/80"
+                  className="flex items-start gap-3 rounded-xl border border-white/10 p-5 text-white/80"
                 >
                   <span className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[#09ed2d]/15 text-[#09ed2d]">
                     <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
@@ -116,7 +112,7 @@ export default async function BranchePage({ params }: { params: Promise<Params> 
             <div className="mt-12">
               <Link
                 href="/#kontakt"
-                className="inline-flex rounded-full bg-[#09ed2d] px-6 py-3 text-sm font-semibold text-black shadow-[0_0_24px_-4px_rgba(9,237,45,0.6)] transition hover:bg-[#09ed2d]/90"
+                className="inline-flex rounded-full bg-[#09ed2d] px-6 py-3 text-sm font-semibold text-black transition hover:bg-[#09ed2d]/90"
               >
                 Projekt starten
               </Link>

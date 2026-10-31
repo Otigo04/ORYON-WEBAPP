@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { customerHome } from "@/lib/site";
 
 export type Role = "user" | "admin";
 
@@ -50,6 +51,6 @@ export async function isAdmin(): Promise<boolean> {
 export async function requireAdmin() {
   const role = await getCurrentRole();
   if (role !== "admin") {
-    redirect(role ? "/dashboard" : "/login");
+    redirect(role ? customerHome : "/login");
   }
 }

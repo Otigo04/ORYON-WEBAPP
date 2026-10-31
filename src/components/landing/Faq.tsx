@@ -1,56 +1,54 @@
-"use client";
-
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-} from "@/components/animate-ui/components/headless/accordion";
 import { faqs } from "@/lib/faq";
 
 /**
- * FAQ-Sektion – animiertes Accordion (Animate UI, Headless UI + Motion) im
- * minimalistischen Stil: schlichte Trennlinien, Chevron im Smaragd-Akzent der
- * Marke. Inhaltlich auf Long-Tail-SEO und den Preisvorteil ausgerichtet;
- * korrespondiert 1:1 mit dem FAQ-JSON-LD auf der Startseite (Voraussetzung für
- * FAQ-Rich-Results). Die Antworten bleiben dank `keepRendered` immer im DOM –
- * also auch im SSR-HTML für die Indexierung.
+ * FAQ-Sektion – native `<details>`-Aufklapper (kein Client-JS, keine
+ * Animations-Bibliothek). Die Antworten stehen immer im HTML und sind damit
+ * auch ohne JavaScript les- und indexierbar. Korrespondiert 1:1 mit dem
+ * FAQ-JSON-LD auf der Startseite (Voraussetzung für FAQ-Rich-Results).
  */
 export function Faq() {
   return (
     <section
       id="faq"
-      className="relative scroll-mt-28 border-t border-white/10 bg-black px-6 py-24"
+      className="relative scroll-mt-28 border-t border-white/10 bg-black px-6 py-20 sm:py-24"
     >
       <div className="mx-auto max-w-3xl">
         <header className="mb-12 text-center">
-          <span className="text-sm font-medium uppercase tracking-[0.2em] text-[#09ed2d]">
-            FAQ
-          </span>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+          <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
             Häufige Fragen
           </h2>
           <p className="mt-4 text-base text-white/60">
-            Alles Wichtige zu Preisen, Ablauf und unserer Arbeit als Berliner
-            Webagentur – kurz und transparent beantwortet.
+            Das Wichtigste zu Preisen, Ablauf und Zusammenarbeit.
           </p>
         </header>
 
-        <Accordion className="w-full">
+        <div className="w-full">
           {faqs.map((faq) => (
-            <AccordionItem key={faq.question} className="border-white/10 last:border-b">
-              <AccordionButton className="py-5 text-base text-white hover:no-underline [&>svg]:size-5 [&>svg]:text-[#09ed2d]">
+            <details
+              key={faq.question}
+              className="group border-b border-white/10 first:border-t"
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-base font-medium text-white [&::-webkit-details-marker]:hidden">
                 {faq.question}
-              </AccordionButton>
-              <AccordionPanel
-                keepRendered
-                className="pb-5 text-sm leading-relaxed text-white/60"
-              >
-                {faq.answer}
-              </AccordionPanel>
-            </AccordionItem>
+                <svg
+                  viewBox="0 0 12 12"
+                  className="h-4 w-4 flex-none text-[#09ed2d] transition-transform duration-200 group-open:rotate-180"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 4l4 4 4-4"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </summary>
+              <p className="pb-5 text-sm leading-relaxed text-white/60">{faq.answer}</p>
+            </details>
           ))}
-        </Accordion>
+        </div>
       </div>
     </section>
   );

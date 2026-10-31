@@ -1,37 +1,50 @@
+import {
+  ENTRY_PRICE,
+  PRICING,
+  SHOP_COMPLEX_PRICE,
+  SHOP_PRICE,
+  WEBSITE_PRICE,
+  formatEuro,
+} from "@/lib/pricing";
+
 /**
  * Häufige Fragen – sichtbar auf der Landingpage UND als FAQ-JSON-LD (Rich
- * Results). Bewusst keyword-stark (Preis/günstig, Berlin, Dauer, SEO), um
- * Long-Tail-Suchanfragen abzudecken. Antworten betonen den Preisvorteil.
+ * Results). Alle Preise kommen aus `pricing.config.ts` (über `@/lib/pricing`),
+ * damit Text und Preisrechner nie auseinanderlaufen.
  */
+const hostingPrices = Object.values(PRICING.hosting.byProjectType);
+const hostingFrom = Math.min(...hostingPrices.map(([min]) => min));
+const maintenanceFrom = Math.min(
+  ...Object.values(PRICING.maintenance.byProjectType).map(([min]) => min),
+);
+
 export const faqs = [
   {
-    question: "Was kostet eine Website bei TAS Webworks?",
-    answer:
-      "Deutlich weniger als bei klassischen Agenturen: Ein professioneller One-Pager startet bereits im niedrigen dreistelligen Bereich, mehrseitige Websites und Online-Shops entsprechend gestaffelt. Mit unserem Online-Preisrechner erhältst du in 60 Sekunden einen transparenten Richtpreis – komplett unverbindlich.",
-  },
-  {
-    question: "Warum ist TAS Webworks so preiswert?",
-    answer:
-      "Wir arbeiten mit schlanken, hochautomatisierten Prozessen und modernster Technologie (Next.js, Vercel, Supabase). Dadurch sparen wir Zeit und Kosten – und geben diesen Vorteil direkt an dich weiter. Du bekommst Agentur-Qualität zum fairen Festpreis, ohne versteckte Kosten.",
-  },
-  {
-    question: "Seid ihr eine Webagentur aus Berlin?",
-    answer:
-      "Ja. TAS Webworks ist ein Berliner Unternehmen. Wir betreuen Kundinnen und Kunden in ganz Deutschland, kennen aber den lokalen Markt in Berlin besonders gut und sind für persönliche Termine in der Region erreichbar.",
-  },
-  {
-    question: "Ist die Suchmaschinenoptimierung (SEO) inklusive?",
-    answer:
-      "Ja. Jede Website wird technisch sauber, serverseitig gerendert und mit strukturierten Daten ausgeliefert. SEO-Grundoptimierung und beste Core-Web-Vitals sind immer inklusive – damit dich deine Kunden bei Google finden.",
+    question: "Was kostet eine Website?",
+    answer: `Das hängt von Umfang und Ausstattung ab. Richtwerte: One-Pager ab ${formatEuro(ENTRY_PRICE)}, mehrseitige Website ab ${formatEuro(WEBSITE_PRICE)}, einfacher Online-Shop ab ${formatEuro(SHOP_PRICE)}, komplexere Shops nach Planung ab ${formatEuro(SHOP_COMPLEX_PRICE)}. ${PRICING.vatNote} Im Preisrechner siehst du in einer Minute, wo du ungefähr liegst – unverbindlich.`,
   },
   {
     question: "Bekomme ich einen verbindlichen Festpreis?",
     answer:
-      "Ja. Nach deiner Anfrage über den Preisrechner besprechen wir dein Projekt und du erhältst ein transparentes Festpreis-Angebot. Keine bösen Überraschungen, keine versteckten Stundensätze.",
+      "Ja. Der Preisrechner liefert einen Richtwert. Nach deiner Anfrage bespreche ich das Projekt mit dir und du erhältst ein schriftliches Angebot zum Festpreis – ohne versteckte Stundensätze.",
   },
   {
-    question: "Wie lange dauert die Umsetzung meiner Website?",
+    question: "Welche laufenden Kosten gibt es?",
+    answer: `Für den Betrieb deiner Seite fällt eine monatliche Hosting-Pauschale an, je nach Projektart ab ${formatEuro(hostingFrom)} pro Monat. Wartung und Pflege (Updates, Backups, kleine Anpassungen) ist optional und beginnt ab ${formatEuro(maintenanceFrom)} pro Monat. ${PRICING.vatNote}`,
+  },
+  {
+    question: "Wo sitzt TAS Webworks?",
     answer:
-      "Einfache One-Pager realisieren wir oft innerhalb weniger Tage, umfangreichere Websites und Shops je nach Umfang in wenigen Wochen. Den genauen Zeitrahmen nennen wir dir verbindlich im Erstgespräch.",
+      "In Berlin. Ich arbeite für Kundinnen und Kunden in ganz Deutschland, per Telefon und Videocall.",
+  },
+  {
+    question: "Ist Suchmaschinenoptimierung (SEO) dabei?",
+    answer:
+      "Die technische Grundlage ist bei jeder Seite dabei: saubere Seitenstruktur, Titel und Beschreibungen, Mobilansicht und strukturierte Daten. Eine bestimmte Platzierung bei Google kann allerdings niemand garantieren.",
+  },
+  {
+    question: "Wie lange dauert die Umsetzung?",
+    answer:
+      "Das hängt vom Umfang ab. Einen realistischen Zeitrahmen nenne ich dir im Erstgespräch, bevor du dich entscheidest.",
   },
 ] as const;

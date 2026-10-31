@@ -50,7 +50,7 @@ Das ZIEL ist es, TAS Webworks als Web Agentur richtig gut zu präsentieren, weil
 
 Dies ist die erste Version (Minimum Viable Product). Fokus liegt auf Lead-Generierung und professionellem Auftritt.
 
-1. **Öffentliche Routen (SEO-optimiert):** Homepage und dedizierte Branchenseiten. Portfolio-Projekte und Kundenbewertungen werden serverseitig aus der Supabase-Datenbank geladen (React Server Components), falls Datenbank leer oder nicht verbunden, erstelle Dummy Bewertungen, natürlich alle 5 Sterne
+1. **Öffentliche Routen (SEO-optimiert):** Homepage und dedizierte Branchenseiten. Portfolio-Projekte und Kundenbewertungen werden serverseitig aus der Supabase-Datenbank geladen (React Server Components). Keine erfundenen Kunden, Bewertungen, Testimonials, Zahlen, Logos oder Referenzen. Fehlende Inhalte als [PLATZHALTER] markieren.
 2. **Interaktiver Preisrechner (Client Component):** Ein mehrstufiger Wizard (`"use client"`), in dem potenzielle Kunden Parameter (Projektart, Features) eingeben können. Das Ergebnis wird berechnet und zusammen mit den Kontaktdaten via Next.js Server Action in Supabase gespeichert.
 3. **Accounts & Sicherheit:** Registrierung und Login für Kunden via Supabase Auth. Geschützte Routen (z.B. `/dashboard`) werden strikt durch die Next.js Middleware abgesichert.
 4. **Kunden-Dashboard:** Ein privater Bereich, in dem der eingeloggte Nutzer sein zuvor berechnetes Angebot und seine Leads einsehen kann. Der Datenabruf erfolgt abgesichert durch Supabase Row Level Security (RLS) - Nutzer sehen nur ihre eigenen Daten.

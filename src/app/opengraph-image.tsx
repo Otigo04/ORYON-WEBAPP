@@ -6,7 +6,7 @@ import { siteConfig } from "@/lib/site";
  * Markendesign (dunkel + OTIGO-Grün) – sorgt für hochwertige Link-Previews
  * auf LinkedIn, X, WhatsApp & Co. (wichtiger Social-/SEO-Signalgeber).
  */
-export const alt = "TAS Webworks – Preiswerte Webagentur aus Berlin";
+export const alt = "TAS Webworks – Websites & Online-Shops aus Berlin";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -66,7 +66,7 @@ export default function OpengraphImage() {
               maxWidth: "900px",
             }}
           >
-            Preiswerte Websites, die dein Unternehmen wachsen lassen.
+            Websites und Online-Shops für kleine Unternehmen.
           </div>
         </div>
 
@@ -77,7 +77,7 @@ export default function OpengraphImage() {
             color: "rgba(255,255,255,0.7)",
           }}
         >
-          Schnell · SEO-optimiert · Festpreis · {siteConfig.url.replace("https://", "")}
+          {siteConfig.url.replace("https://", "")}
         </div>
       </div>
     ),

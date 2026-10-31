@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { launchFlags } from "@/lib/site";
 import Link from "next/link";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { RegisterForm } from "@/components/auth/RegisterForm";
@@ -10,6 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default function RegisterPage() {
+  // Ohne Kundenportal gibt es nichts, wofür man sich registrieren könnte.
+  if (!launchFlags.dashboard) notFound();
+
   return (
     <AuthShell
       badge="Kostenlos starten"

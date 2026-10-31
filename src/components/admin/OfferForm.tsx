@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
+import { DEFAULT_TAX_RATE, SMALL_BUSINESS_VAT_EXEMPT } from "../../../pricing.config";
 import { useRouter } from "next/navigation";
 import { createOffer, updateOffer, type ActionState } from "@/lib/actions/admin/offers";
 import { Field, Select, TextArea, SubmitButton, FormError } from "@/components/admin/Fields";
@@ -39,7 +40,7 @@ export function OfferForm({ offer, customers }: { offer?: Offer; customers: Cust
         <Field name="number" label="Angebotsnr." defaultValue={offer?.number ?? suggestDocumentNumber("AN")} required error={state?.fieldErrors?.number?.[0]} />
         <Field name="title" label="Titel" defaultValue={offer?.title} placeholder="z. B. Angebot Website-Relaunch" required error={state?.fieldErrors?.title?.[0]} />
         <Field name="valid_until" label="Gültig bis" type="date" defaultValue={offer?.valid_until ?? ""} />
-        <Field name="tax_rate" label="MwSt. %" type="number" min={0} max={100} step="0.1" defaultValue={offer?.tax_rate ?? 19} />
+        <Field name="tax_rate" label={SMALL_BUSINESS_VAT_EXEMPT ? "MwSt. % (Kleinunternehmer: wird nicht berechnet)" : "MwSt. %"} type="number" min={0} max={100} step="0.1" defaultValue={offer?.tax_rate ?? DEFAULT_TAX_RATE} />
       </div>
 
       <TextArea name="content" label="Einleitung / Beschreibung" defaultValue={offer?.content ?? ""} placeholder="Beschreibe Leistungsumfang und Rahmenbedingungen …" rows={5} />

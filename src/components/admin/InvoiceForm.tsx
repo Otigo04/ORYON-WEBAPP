@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
+import { DEFAULT_TAX_RATE, SMALL_BUSINESS_VAT_EXEMPT } from "../../../pricing.config";
 import { useRouter } from "next/navigation";
 import { createInvoice, updateInvoice, type ActionState } from "@/lib/actions/admin/invoices";
 import { Field, Select, TextArea, SubmitButton, FormError } from "@/components/admin/Fields";
@@ -42,7 +43,7 @@ export function InvoiceForm({ invoice, customers }: { invoice?: Invoice; custome
         <Field name="title" label="Titel" defaultValue={invoice?.title} placeholder="z. B. Website-Erstellung" required error={state?.fieldErrors?.title?.[0]} />
         <Field name="issue_date" label="Rechnungsdatum" type="date" defaultValue={invoice?.issue_date ?? today()} required />
         <Field name="due_date" label="Fällig bis" type="date" defaultValue={invoice?.due_date ?? ""} />
-        <Field name="tax_rate" label="MwSt. %" type="number" min={0} max={100} step="0.1" defaultValue={invoice?.tax_rate ?? 19} />
+        <Field name="tax_rate" label={SMALL_BUSINESS_VAT_EXEMPT ? "MwSt. % (Kleinunternehmer: wird nicht berechnet)" : "MwSt. %"} type="number" min={0} max={100} step="0.1" defaultValue={invoice?.tax_rate ?? DEFAULT_TAX_RATE} />
       </div>
 
       <div>

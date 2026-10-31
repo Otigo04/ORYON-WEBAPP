@@ -11,6 +11,24 @@
  * Nur die Zahlen/Texte unten ändern – die Struktur (Schlüssel) bitte so lassen.
  */
 
+/**
+ * Steuerstatus – EINE Stelle für die ganze Website (Preise, FAQ, Rechner,
+ * Konfigurator, Angebote/Rechnungen, Impressum).
+ * `true`  = Kleinunternehmer nach § 19 UStG: keine Umsatzsteuer, alle Preise
+ *           sind Endpreise ohne USt.-Ausweis.
+ * `false` = Regelbesteuerung: Preise gelten inkl. gesetzlicher USt.; dann auch
+ *           die Impressum-Angaben (USt-IdNr. in `src/lib/site.ts`) prüfen.
+ */
+export const SMALL_BUSINESS_VAT_EXEMPT = true;
+
+/** Standard-Steuersatz für neue Angebote/Rechnungen (in Prozent). */
+export const DEFAULT_TAX_RATE = SMALL_BUSINESS_VAT_EXEMPT ? 0 : 19;
+
+/** Hinweistext, der überall neben Preisen steht. */
+export const VAT_NOTE = SMALL_BUSINESS_VAT_EXEMPT
+  ? "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet."
+  : "Alle Preise inkl. gesetzlicher Umsatzsteuer.";
+
 export const pricingConfig = {
   /** Projektarten – `base` ist die Einmalpreis-Spanne [min, max]. */
   projectTypes: {
@@ -20,9 +38,11 @@ export const pricingConfig = {
     shopComplex: { label: "Komplexer Online-Shop",    base: [1490, 4900],  complex: true  },
   },
 
-  /** Design-Faktor: maßgeschneidert = voller Preis, Template = günstiger. */
-  designMultiplier: { custom: 1.0, template: 0.8 },
-  designLabel:      { custom: "Maßgeschneidertes Design", template: "Template / Vorlage" },
+  /**
+   * Design-Wunsch (nur Information für das Angebot). Beeinflusst den Preis
+   * nicht – es gibt einen Preis pro Projektart.
+   */
+  designLabel: { custom: "Maßgeschneidertes Design", template: "Template / Vorlage" },
 
   /** Optionale Zusatz-Features (Einmalpreis-Aufschlag [min, max]). */
   features: {
@@ -63,6 +83,59 @@ export const pricingConfig = {
       shopComplex: [54, 120],
     },
   },
+
+  /**
+   * Aufpreise des Detail-Konfigurators (`src/lib/brief.ts`) je Frage und Option.
+   * Schlüssel = Feldname, danach Options-Label → Betrag in Euro. Einmalig bzw.
+   * monatlich. Hier ändern, nicht im Code.
+   */
+  briefAddOns: {
+    oneTime: {
+      logoStatus: {
+        "Nein, brauche eins": 350,
+      },
+      pages: {
+        "Über uns": 39,
+        "Leistungen / Produkte": 39,
+        "Portfolio / Referenzen": 250,
+        Kontakt: 39,
+        FAQ: 39,
+        Team: 39,
+        "Karriere / Jobs": 39,
+        Preise: 39,
+      },
+      contentStatus: {
+        Teilweise: 50,
+        "Nein, bitte übernehmen": 95,
+      },
+      features: {
+        Kontaktformular: 39,
+        Terminbuchung: 99,
+        Onlineshop: 1500,
+        "Blog / CMS": 149,
+        Mehrsprachigkeit: 39,
+        "Mitgliederbereich / Login": 199,
+        "Newsletter-Anmeldung": 39,
+        "Live-Chat": 79,
+        "Karte / Anfahrt": 39,
+        Bewertungen: 59,
+        Downloadbereich: 49,
+      },
+      integrations: {
+        "Social Media (inkl. WhatsApp)": 20,
+        "Google Maps": 10,
+        "CRM-Anbindung": 49,
+      },
+    },
+    monthly: {
+      hostingStatus: {
+        "Nein, bitte übernehmen": 14,
+      },
+    },
+  },
+
+  /** Steuerhinweis neben allen Preisen – gesteuert über `SMALL_BUSINESS_VAT_EXEMPT`. */
+  vatNote: VAT_NOTE,
 
   /** Beträge werden auf diesen Wert gerundet (saubere Zahlen). 0 = kein Runden. */
   roundTo: 0,

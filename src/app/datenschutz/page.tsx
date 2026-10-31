@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 };
 
 /**
- * Datenschutzerklärung – DSGVO-konformes Dummy. Deckt die in dieser App real
- * eingesetzten Verarbeitungen ab (Vercel-Hosting, Server-Logs, Supabase als
- * Auftragsverarbeiter für Auth & Leads, Kontakt-/Preisrechner-Formular). Die
- * Verantwortlichen-Angaben sind Platzhalter aus `siteConfig`.
+ * Datenschutzerklärung. Beschreibt nur Verarbeitungen, die im Code dieser App
+ * tatsächlich vorkommen. Alles, was sich aus dem Code nicht belegen lässt
+ * (Speicherfristen, Produktiv-Einstellungen, Vertragsdetails), steht als
+ * sichtbarer [PLATZHALTER]. Vor dem Livegang rechtlich prüfen lassen.
  */
 export default function DatenschutzPage() {
   const { address } = siteConfig;
@@ -21,147 +21,172 @@ export default function DatenschutzPage() {
   return (
     <LegalShell
       title="Datenschutzerklärung"
-      intro="Der Schutz deiner personenbezogenen Daten ist uns wichtig. Nachfolgend informieren wir dich gemäß DSGVO über Art, Umfang und Zweck der Verarbeitung."
-      updated="Juni 2026"
+      intro="Hier erfährst du, welche personenbezogenen Daten bei der Nutzung dieser Website verarbeitet werden und welche Rechte du hast."
+      updated="Oktober 2026"
     >
       <LegalSection heading="1. Verantwortlicher">
-        <p>
-          Verantwortlicher im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:
-        </p>
+        <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist:</p>
         <p>
           <strong>{siteConfig.name}</strong>
           <br />
-          {siteConfig.founder}
+          Inhaber: {siteConfig.founder}
           <br />
           {address.street}, {address.postalCode} {address.city}
           <br />
-          E-Mail: <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
-          <br />
           Telefon: {siteConfig.telephone}
+          <br />
+          E-Mail: {siteConfig.email}
         </p>
       </LegalSection>
 
-      <LegalSection heading="2. Allgemeines zur Datenverarbeitung">
+      <LegalSection heading="2. Rechtsgrundlagen">
         <p>
-          Wir verarbeiten personenbezogene Daten unserer Nutzer grundsätzlich nur,
-          soweit dies zur Bereitstellung einer funktionsfähigen Website sowie
-          unserer Inhalte und Leistungen erforderlich ist. Rechtsgrundlagen sind
-          insbesondere Art. 6 Abs. 1 lit. a (Einwilligung), lit. b
-          (Vertragserfüllung / vorvertragliche Maßnahmen) und lit. f (berechtigtes
-          Interesse) DSGVO.
+          Ich verarbeite personenbezogene Daten nur, wenn dafür eine Rechtsgrundlage besteht:
+          deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), die Durchführung vorvertraglicher
+          Maßnahmen oder eines Vertrags (lit. b), eine rechtliche Pflicht (lit. c) oder mein
+          berechtigtes Interesse an einem sicheren und funktionierenden Betrieb der Website
+          (lit. f).
         </p>
       </LegalSection>
 
       <LegalSection heading="3. Hosting (Vercel)">
         <p>
-          Diese Website wird bei der Vercel Inc. (340 S Lemon Ave #4133, Walnut,
-          CA 91789, USA) gehostet. Vercel verarbeitet in unserem Auftrag Daten,
-          die technisch zur Auslieferung der Website nötig sind. Rechtsgrundlage
-          ist unser berechtigtes Interesse an einer sicheren und effizienten
-          Bereitstellung (Art. 6 Abs. 1 lit. f DSGVO). Mit dem Anbieter besteht
-          ein Auftragsverarbeitungsvertrag (Art. 28 DSGVO). Eine etwaige
-          Datenübermittlung in die USA erfolgt auf Grundlage geeigneter Garantien
-          (EU-Standardvertragsklauseln / Data Privacy Framework).
+          Diese Website wird bei Vercel gehostet. Beim Aufruf verarbeitet der Hosting-Anbieter
+          die technisch notwendigen Verbindungsdaten, zum Beispiel IP-Adresse, Datum und Uhrzeit,
+          aufgerufene Seite und Browser-Informationen, um die Seite auszuliefern und den Betrieb
+          abzusichern (Art. 6 Abs. 1 lit. f DSGVO). Die Server-Region liegt in der EU. Mit dem
+          Anbieter besteht ein Auftragsverarbeitungsvertrag (Art. 28 DSGVO).
         </p>
-      </LegalSection>
-
-      <LegalSection heading="4. Server-Logfiles">
         <p>
-          Bei jedem Aufruf werden automatisch Informationen vom Browser deines
-          Endgeräts übermittelt und temporär in sogenannten Logfiles gespeichert:
-          IP-Adresse (gekürzt/anonymisiert), Datum und Uhrzeit des Zugriffs,
-          aufgerufene Seite, Referrer-URL, verwendeter Browser und Betriebssystem.
-          Die Verarbeitung erfolgt zur Gewährleistung von Betrieb und Sicherheit
-          (Art. 6 Abs. 1 lit. f DSGVO). Die Logs werden nach kurzer Zeit gelöscht.
+          [PLATZHALTER: Vertragspartner und Anschrift laut AVV; Speicherdauer der Logfiles;
+          Hinweis zu einer möglichen Datenübermittlung in Drittländer, da Vercel ein US-Unternehmen
+          ist – rechtliche Prüfung ausstehend]
         </p>
       </LegalSection>
 
-      <LegalSection heading="5. Cookies">
+      <LegalSection heading="4. Cookies und lokaler Speicher">
         <p>
-          Wir setzen technisch notwendige Cookies ein, die für den Betrieb und
-          sichere Anmeldevorgänge erforderlich sind (z. B. Session-/Auth-Cookies).
-          Diese sind nach § 25 Abs. 2 TTDSG einwilligungsfrei. Marketing- oder
-          Tracking-Cookies, die eine Einwilligung erfordern würden, setzen wir
-          derzeit nicht ein. Du kannst Cookies in deinen Browser-Einstellungen
-          verwalten und löschen.
+          Diese Website setzt keine Tracking- oder Marketing-Cookies und bindet keine
+          Analyse-Dienste ein. Im Code vorhanden sind nur technisch notwendige Speicherzugriffe:
         </p>
-      </LegalSection>
-
-      <LegalSection heading="6. Kontaktaufnahme & Preisrechner-Anfragen">
-        <p>
-          Wenn du uns über den Preisrechner oder per E-Mail kontaktierst, werden
-          die von dir angegebenen Daten (z. B. Name, E-Mail-Adresse, Telefon,
-          Firma, Nachricht sowie deine Projektauswahl und der berechnete
-          Richtpreis) zur Bearbeitung deiner Anfrage und für etwaige
-          Anschlussfragen verarbeitet. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b
-          DSGVO (vorvertragliche Maßnahmen) bzw. lit. f DSGVO. Die Daten werden
-          gelöscht, sobald sie für die Zweckerreichung nicht mehr erforderlich
-          sind und keine gesetzlichen Aufbewahrungspflichten entgegenstehen.
-        </p>
-      </LegalSection>
-
-      <LegalSection heading="7. Kundenkonto & Authentifizierung (Supabase)">
-        <p>
-          Für Registrierung, Login und das Kundenportal nutzen wir Supabase
-          (Supabase Inc., 970 Toa Payoh North, Singapur, mit Infrastruktur in der
-          EU). Dabei werden Konto- und Anmeldedaten (E-Mail-Adresse, verschlüsselt
-          gespeichertes Passwort, Session-Informationen) sowie die dir
-          zugeordneten Anfragen verarbeitet. Der Zugriff auf deine Daten ist durch
-          Row-Level-Security abgesichert – du siehst ausschließlich deine eigenen
-          Datensätze. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO. Mit Supabase
-          besteht ein Auftragsverarbeitungsvertrag.
-        </p>
-      </LegalSection>
-
-      <LegalSection heading="8. Empfänger & Auftragsverarbeiter">
-        <p>
-          Eine Weitergabe deiner Daten an Dritte erfolgt nur, wenn dies gesetzlich
-          erlaubt ist oder du eingewilligt hast. Eingesetzte Auftragsverarbeiter
-          (Art. 28 DSGVO) sind insbesondere unsere Hosting- und
-          Infrastruktur-Dienstleister (Vercel, Supabase).
-        </p>
-      </LegalSection>
-
-      <LegalSection heading="9. Speicherdauer">
-        <p>
-          Wir verarbeiten und speichern personenbezogene Daten nur so lange, wie
-          es für die Erreichung des jeweiligen Zwecks erforderlich ist oder
-          gesetzliche Aufbewahrungsfristen (z. B. handels- und steuerrechtlich)
-          dies vorsehen. Danach werden die Daten routinemäßig gelöscht.
-        </p>
-      </LegalSection>
-
-      <LegalSection heading="10. Deine Rechte als betroffene Person">
-        <p>Dir stehen nach der DSGVO insbesondere folgende Rechte zu:</p>
         <ul className="ml-5 flex list-disc flex-col gap-1.5">
-          <li>Auskunft über die verarbeiteten Daten (Art. 15 DSGVO)</li>
-          <li>Berichtigung unrichtiger Daten (Art. 16 DSGVO)</li>
-          <li>Löschung (&bdquo;Recht auf Vergessenwerden&ldquo;, Art. 17 DSGVO)</li>
-          <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
-          <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
-          <li>Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)</li>
-          <li>Widerruf erteilter Einwilligungen mit Wirkung für die Zukunft (Art. 7 Abs. 3 DSGVO)</li>
+          <li>
+            Session-Cookies für die Anmeldung, die nur gesetzt werden, wenn sich jemand anmeldet.
+          </li>
+          <li>
+            Ein lokaler Entwurf im Browser (Local Storage), damit deine Angaben im Konfigurator
+            nicht verloren gehen. Er bleibt auf deinem Gerät, bis du ihn löschst.
+          </li>
         </ul>
         <p>
-          Zur Ausübung deiner Rechte genügt eine formlose Nachricht an{" "}
-          <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>.
+          Rechtsgrundlage ist § 25 Abs. 2 Nr. 2 TDDDG. Die Schriften werden von der eigenen
+          Website ausgeliefert, nicht von einem externen Server.
         </p>
       </LegalSection>
 
-      <LegalSection heading="11. Beschwerderecht bei der Aufsichtsbehörde">
+      <LegalSection heading="5. Preisrechner und Konfigurator">
         <p>
-          Unbeschadet anderweitiger Rechtsbehelfe hast du das Recht, dich bei
-          einer Datenschutz-Aufsichtsbehörde zu beschweren (Art. 77 DSGVO). Für
-          uns zuständig ist die Berliner Beauftragte für Datenschutz und
-          Informationsfreiheit, Alt-Moabit 59–61, 10555 Berlin.
+          Die Preisberechnung läuft in deinem Browser. Dabei werden keine Angaben an mich
+          übertragen. Das Absenden einer Anfrage über den Konfigurator ist derzeit abgeschaltet;
+          Anfragen laufen per E-Mail ({siteConfig.email}).
+        </p>
+        <p>
+          Sobald das Absenden aktiv ist, werden die von dir eingegebenen Daten (Name, E-Mail,
+          optional Telefon und Firma sowie deine Projektangaben und der berechnete Richtwert)
+          gespeichert, um deine Anfrage zu bearbeiten (Art. 6 Abs. 1 lit. b DSGVO).
+        </p>
+        <p>[PLATZHALTER: Löschfristen für Anfragen, die nicht zu einem Auftrag führen]</p>
+      </LegalSection>
+
+      <LegalSection heading="6. Kontaktaufnahme per E-Mail oder Telefon">
+        <p>
+          Wenn du mich kontaktierst, verarbeite ich deine Angaben, um dein Anliegen zu
+          beantworten (Art. 6 Abs. 1 lit. b oder f DSGVO). Ich lösche sie, sobald der Zweck
+          entfällt und keine gesetzliche Aufbewahrungspflicht besteht.
         </p>
       </LegalSection>
 
-      <LegalSection heading="12. Aktualität dieser Datenschutzerklärung">
+      <LegalSection heading="7. Anmeldung und Datenbank (Supabase)">
         <p>
-          Wir passen diese Datenschutzerklärung an, sobald Änderungen unserer
-          Datenverarbeitung dies erforderlich machen. Es gilt jeweils die hier
-          veröffentlichte aktuelle Fassung.
+          Für die Anmeldung und die Speicherung von Anfragen und Projektdaten nutze ich Supabase.
+          Verarbeitet werden dabei Anmeldedaten (E-Mail-Adresse, Passwort in verschlüsselter Form,
+          Session-Informationen) und die dir zugeordneten Daten. Der Zugriff ist durch
+          Row-Level-Security auf die jeweils eigenen Datensätze beschränkt. Die Daten liegen in
+          der EU. Mit dem Anbieter besteht ein Auftragsverarbeitungsvertrag (Art. 28 DSGVO).
+          Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO.
+        </p>
+        <p>
+          Das Kundenportal ist zurzeit nicht öffentlich; eine Registrierung ist nicht möglich.
+        </p>
+        <p>[PLATZHALTER: Vertragspartner und Anschrift laut AVV]</p>
+      </LegalSection>
+
+      <LegalSection heading="8. Zahlungsabwicklung (Stripe)">
+        <p>
+          Für künftige Online-Zahlungen ist Stripe technisch vorbereitet. Im Code ist die
+          Zahlungsfunktion standardmäßig ausgeschaltet und wird nur über eine Einstellung
+          aktiviert. Wird sie genutzt, verarbeitet Stripe die für die Zahlung nötigen Daten
+          (zum Beispiel Zahlungsmittel, Betrag, Zahlungsreferenz, Kontaktdaten) als eigenständiger
+          Dienstleister, um die Zahlung durchzuführen (Art. 6 Abs. 1 lit. b DSGVO).
+        </p>
+        <p>
+          [PLATZHALTER: rechtliche Prüfung ausstehend – ob Online-Zahlung zum Livegang aktiv ist,
+          Vertragspartner und Rolle von Stripe (Auftragsverarbeiter oder eigener Verantwortlicher),
+          Datenübermittlung in Drittländer, Verweis auf die Datenschutzerklärung von Stripe]
+        </p>
+      </LegalSection>
+
+      <LegalSection heading="9. E-Mail-Versand (Resend)">
+        <p>
+          Für Benachrichtigungen über neue Anfragen ist der E-Mail-Dienst Resend im Code
+          vorgesehen. Er versendet nur, wenn ein Zugangsschlüssel hinterlegt ist, und ist
+          andernfalls ausgeschaltet. Würde er genutzt, würden die Inhalte einer Anfrage (Name,
+          E-Mail-Adresse, Telefon, Firma, Nachricht, Projektangaben) über Resend an mich
+          zugestellt (Art. 6 Abs. 1 lit. b und f DSGVO).
+        </p>
+        <p>
+          [PLATZHALTER: rechtliche Prüfung ausstehend – ob der Dienst zum Livegang aktiv ist,
+          Vertragspartner, Serverstandort, Auftragsverarbeitungsvertrag, Datenübermittlung in
+          Drittländer]
+        </p>
+      </LegalSection>
+
+      <LegalSection heading="10. Speicherdauer">
+        <p>
+          Ich speichere personenbezogene Daten nur so lange, wie es für den jeweiligen Zweck nötig
+          ist oder gesetzliche Aufbewahrungsfristen es verlangen.
+        </p>
+        <p>[PLATZHALTER: konkrete Fristen, z. B. für Anfragen, Rechnungen und Kundenkonten]</p>
+      </LegalSection>
+
+      <LegalSection heading="11. Deine Rechte">
+        <p>Du hast nach der DSGVO folgende Rechte:</p>
+        <ul className="ml-5 flex list-disc flex-col gap-1.5">
+          <li>Auskunft über deine gespeicherten Daten (Art. 15)</li>
+          <li>Berichtigung falscher Daten (Art. 16)</li>
+          <li>Löschung (Art. 17)</li>
+          <li>Einschränkung der Verarbeitung (Art. 18)</li>
+          <li>Datenübertragbarkeit (Art. 20)</li>
+          <li>Widerspruch gegen Verarbeitungen auf Grundlage berechtigter Interessen (Art. 21)</li>
+          <li>Widerruf einer Einwilligung mit Wirkung für die Zukunft (Art. 7 Abs. 3)</li>
+        </ul>
+        <p>
+          Dafür genügt eine formlose Nachricht an {siteConfig.email}.
+        </p>
+      </LegalSection>
+
+      <LegalSection heading="12. Beschwerde bei einer Aufsichtsbehörde">
+        <p>
+          Du kannst dich bei einer Datenschutz-Aufsichtsbehörde beschweren (Art. 77 DSGVO).
+          Zuständig ist die Berliner Beauftragte für Datenschutz und Informationsfreiheit,
+          Alt-Moabit 59–61, 10555 Berlin.
+        </p>
+      </LegalSection>
+
+      <LegalSection heading="13. Änderungen">
+        <p>
+          Ich passe diese Erklärung an, wenn sich die Datenverarbeitung ändert. Es gilt die jeweils
+          hier veröffentlichte Fassung.
         </p>
       </LegalSection>
     </LegalShell>

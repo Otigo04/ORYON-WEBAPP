@@ -72,7 +72,11 @@ export async function notifyNewLead(lead: LeadNotification): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return; // Versand deaktiviert – stillschweigend überspringen.
 
-  const to = process.env.LEAD_NOTIFICATION_TO || siteConfig.email;
+  // Solange keine echte Kontakt-E-Mail existiert (Platzhalter), nur über die
+  // Umgebungsvariable versenden – nie an den Platzhalter-Text.
+  const to =
+    process.env.LEAD_NOTIFICATION_TO || (siteConfig.hasEmail ? siteConfig.email : "");
+  if (!to) return;
   const from =
     process.env.LEAD_NOTIFICATION_FROM || "TAS Webworks <noreply@tas-webworks.de>";
 
