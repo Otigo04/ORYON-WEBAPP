@@ -46,13 +46,13 @@ export const pricingConfig = {
 
   /** Optionale Zusatz-Features (Einmalpreis-Aufschlag [min, max]). */
   features: {
-    content:  { label: "Content & Texte",      hint: "Professionelle Texterstellung", price: [39, 99] },
-    booking:  { label: "Online-Terminbuchung", hint: "Buchungs-/Kalenderfunktion",    price: [99, 280] },
-    blog:     { label: "Blog / CMS",           hint: "Inhalte selbst pflegen",        price: [90, 180] },
-    branding: { label: "Logo & Branding",      hint: "Logo-Design / CI-Paket",        price: [200, 450] },
+    content:  { label: "Content & Texte",      hint: "Professionelle Texterstellung", price: [600, 1500] },
+    booking:  { label: "Online-Terminbuchung", hint: "Buchungs-/Kalenderfunktion",    price: [800, 1500] },
+    blog:     { label: "Blog / CMS",           hint: "Inhalte selbst pflegen",        price: [700, 1400] },
+    branding: { label: "Logo & Branding",      hint: "Logo-Design / CI-Paket",        price: [500, 1200] },
   },
   /** Aufpreis je zusätzlicher Sprache. `max` = maximal wählbare Sprachen. */
-  extraLanguage: { label: "Weitere Sprache", price: [39, 79], max: 5 },
+  extraLanguage: { label: "Weitere Sprache", price: [500, 900], max: 5 },
 
   /**
    * Monatliche Hosting-Pauschale (separat zum Einmalpreis). Fällt für jede

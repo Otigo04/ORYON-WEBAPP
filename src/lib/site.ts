@@ -77,13 +77,13 @@ export const postLoginPath: string = launchFlags.dashboard ? "/dashboard" : "/ad
 
 /** Häufige Service-/SEO-Keywords. */
 export const siteKeywords = [
-  "Webagentur Berlin",
+  "Webdesigner Berlin",
   "Webdesign Berlin",
   "Website erstellen lassen",
   "Homepage erstellen lassen",
   "Online-Shop erstellen lassen",
   "Landingpage erstellen",
-  "One-Pager Agentur",
+  "One-Pager Webdesign",
   "SEO Optimierung Berlin",
   "Webentwicklung Berlin",
   "TAS Webworks",

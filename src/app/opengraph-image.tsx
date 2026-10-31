@@ -54,7 +54,7 @@ export default function OpengraphImage() {
               letterSpacing: "2px",
             }}
           >
-            WEBAGENTUR · BERLIN
+            WEBENTWICKLUNG · BERLIN
           </div>
           <div
             style={{

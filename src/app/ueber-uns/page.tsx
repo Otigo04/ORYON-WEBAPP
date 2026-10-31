@@ -111,9 +111,8 @@ export default function UeberUnsPage() {
           <h2 className="text-2xl font-semibold sm:text-3xl">Warum es TAS Webworks gibt</h2>
           <div className="mt-6 space-y-4 text-white/70">
             <p>
-              Kleine Unternehmen brauchen eine Website, die funktioniert – ohne
-              dafür ein Agentur-Budget zu haben. Baukasten-Seiten sind schnell
-              gemacht, stoßen aber oft an Grenzen.
+              Kleine Unternehmen brauchen eine Website, die funktioniert.
+              Baukasten-Seiten sind schnell gemacht, stoßen aber oft an Grenzen.
             </p>
             <p>
               Deshalb baue ich Websites und Online-Shops selbst und rechne

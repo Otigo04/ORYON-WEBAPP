@@ -7,7 +7,7 @@ import Link from "next/link";
  * "Produkte"-Dropdown der Hauptnavigation (Desktop).
  *
  * Bewusst getrennt von der {@link ServicesMenu} ("Leistungen"): Dort stehen die
- * agentur­seitigen Dienstleistungen, hier die eigenen SaaS-Produkte von
+ * Dienstleistungen von TAS Webworks, hier die eigenen SaaS-Produkte von
  * TAS Webworks. Aktuell ist das ausschließlich TAS-FLEET; die Liste ist als
  * Array angelegt, damit weitere Produkte später nur ergänzt werden müssen.
  *
