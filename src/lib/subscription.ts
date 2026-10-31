@@ -32,7 +32,7 @@ const PUBLIC_COLUMNS =
   "id, user_id, plan, status, billing_interval, current_period_start, current_period_end, cancel_at_period_end, vehicle_limit, created_at, updated_at";
 
 /**
- * Gilt das Abo aktuell als nutzbar? Aktiv oder in Testphase – und (falls ein
+ * Gilt das Abo aktuell als nutzbar? Aktiv oder in Testphase, und (falls ein
  * Ablaufdatum gesetzt ist) noch nicht abgelaufen. Genau diese Logik darf später
  * auch TAS-FLEET spiegeln, um den Produktzugang freizugeben.
  */

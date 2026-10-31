@@ -19,7 +19,7 @@ export default async function AdminBriefsPage() {
     <>
       <PageHeader
         title="Konfigurationen"
-        subtitle="Detaillierte Projekt-Anfragen aus dem Konfigurator – mit allen Angaben des Kunden."
+        subtitle="Detaillierte Projekt-Anfragen aus dem Konfigurator, mit allen Angaben des Kunden."
       />
 
       {briefs.length === 0 ? (
@@ -49,7 +49,7 @@ export default async function AdminBriefsPage() {
                   <div className="text-right">
                     {typeof b.price_min === "number" && typeof b.price_max === "number" && (
                       <p className="text-lg font-semibold text-[#09ed2d]">
-                        {formatEuro(b.price_min)} – {formatEuro(b.price_max)}
+                        {formatEuro(b.price_min)} bis {formatEuro(b.price_max)}
                       </p>
                     )}
                     <p className="mt-1 text-xs text-white/40">Details ansehen →</p>

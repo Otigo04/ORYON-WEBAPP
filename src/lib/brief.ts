@@ -23,7 +23,7 @@ export type BriefField = {
   options?: string[];
   optional?: boolean;
   /**
-   * Optionaler Aufpreis (einmalig, in Euro) je Option – Schlüssel = Options-Label.
+   * Optionaler Aufpreis (einmalig, in Euro) je Option, Schlüssel = Options-Label.
    * Wird in der UI an der Option angezeigt und in den Live-Kosten-Zähler
    * eingerechnet. Nur für select-/multi-Felder sinnvoll.
    */
@@ -31,11 +31,16 @@ export type BriefField = {
   /** Kurze Erklärung je Option (für das „?"-Tooltip). Schlüssel = Options-Label. */
   optionHelp?: Record<string, string>;
   /**
-   * Ausführlicher Detailtext je Option – beschreibt, was in diese Seite/Funktion
+   * Ausführlicher Detailtext je Option, beschreibt, was in diese Seite/Funktion
    * reinkommt bzw. wie sie aufgebaut wird. Klappt im Konfigurator unter der
    * Option auf, sobald sie ausgewählt ist. Schlüssel = Options-Label.
    */
   optionDetails?: Record<string, string>;
+  /**
+   * Optionen, die immer ausgewählt sind und nicht abgewählt werden können
+   * (z. B. „Startseite" bei den Seiten, inklusive). Nur für multi-Felder.
+   */
+  lockedOptions?: string[];
   /** Feld nur anzeigen, wenn ein anderes Feld einen bestimmten Wert hat. */
   showIf?: { field: string; equals: string | string[] };
 };
@@ -68,7 +73,7 @@ export const BRIEF_STEPS: BriefStep[] = [
         label: "Wunsch-Domain",
         type: "text",
         placeholder: "meinefirma.de",
-        hint: "Falls noch keine vorhanden ist, registriere ich deine Wunsch-Domain – inklusive.",
+        hint: "Falls noch keine vorhanden ist, registriere ich deine Wunsch-Domain, inklusive.",
         optional: true,
       },
       {
@@ -78,8 +83,8 @@ export const BRIEF_STEPS: BriefStep[] = [
         options: ["Ja, vorhanden", "Nein, bitte besorgen", "Noch unklar"],
         optionHelp: {
           "Ja, vorhanden": "Du hast die Internetadresse (z. B. firma.de) bereits.",
-          "Nein, bitte besorgen": "Ich registriere deine Wunsch-Domain für dich – inklusive.",
-          "Noch unklar": "Du bist dir nicht sicher – ich kläre das gern mit dir.",
+          "Nein, bitte besorgen": "Ich registriere deine Wunsch-Domain für dich, inklusive.",
+          "Noch unklar": "Du bist dir nicht sicher, ich kläre das gern mit dir.",
         },
         optional: true,
       },
@@ -114,7 +119,7 @@ export const BRIEF_STEPS: BriefStep[] = [
       },
       {
         name: "targetAudience",
-        label: "Zielgruppe – wen willst du erreichen?",
+        label: "Zielgruppe, wen willst du erreichen?",
         type: "textarea",
         placeholder: "z. B. junge Familien in der Region, B2B-Kunden im Handwerk …",
         optional: true,
@@ -125,7 +130,6 @@ export const BRIEF_STEPS: BriefStep[] = [
         type: "multi",
         options: [
           "Mehr Anfragen / Leads",
-          "Online verkaufen",
           "Bekanntheit steigern",
           "Termine erhalten",
           "Informieren / Visitenkarte",
@@ -133,7 +137,6 @@ export const BRIEF_STEPS: BriefStep[] = [
         ],
         optionHelp: {
           "Mehr Anfragen / Leads": "Mehr Kontaktanfragen über die Website erhalten.",
-          "Online verkaufen": "Produkte oder Dienstleistungen direkt verkaufen.",
           "Bekanntheit steigern": "Sichtbarer werden und deine Marke aufbauen.",
           "Termine erhalten": "Mehr Buchungen / Terminanfragen bekommen.",
           "Informieren / Visitenkarte": "Dich einfach professionell präsentieren.",
@@ -146,7 +149,7 @@ export const BRIEF_STEPS: BriefStep[] = [
   {
     id: "design",
     title: "Design & Inhalte",
-    description: "Wie soll die Seite wirken – und welche Inhalte sind schon da?",
+    description: "Wie soll die Seite wirken, und welche Inhalte sind schon da?",
     icon: "palette",
     fields: [
       {
@@ -160,6 +163,7 @@ export const BRIEF_STEPS: BriefStep[] = [
           "Seriös & klassisch",
           "Technisch & futuristisch",
           "Natürlich & warm",
+          "Sonstiges",
         ],
         optionHelp: {
           "Modern & minimalistisch": "Klar, reduziert, viel Weißraum.",
@@ -168,7 +172,16 @@ export const BRIEF_STEPS: BriefStep[] = [
           "Seriös & klassisch": "Vertrauenswürdig, zeitlos, solide.",
           "Technisch & futuristisch": "Modern-technisch, innovativ.",
           "Natürlich & warm": "Erdig, freundlich, einladend.",
+          Sonstiges: "Etwas anderes, beschreibe deinen Wunsch-Stil im Textfeld.",
         },
+        optional: true,
+      },
+      {
+        name: "styleOther",
+        label: "Dein Wunsch-Stil",
+        type: "textarea",
+        placeholder: "Beschreibe, wie deine Seite wirken soll …",
+        showIf: { field: "style", equals: "Sonstiges" },
         optional: true,
       },
       {
@@ -196,7 +209,7 @@ export const BRIEF_STEPS: BriefStep[] = [
         name: "pages",
         label: "Gewünschte Seiten (Unterseiten)",
         type: "multi",
-        hint: "Welche Unterseiten soll die Website haben? Startseite ist inklusive – jede weitere mit Aufpreis. Shop & Blog wählst du im nächsten Schritt unter „Funktionen“.",
+        hint: "Welche Unterseiten soll die Website haben? Startseite ist inklusive, jede weitere mit Aufpreis. Blog & Mitgliederbereich wählst du im nächsten Schritt unter „Funktionen“.",
         options: [
           "Startseite",
           "Über uns",
@@ -208,9 +221,10 @@ export const BRIEF_STEPS: BriefStep[] = [
           "Karriere / Jobs",
           "Preise",
         ],
+        lockedOptions: ["Startseite"],
         prices: PRICING.briefAddOns.oneTime.pages,
         optionHelp: {
-          Startseite: "Die Hauptseite – der erste Eindruck (inklusive).",
+          Startseite: "Die Hauptseite, der erste Eindruck (inklusive).",
           "Über uns": "Wer du bist, deine Geschichte.",
           "Leistungen / Produkte": "Was du anbietest, im Überblick.",
           "Portfolio / Referenzen": "Beispiele deiner Arbeit / Projekte.",
@@ -224,15 +238,15 @@ export const BRIEF_STEPS: BriefStep[] = [
           Startseite:
             "Aufmerksamkeitsstarker Hero mit klarer Botschaft, Highlights deiner Leistungen, Vertrauenselemente (Bewertungen/Logos) und ein deutlicher Call-to-Action. Der erste Eindruck, der überzeugt.",
           "Über uns":
-            "Deine Geschichte, Mission & Werte, was dich ausmacht und – auf Wunsch – eine kurze Team-Vorstellung. Schafft Vertrauen und Nähe.",
+            "Deine Geschichte, Mission & Werte, was dich ausmacht und, auf Wunsch, eine kurze Team-Vorstellung. Schafft Vertrauen und Nähe.",
           "Leistungen / Produkte":
-            "Übersichtliche Darstellung deiner Angebote mit Beschreibung, Vorteilen und je einem Call-to-Action pro Leistung – ideal als einzelne Karten oder Abschnitte.",
+            "Übersichtliche Darstellung deiner Angebote mit Beschreibung, Vorteilen und je einem Call-to-Action pro Leistung, ideal als einzelne Karten oder Abschnitte.",
           "Portfolio / Referenzen":
             "Galerie deiner besten Projekte mit Bildern, kurzer Beschreibung und optional Kundenstimmen. Belegt deine Qualität sichtbar.",
           Kontakt:
             "Eigene Kontaktseite mit Adresse, Öffnungszeiten und allen Kontaktwegen auf einen Blick. Das interaktive Kontaktformular und die Karte fügst du als Funktion hinzu.",
-          FAQ: "Häufige Fragen in sauber aufklappbaren Abschnitten (Akkordeon) – reduziert Rückfragen und schafft Klarheit.",
-          Team: "Vorstellung der Teammitglieder mit Foto, Position und kurzer Beschreibung – persönlich und sympathisch.",
+          FAQ: "Häufige Fragen in sauber aufklappbaren Abschnitten (Akkordeon), reduziert Rückfragen und schafft Klarheit.",
+          Team: "Vorstellung der Teammitglieder mit Foto, Position und kurzer Beschreibung, persönlich und sympathisch.",
           "Karriere / Jobs":
             "Stellenangebote, Infos zu dir als Arbeitgeber und ein Bewerbungsformular mit Datei-Upload.",
           Preise:
@@ -257,7 +271,7 @@ export const BRIEF_STEPS: BriefStep[] = [
         name: "materials",
         label: "Welche Materialien hast du bereits?",
         type: "textarea",
-        placeholder: "z. B. Logo, Bilder, Texte, Videos – was liegt schon vor?",
+        placeholder: "z. B. Logo, Bilder, Texte, Videos, was liegt schon vor?",
         optional: true,
       },
     ],
@@ -265,18 +279,17 @@ export const BRIEF_STEPS: BriefStep[] = [
   {
     id: "funktionen",
     title: "Funktionen & Technik",
-    description: "Welche Funktionen brauchst du – und was ist technisch schon da?",
+    description: "Welche Funktionen brauchst du, und was ist technisch schon da?",
     icon: "gear",
     fields: [
       {
         name: "features",
         label: "Gewünschte Funktionen",
         type: "multi",
-        hint: "Interaktive Funktionen deiner Website (nicht zu verwechseln mit den Seiten aus dem vorherigen Schritt). Shop und Blog gehören hierher.",
+        hint: "Interaktive Funktionen deiner Website (nicht zu verwechseln mit den Seiten aus dem vorherigen Schritt). Blog und Mitgliederbereich gehören hierher.",
         options: [
           "Kontaktformular",
           "Terminbuchung",
-          "Onlineshop",
           "Blog / CMS",
           "Mehrsprachigkeit",
           "Mitgliederbereich / Login",
@@ -290,9 +303,8 @@ export const BRIEF_STEPS: BriefStep[] = [
         optionHelp: {
           Kontaktformular: "Besucher schreiben dir direkt über ein Formular.",
           Terminbuchung: "Kunden buchen Termine online über einen Kalender.",
-          Onlineshop: "Produkte online verkaufen – mit Warenkorb & Bezahlung.",
           "Blog / CMS": "Beiträge & Inhalte selbst pflegen (Redaktionssystem).",
-          Mehrsprachigkeit: "Deine Seite in mehreren Sprachen (Preis je Sprache).",
+          Mehrsprachigkeit: "Deine Seite in mehreren Sprachen, Deutsch inklusive, Aufpreis je weiterer Sprache.",
           "Mitgliederbereich / Login": "Geschützter Bereich, in den sich Nutzer einloggen.",
           "Newsletter-Anmeldung": "Besucher tragen sich für deinen Newsletter ein.",
           "Live-Chat": "Sofort-Chat-Fenster für schnelle Fragen.",
@@ -302,36 +314,35 @@ export const BRIEF_STEPS: BriefStep[] = [
         },
         optionDetails: {
           Kontaktformular:
-            "Formular mit Feldern nach Wunsch, Spam-Schutz und automatischer Weiterleitung an dein Postfach – inkl. Datenschutz-Checkbox.",
+            "Formular mit Feldern nach Wunsch, Spam-Schutz und automatischer Weiterleitung an dein Postfach, inkl. Datenschutz-Checkbox.",
           Terminbuchung:
             "Integrierter Kalender mit deinen Verfügbarkeiten, automatischer Bestätigungs-E-Mail und optionaler Erinnerung. Anbindung an gängige Tools möglich.",
-          Onlineshop:
-            "Produktverwaltung, Warenkorb, sichere Bezahlung (z. B. Stripe/PayPal) und Bestellübersicht. Umfang richtet sich nach Sortiment & Varianten.",
           "Blog / CMS":
-            "Redaktionssystem, mit dem du Beiträge, Bilder und Seiten selbst pflegst – ganz ohne Technikkenntnisse.",
+            "Redaktionssystem, mit dem du Beiträge, Bilder und Seiten selbst pflegst, ganz ohne Technikkenntnisse.",
           Mehrsprachigkeit:
-            "Saubere Sprachumschaltung, übersetzte Inhalte und suchmaschinenfreundliche Sprachversionen (je Sprache abgerechnet).",
+            "Saubere Sprachumschaltung, übersetzte Inhalte und suchmaschinenfreundliche Sprachversionen. Deutsch ist inklusive, abgerechnet wird je zusätzlicher Sprache.",
           "Mitgliederbereich / Login":
             "Geschützter Bereich mit Registrierung, Login und individuell sichtbaren Inhalten je Nutzer.",
           "Newsletter-Anmeldung":
-            "Anmeldeformular mit Double-Opt-in und Anbindung an dein Newsletter-Tool (z. B. Mailchimp, Brevo).",
+            "Anmeldeformular mit Double-Opt-in (DSGVO-konform) und Anbindung an dein Newsletter-Tool (z. B. Mailchimp, Brevo).",
           "Live-Chat":
-            "Chat-Fenster für direkte Fragen – wahlweise per Tool (z. B. Tidio) oder als WhatsApp-Direktkontakt.",
+            "Chat-Fenster für direkte Fragen, wahlweise per Tool (z. B. Tidio) oder als WhatsApp-Direktkontakt.",
           "Karte / Anfahrt":
             "Eingebettete, interaktive Karte mit deinem Standort und optionaler Routenführung.",
           Bewertungen:
-            "Anzeige von Kundenbewertungen / Sternen – manuell gepflegt oder automatisch z. B. aus Google eingebunden.",
+            "Anzeige von Kundenbewertungen / Sternen, manuell gepflegt oder automatisch z. B. aus Google eingebunden.",
           Downloadbereich:
-            "Bereich zum Bereitstellen von Dateien (PDFs, Preislisten etc.) – auf Wunsch zugriffsgeschützt.",
+            "Bereich zum Bereitstellen von Dateien (PDFs, Preislisten etc.), auf Wunsch zugriffsgeschützt.",
         },
         optional: true,
       },
       {
         name: "languages",
-        label: "Welche Sprachen? (falls mehrsprachig)",
+        label: "Welche weiteren Sprachen? (falls mehrsprachig)",
         type: "text",
-        placeholder: "z. B. Deutsch, Englisch, Türkisch",
-        hint: "Je zusätzlicher Sprache fällt ein kleiner Aufpreis an.",
+        placeholder: "z. B. Englisch, Türkisch",
+        hint: "Deutsch ist immer inklusive. Trag hier nur zusätzliche Sprachen ein, je weiterer Sprache fällt ein kleiner Aufpreis an. Nur relevant, wenn „Mehrsprachigkeit“ als Funktion gewählt ist.",
+        showIf: { field: "features", equals: "Mehrsprachigkeit" },
         optional: true,
       },
       {
@@ -351,7 +362,7 @@ export const BRIEF_STEPS: BriefStep[] = [
         label: "Professionelle E-Mail-Adresse (z. B. info@deinedomain.de)?",
         type: "select",
         // Nur sinnvoll, wenn ich die Domain für dich besorge (ich kaufe z. B.
-        // bei Strato und richte dort gleich das Postfach ein).
+        // bei Strato und richten dort gleich das Postfach ein).
         showIf: { field: "domainStatus", equals: "Nein, bitte besorgen" },
         options: ["Ja, bitte einrichten", "Nein, nicht nötig"],
         optionHelp: {
@@ -375,9 +386,9 @@ export const BRIEF_STEPS: BriefStep[] = [
           "Social Media (inkl. WhatsApp)":
             "Verlinkte Icons zu deinen Profilen (Instagram, Facebook & Co.) und ein WhatsApp-Direktkontakt-Button für schnelle Anfragen.",
           "Google Maps":
-            "Interaktive Karte mit deinem Standort, eingebettet auf der Kontaktseite – inkl. Marker und Routenlink.",
+            "Interaktive Karte mit deinem Standort, eingebettet auf der Kontaktseite, inkl. Marker und Routenlink.",
           "CRM-Anbindung":
-            "Automatische Übergabe von Formular-Leads an dein CRM (z. B. HubSpot, Pipedrive) – kein manuelles Übertragen mehr.",
+            "Automatische Übergabe von Formular-Leads an dein CRM (z. B. HubSpot, Pipedrive), kein manuelles Übertragen mehr.",
         },
         optional: true,
       },
@@ -402,19 +413,19 @@ export const BRIEF_STEPS: BriefStep[] = [
         type: "select",
         options: [
           "Bis 1.000 €",
-          "1.000–3.000 €",
-          "3.000–6.000 €",
-          "6.000–10.000 €",
+          "1.000 bis 3.000 €",
+          "3.000 bis 6.000 €",
+          "6.000 bis 10.000 €",
           "Über 10.000 €",
           "Noch unklar",
         ],
         optionHelp: {
-          "Bis 1.000 €": "Kleines Budget – Fokus auf das Wesentliche.",
-          "1.000–3.000 €": "Solider Rahmen für einen guten Auftritt.",
-          "3.000–6.000 €": "Umfangreichere Website mit mehr Funktionen.",
-          "6.000–10.000 €": "Großes Projekt mit vielen Extras.",
+          "Bis 1.000 €": "Kleines Budget, Fokus auf das Wesentliche.",
+          "1.000 bis 3.000 €": "Solider Rahmen für einen guten Auftritt.",
+          "3.000 bis 6.000 €": "Umfangreichere Website mit mehr Funktionen.",
+          "6.000 bis 10.000 €": "Großes Projekt mit vielen Extras.",
           "Über 10.000 €": "Sehr umfangreiches / individuelles Projekt.",
-          "Noch unklar": "Du bist dir noch nicht sicher – kein Problem.",
+          "Noch unklar": "Du bist dir noch nicht sicher, kein Problem.",
         },
         optional: true,
       },
@@ -422,11 +433,11 @@ export const BRIEF_STEPS: BriefStep[] = [
         name: "timeline",
         label: "Wunsch-Zeitrahmen",
         type: "select",
-        options: ["So schnell wie möglich", "In 1–2 Monaten", "In 3–6 Monaten", "Kein fester Termin"],
+        options: ["So schnell wie möglich", "In 1 bis 2 Monaten", "In 3 bis 6 Monaten", "Kein fester Termin"],
         optionHelp: {
-          "So schnell wie möglich": "Es eilt – ich priorisiere.",
-          "In 1–2 Monaten": "Zeitnaher Start gewünscht.",
-          "In 3–6 Monaten": "Etwas mehr Vorlauf.",
+          "So schnell wie möglich": "Es eilt, ich priorisiere.",
+          "In 1 bis 2 Monaten": "Zeitnaher Start gewünscht.",
+          "In 3 bis 6 Monaten": "Etwas mehr Vorlauf.",
           "Kein fester Termin": "Flexibel, ohne Deadline.",
         },
         optional: true,
@@ -485,6 +496,8 @@ export type BriefSummary = {
   features?: string[];
   extraLanguages?: number;
   maintenance?: boolean;
+  /** Hosting-Pflichtwahl aus dem Landing-Preisrechner (Ja/Nein). */
+  hosting?: boolean;
   priceMin?: number;
   priceMax?: number;
 };
@@ -510,6 +523,13 @@ export function emptyDraft(): BriefDraft {
 }
 
 export const BRIEF_STORAGE_KEY = "tas-brief-draft";
+
+/**
+ * Einmal-Marker für die Übergabe vom Landing-Preisrechner in den Konfigurator.
+ * Ist er gesetzt, hat die frisch übergebene lokale Auswahl Vorrang vor einem evtl.
+ * älteren Konto-Entwurf (sonst überschreibt der Konto-Entwurf die neue Auswahl).
+ */
+export const BRIEF_HANDOFF_KEY = "tas-brief-handoff";
 
 /**
  * Prüft, ob ein Feld unter den aktuellen Antworten sichtbar ist (showIf).
@@ -567,11 +587,99 @@ export function baseRangeForProjectType(projectType: string | undefined): [numbe
   return [0, 0];
 }
 
+// ---- Projektart-Abgleich (Überschneidungen erkennen) -------------------
+
+export type ProjectTypeKey = keyof typeof PRICING.projectTypes;
+
+/**
+ * Vorschlag, die Projektart hochzustufen, weil die Detail-Auswahl im
+ * Konfigurator über die aktuell gewählte Projektart hinausgeht (z. B. mehrere
+ * Unterseiten bei einem One-Pager oder eine Online-Terminbuchung).
+ */
+export type ProjectTypeUpgrade = {
+  /** Aktuell gewählte (zu kleine) Projektart. */
+  current: string;
+  /** Vorgeschlagene, zur Auswahl passende Projektart. */
+  suggested: ProjectTypeKey;
+  /** Lesbares Label der vorgeschlagenen Projektart (für die UI). */
+  suggestedLabel: string;
+  /** Menschlich lesbare Auslöser ("Online-Terminbuchung", "3 Unterseiten" …). */
+  reasons: string[];
+};
+
+/** Umfangs-Gewicht je Projektart = oberes Ende der Basis-Spanne. */
+function projectTypeWeight(pt: string | undefined): number {
+  return pt && pt in PRICING.projectTypes
+    ? PRICING.projectTypes[pt as ProjectTypeKey].base[1]
+    : 0;
+}
+
+/**
+ * Erkennt, ob die im Konfigurator getroffene Auswahl eine größere Projektart
+ * verlangt, als aktuell gewählt ist. Liefert den passenden Vorschlag oder
+ * `null`, wenn die Projektart bereits passt (gleich groß oder größer).
+ *
+ * Bewusst nicht erzwingend: die Funktion stellt nur fest, was sich überschneidet,
+ * die UI entscheidet, ob sie sanft darauf hinweist und die Anpassung anbietet.
+ */
+export function detectProjectTypeUpgrade(
+  data: BriefData,
+  summary: BriefSummary,
+): ProjectTypeUpgrade | null {
+  const current = summary.projectType ?? "onepager";
+  const candidates: { type: ProjectTypeKey; reason: string }[] = [];
+
+  // Eigene Unterseiten → Mehrseitige Website (ein One-Pager hat nur eine Seite).
+  const pages = Array.isArray(data.pages) ? data.pages : [];
+  const extraPages = pages.filter((p) => p !== "Startseite");
+  if (extraPages.length > 0) {
+    candidates.push({
+      type: "website",
+      reason: extraPages.length === 1 ? "eine Unterseite" : `${extraPages.length} Unterseiten`,
+    });
+  }
+
+  // Online-Terminbuchung (als Funktion oder Paket-Feature) → Buchungs-/Terminseite.
+  const features = Array.isArray(data.features) ? data.features : [];
+  const wantsBooking =
+    features.includes("Terminbuchung") || (summary.features ?? []).includes("booking");
+  if (wantsBooking) {
+    candidates.push({ type: "booking", reason: "Online-Terminbuchung" });
+  }
+
+  // Mitgliederbereich / Login → individuelle Web-App.
+  if (features.includes("Mitgliederbereich / Login")) {
+    candidates.push({ type: "webapp", reason: "Mitgliederbereich / Login" });
+  }
+
+  if (candidates.length === 0) return null;
+
+  // Umfangreichste vorgeschlagene Projektart bestimmt das Ziel.
+  const suggested = candidates.reduce((a, b) =>
+    projectTypeWeight(b.type) > projectTypeWeight(a.type) ? b : a,
+  );
+
+  // Passt die aktuelle Projektart bereits? Dann kein Hinweis nötig.
+  if (projectTypeWeight(current) >= projectTypeWeight(suggested.type)) return null;
+
+  // Alle Auslöser sammeln, die über die aktuelle Projektart hinausgehen.
+  const reasons = candidates
+    .filter((c) => projectTypeWeight(c.type) > projectTypeWeight(current))
+    .map((c) => c.reason);
+
+  return {
+    current,
+    suggested: suggested.type,
+    suggestedLabel: PRICING.projectTypes[suggested.type].label,
+    reasons,
+  };
+}
+
 const roundEuro = (value: number) => Math.round(value);
 
 /**
  * Berechnet den aktuellen Richtwert als Preisspanne: Basis (Projektart ×
- * Design-Faktor) plus allen gewählten Aufpreis-Optionen des Konfigurators –
+ * Projektart) plus allen gewählten Aufpreis-Optionen des Konfigurators -
  * einmalig und monatlich. Versteckte Felder (showIf nicht erfüllt) zählen nicht
  * mit. Bewusst transparent: Einzelpreise werden in der UI nicht ausgewiesen, der
  * Gesamtwert bleibt aber stets eine unverbindliche Spanne.
@@ -600,7 +708,7 @@ export function computeBriefEstimate(data: BriefData, summary: BriefSummary): Br
   }
 
   // Features aus der Paket-Vorauswahl (Content, Terminbuchung, Blog, Branding)
-  // – jeweils als eigene Aufpreis-Spanne (flach, ohne Design-Faktor).
+  //, jeweils als eigene Aufpreis-Spanne (flach).
   for (const f of summary.features ?? []) {
     if (f in PRICING.features) {
       const [fMin, fMax] = PRICING.features[f as FeatureKey].price;
@@ -609,7 +717,7 @@ export function computeBriefEstimate(data: BriefData, summary: BriefSummary): Br
     }
   }
 
-  // Weitere Sprachen (aus der Paket-Vorauswahl) – als Spanne je Sprache.
+  // Weitere Sprachen (aus der Paket-Vorauswahl), als Spanne je Sprache.
   const langs = summary.extraLanguages ?? 0;
   addOnsMin += langs * PRICING.extraLanguage.price[0];
   addOnsMax += langs * PRICING.extraLanguage.price[1];
@@ -628,7 +736,7 @@ export function computeBriefEstimate(data: BriefData, summary: BriefSummary): Br
     hostingMax = h[1];
   }
 
-  // Optionale Wartung aus dem Preisrechner – als eigener, klar getrennter Posten.
+  // Optionale Wartung aus dem Preisrechner, als eigener, klar getrennter Posten.
   let maintenanceMin = 0;
   let maintenanceMax = 0;
   if (summary.maintenance && summary.projectType && summary.projectType in PRICING.projectTypes) {

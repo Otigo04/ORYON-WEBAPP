@@ -16,7 +16,7 @@ export type Lead = {
 /**
  * Lädt die Leads des eingeloggten Nutzers (RLS-abgesichert: liefert ausschließlich
  * eigene Datensätze). Ohne Supabase-Konfiguration oder ohne Login wird eine leere
- * Liste zurückgegeben – die Dashboard-UI zeigt dann ihren Leerzustand.
+ * Liste zurückgegeben, die Dashboard-UI zeigt dann ihren Leerzustand.
  */
 export async function getMyLeads(): Promise<Lead[]> {
   const hasSupabaseEnv =

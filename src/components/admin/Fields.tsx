@@ -19,6 +19,8 @@ export function Field({
   label,
   type = "text",
   defaultValue,
+  value,
+  onChange,
   placeholder,
   required,
   error,
@@ -30,6 +32,9 @@ export function Field({
   label: string;
   type?: string;
   defaultValue?: string | number;
+  /** Kontrollierter Wert; aktiviert zusammen mit `onChange` den controlled-Modus. */
+  value?: string;
+  onChange?: (value: string) => void;
   placeholder?: string;
   required?: boolean;
   error?: string;
@@ -37,6 +42,7 @@ export function Field({
   min?: number;
   max?: number;
 }) {
+  const controlled = onChange !== undefined;
   return (
     <div className="flex flex-col gap-1.5">
       <Label htmlFor={name}>{label}</Label>
@@ -44,7 +50,9 @@ export function Field({
         id={name}
         name={name}
         type={type}
-        defaultValue={defaultValue}
+        {...(controlled
+          ? { value: value ?? "", onChange: (e) => onChange!(e.target.value) }
+          : { defaultValue })}
         placeholder={placeholder}
         required={required}
         step={step}
@@ -62,6 +70,8 @@ export function TextArea({
   name,
   label,
   defaultValue,
+  value,
+  onChange,
   placeholder,
   rows = 4,
   error,
@@ -69,10 +79,14 @@ export function TextArea({
   name: string;
   label: string;
   defaultValue?: string;
+  /** Kontrollierter Wert; aktiviert zusammen mit `onChange` den controlled-Modus. */
+  value?: string;
+  onChange?: (value: string) => void;
   placeholder?: string;
   rows?: number;
   error?: string;
 }) {
+  const controlled = onChange !== undefined;
   return (
     <div className="flex flex-col gap-1.5">
       <Label htmlFor={name}>{label}</Label>
@@ -80,7 +94,9 @@ export function TextArea({
         id={name}
         name={name}
         rows={rows}
-        defaultValue={defaultValue}
+        {...(controlled
+          ? { value: value ?? "", onChange: (e) => onChange!(e.target.value) }
+          : { defaultValue })}
         placeholder={placeholder}
         className={`${inputBase} resize-y`}
       />

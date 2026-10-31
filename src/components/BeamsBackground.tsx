@@ -8,7 +8,7 @@ import { useWebglAllowed } from "@/lib/use-webgl-allowed";
  *
  * Three.js / @react-three/fiber benötigen das `window`-Objekt und dürfen daher
  * nicht serverseitig gerendert werden. Über `next/dynamic` mit `ssr: false`
- * wird die Komponente erst im Browser geladen – die umgebenden Sektionen
+ * wird die Komponente erst im Browser geladen, die umgebenden Sektionen
  * bleiben Server Components (SSR-/SEO-freundlich).
  *
  * Performance: Auf dem Handy (und bei reduzierter Bewegung / Datensparmodus)

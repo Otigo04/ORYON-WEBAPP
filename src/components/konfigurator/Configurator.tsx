@@ -3,19 +3,23 @@
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { LogoWordmark } from "@/components/Logo";
+import { LivePreview } from "@/components/konfigurator/LivePreview";
 import { createClient } from "@/lib/supabase/client";
 import { saveBrief } from "@/lib/actions/brief";
 import { launchFlags, siteConfig } from "@/lib/site";
 import {
   BRIEF_STEPS,
   BRIEF_STORAGE_KEY,
+  BRIEF_HANDOFF_KEY,
   emptyDraft,
   displayValue,
   computeBriefEstimate,
   isFieldVisible,
+  detectProjectTypeUpgrade,
   type BriefDraft,
   type BriefField,
   type BriefValue,
+  type ProjectTypeUpgrade,
 } from "@/lib/brief";
 import {
   PRICING,
@@ -48,6 +52,9 @@ export function Configurator() {
   const [errors, setErrors] = useState<{ name?: string; email?: string }>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  // Welche vorgeschlagene Projektart hat der Nutzer zuletzt weggeklickt?
+  // Verhindert wiederholtes Nerven, bis sich der Vorschlag wieder ändert.
+  const [nudgeDismissed, setNudgeDismissed] = useState<string | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // --- Laden: lokaler Entwurf + (falls eingeloggt) Konto-Entwurf -----------
@@ -55,6 +62,10 @@ export function Configurator() {
     let active = true;
 
     const local = readLocal();
+    // Kam der Nutzer gerade frisch über den Landing-Preisrechner? Dann hat seine
+    // lokale Auswahl Vorrang vor dem (evtl. älteren) Konto-Entwurf. Marker direkt
+    // verbrauchen, damit ein späterer Direktaufruf wieder den Konto-Entwurf bevorzugt.
+    const handoff = consumeHandoff();
 
     const init = async () => {
       let base = local ?? emptyDraft();
@@ -73,13 +84,15 @@ export function Configurator() {
               .eq("user_id", user.id)
               .maybeSingle();
             const remote = data?.data as BriefDraft | undefined;
-            // Konto-Entwurf hat Vorrang (geräteübergreifend), lokaler füllt Lücken.
+            // Standard: Konto-Entwurf hat Vorrang (geräteübergreifend), lokaler
+            // füllt Lücken. Bei frischer Preisrechner-Übergabe (handoff) gewinnt
+            // dagegen die lokale Auswahl, der Konto-Entwurf füllt nur Lücken.
             if (remote && remote.data) {
-              base = mergeDrafts(remote, base);
+              base = mergeDrafts(remote, base, handoff);
             }
           }
         } catch {
-          /* offline / kein Backend – lokaler Entwurf genügt */
+          /* offline / kein Backend, lokaler Entwurf genügt */
         }
       }
 
@@ -88,6 +101,7 @@ export function Configurator() {
       base = {
         ...base,
         summary: { projectType: "onepager", design: "custom", ...base.summary },
+        data: withLockedOptions(base.data),
       };
 
       if (active) {
@@ -119,7 +133,7 @@ export function Configurator() {
               .from("brief_drafts")
               .upsert({ user_id: userId, data: next, updated_at: new Date().toISOString() });
           } catch {
-            /* still ok – lokal ist gespeichert */
+            /* still ok, lokal ist gespeichert */
           }
         }, 800);
       }
@@ -189,11 +203,21 @@ export function Configurator() {
   const isContactStep = step === BRIEF_STEPS.length + 1;
   const current = !isPackageStep && !isContactStep ? BRIEF_STEPS[step - 1] : null;
 
+  // Überschneidung: verlangt die Detail-Auswahl eine größere Projektart?
+  const upgrade = detectProjectTypeUpgrade(draft.data, draft.summary);
+  const showNudge = !!upgrade && upgrade.suggested !== nudgeDismissed;
+
+  const applyUpgrade = () => {
+    if (!upgrade) return;
+    setSummary({ projectType: upgrade.suggested });
+    setNudgeDismissed(null);
+  };
+
   return (
-    <div className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-20 pt-5 sm:px-6">
+    <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-20 pt-5 sm:px-6">
       {/* Kopf */}
       <header className="flex items-center justify-between">
-        <Link href="/" aria-label="TAS Webworks – Startseite" className="flex items-center">
+        <Link href="/" aria-label="TAS Webworks, Startseite" className="flex items-center">
           <LogoWordmark className="h-11 w-auto sm:h-14" />
         </Link>
         <Link
@@ -211,7 +235,7 @@ export function Configurator() {
         </h1>
         <p className="mx-auto mt-2 max-w-xl text-sm text-white/55">
           Je genauer, desto besser dein Angebot. Du kannst jederzeit vor- und
-          zurückspringen – deine Angaben werden automatisch gespeichert.
+          zurückspringen, deine Angaben werden automatisch gespeichert.
         </p>
       </div>
 
@@ -220,10 +244,17 @@ export function Configurator() {
 
       {/* Zweispaltig: links Eingaben (cleanes Schwarz), rechts Kosten-HUD.
           Auf Mobil per flex-col-reverse → Kosten-HUD oben, Eingaben darunter. */}
-      <div className="mt-8 flex flex-col-reverse gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_330px] lg:items-start">
+      <div className="mt-8 flex flex-col-reverse gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(440px,560px)] lg:items-start">
         {/* Linke Spalte: Eingaben */}
         <div className="flex flex-col gap-4">
           <div className="rounded-2xl border border-white/10 bg-black p-6 sm:p-8">
+            {loaded && upgrade && showNudge && (
+              <ProjectTypeNudge
+                upgrade={upgrade}
+                onApply={applyUpgrade}
+                onDismiss={() => setNudgeDismissed(upgrade.suggested)}
+              />
+            )}
             {!loaded ? (
               <div className="py-16 text-center text-sm text-white/40">Lädt …</div>
             ) : isPackageStep ? (
@@ -292,9 +323,23 @@ export function Configurator() {
           </p>
         </div>
 
-        {/* Rechte Spalte: gamifizierte Kosten-Anzeige */}
-        <aside className="lg:sticky lg:top-4">
+        {/* Rechte Spalte: Kosten-Anzeige + darunter die Live-Vorschau (nur Desktop) */}
+        <aside className="flex flex-col gap-5">
           <CostCounter draft={draft} />
+
+          <div className="hidden lg:block">
+            <div className="mb-2.5">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#09ed2d]">
+                Live-Vorschau
+              </span>
+              <p className="mt-1 text-xs leading-relaxed text-white/55">
+                Nur ein Design-<strong className="text-white/75">Beispiel</strong>, es baut sich
+                passend zu deiner Auswahl auf. <strong className="text-white/75">Alles ist frei
+                anpassbar</strong>: Farben, Texte, Bilder, Aufbau und Stil lege ich gemeinsam mit dir fest.
+              </p>
+            </div>
+            <LivePreview data={draft.data} />
+          </div>
         </aside>
       </div>
     </div>
@@ -402,11 +447,14 @@ function FieldRenderer({
     );
   }
 
-  // select (einfach) & multi – als Chips
+  // select (einfach) & multi, als Chips
   const selected: string[] = Array.isArray(value) ? value : value ? [value] : [];
   const isMulti = field.type === "multi";
+  const locked = field.lockedOptions ?? [];
+  const isLocked = (opt: string) => locked.includes(opt);
 
   const toggle = (opt: string) => {
+    if (isLocked(opt)) return; // inklusive, nicht abwählbar
     if (isMulti) {
       const next = selected.includes(opt)
         ? selected.filter((s) => s !== opt)
@@ -428,9 +476,10 @@ function FieldRenderer({
       {field.hint && <span className="text-xs text-white/45">{field.hint}</span>}
       <div className="flex flex-wrap gap-2">
         {field.options?.map((opt) => {
-          const active = selected.includes(opt);
+          const locked = isLocked(opt);
+          const active = locked || selected.includes(opt);
           const help = field.optionHelp?.[opt];
-          // Einzelpreise werden bewusst nicht mehr ausgewiesen – der Gesamtwert
+          // Einzelpreise werden bewusst nicht mehr ausgewiesen, der Gesamtwert
           // bleibt eine Spanne (siehe CostCounter). So bleibt die Auswahl clean.
           return (
             <button
@@ -438,21 +487,28 @@ function FieldRenderer({
               type="button"
               onClick={() => toggle(opt)}
               aria-pressed={active}
+              disabled={locked}
+              title={locked ? "Inklusive, immer enthalten" : undefined}
               className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm transition ${
                 active
                   ? "border-[#09ed2d] bg-[#09ed2d]/15 text-[#09ed2d]"
                   : "border-white/15 bg-white/5 text-white/70 hover:border-white/30 hover:text-white"
-              }`}
+              } ${locked ? "cursor-default opacity-90" : ""}`}
             >
               {active && isMulti && <span>✓</span>}
               <span>{opt}</span>
+              {locked && (
+                <span className="rounded-full bg-[#09ed2d]/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#09ed2d]">
+                  inklusive
+                </span>
+              )}
               {help && <ChipHelp text={help} />}
             </button>
           );
         })}
       </div>
 
-      {/* Detailtexte der gewählten Optionen – klappen bei Auswahl auf und
+      {/* Detailtexte der gewählten Optionen, klappen bei Auswahl auf und
           erklären, was in die Seite/Funktion reinkommt bzw. wie sie aufgebaut wird. */}
       {detailedOptions.length > 0 && (
         <ul className="mt-1.5 flex flex-col gap-2">
@@ -490,7 +546,17 @@ function FieldRenderer({
  * Reine Spans (valides Markup im Chip-Button); `stopPropagation` verhindert,
  * dass das Antippen des „?" die Option umschaltet.
  */
-function ChipHelp({ text }: { text: string }) {
+function ChipHelp({
+  text,
+  placement = "top",
+}: {
+  text: string;
+  placement?: "top" | "bottom";
+}) {
+  const pos =
+    placement === "bottom"
+      ? "top-[calc(100%+8px)] -translate-y-1 group-hover/tip:translate-y-0 group-active/tip:translate-y-0"
+      : "bottom-[calc(100%+8px)] translate-y-1 group-hover/tip:translate-y-0 group-active/tip:translate-y-0";
   return (
     <span
       className="group/tip relative ml-0.5 inline-flex"
@@ -507,7 +573,7 @@ function ChipHelp({ text }: { text: string }) {
       </span>
       <span
         role="tooltip"
-        className="pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 z-50 w-48 -translate-x-1/2 translate-y-1 rounded-lg border border-[#09ed2d]/25 bg-black/95 px-3 py-2 text-center text-xs font-normal leading-relaxed text-white/85 opacity-0 transition-all duration-150 group-hover/tip:translate-y-0 group-hover/tip:opacity-100 group-active/tip:translate-y-0 group-active/tip:opacity-100"
+        className={`pointer-events-none absolute left-1/2 z-50 w-48 -translate-x-1/2 rounded-lg border border-[#09ed2d]/25 bg-black/95 px-3 py-2 text-center text-xs font-normal leading-relaxed text-white/85 opacity-0 transition-all duration-150 group-hover/tip:opacity-100 group-active/tip:opacity-100 ${pos}`}
       >
         {text}
       </span>
@@ -516,7 +582,65 @@ function ChipHelp({ text }: { text: string }) {
 }
 
 // =========================================================================
-// Paket-Schritt – die aus dem Preisrechner übernommene Vorauswahl,
+// Projektart-Hinweis: süßer, freundlicher Nudge, wenn die Detail-Auswahl
+// eine größere Projektart verlangt (z. B. One-Pager + Online-Terminbuchung).
+// =========================================================================
+
+/** Fügt Auslöser sprachlich sauber zusammen: "A", "A und B", "A, B und C". */
+function joinReasons(reasons: string[]): string {
+  if (reasons.length <= 1) return reasons[0] ?? "";
+  return `${reasons.slice(0, -1).join(", ")} und ${reasons[reasons.length - 1]}`;
+}
+
+function ProjectTypeNudge({
+  upgrade,
+  onApply,
+  onDismiss,
+}: {
+  upgrade: ProjectTypeUpgrade;
+  onApply: () => void;
+  onDismiss: () => void;
+}) {
+  return (
+    <div className="animate-detail-in mb-6 flex flex-col gap-3 rounded-2xl border border-[#09ed2d]/30 bg-[#09ed2d]/[0.07] p-4 sm:p-5">
+      <div className="flex items-start gap-3">
+        <span aria-hidden="true" className="text-xl leading-none">
+          🌱
+        </span>
+        <div className="flex flex-col gap-1">
+          <p className="text-sm font-semibold text-white">
+            Pssst, kurzer Hinweis
+          </p>
+          <p className="text-sm leading-relaxed text-white/70">
+            Mit <strong className="text-[#09ed2d]">{joinReasons(upgrade.reasons)}</strong> wird aus
+            deinem Projekt eigentlich eine{" "}
+            <strong className="text-white">{upgrade.suggestedLabel}</strong>. Soll ich die
+            Projektart anpassen? Das macht dein Angebot genauer.
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-2 pl-9">
+        <button
+          type="button"
+          onClick={onApply}
+          className="rounded-full bg-[#09ed2d] px-4 py-2 text-xs font-semibold text-black transition hover:bg-[#09ed2d]/90"
+        >
+          Ja, anpassen
+        </button>
+        <button
+          type="button"
+          onClick={onDismiss}
+          className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-medium text-white/65 transition hover:text-white"
+        >
+          Nein, so lassen
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// =========================================================================
+// Paket-Schritt, die aus dem Preisrechner übernommene Vorauswahl,
 // hier sichtbar und jederzeit anpassbar.
 // =========================================================================
 
@@ -530,12 +654,8 @@ function PackageStep({
   const projectType = (summary.projectType ?? "onepager") as ProjectType;
   const design = (summary.design ?? "custom") as DesignType;
   const selectedFeatures = (summary.features ?? []) as FeatureKey[];
-  const extraLanguages = summary.extraLanguages ?? 0;
   const maintenance = summary.maintenance ?? false;
   const maintenanceRange = maintenanceRangeFor(projectType);
-
-  const setLanguages = (n: number) =>
-    onChange({ extraLanguages: Math.max(0, Math.min(PRICING.extraLanguage.max, n)) });
 
   const toggleFeature = (key: FeatureKey) =>
     onChange({
@@ -549,7 +669,7 @@ function PackageStep({
       <div>
         <h2 className="text-xl font-semibold text-white">Dein Paket</h2>
         <p className="mt-1 text-sm text-white/55">
-          Das hast du im Preisrechner gewählt. Du kannst hier alles anpassen –
+          Das hast du im Preisrechner gewählt. Du kannst hier alles anpassen -
           die Kalkulation rechts aktualisiert sich sofort.
         </p>
       </div>
@@ -624,34 +744,8 @@ function PackageStep({
         </div>
       </div>
 
-      {/* Weitere Sprachen */}
-      <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4">
-        <div className="flex flex-col gap-0.5">
-          <span className="font-medium text-white">Weitere Sprachen</span>
-          <span className="text-xs text-white/50">Mehrsprachigkeit – je Sprache mit Aufpreis</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            aria-label="Weniger Sprachen"
-            disabled={extraLanguages <= 0}
-            onClick={() => setLanguages(extraLanguages - 1)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-lg leading-none text-white transition hover:border-[#09ed2d]/50 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            −
-          </button>
-          <span className="w-6 text-center font-semibold text-white">{extraLanguages}</span>
-          <button
-            type="button"
-            aria-label="Mehr Sprachen"
-            disabled={extraLanguages >= PRICING.extraLanguage.max}
-            onClick={() => setLanguages(extraLanguages + 1)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-lg leading-none text-white transition hover:border-[#09ed2d]/50 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            +
-          </button>
-        </div>
-      </div>
+      {/* Mehrsprachigkeit wird als Funktion im Schritt „Funktionen & Technik"
+          gewählt, Deutsch ist immer inklusive. Daher hier kein Sprachen-Stepper. */}
 
       {/* Wartung & Pflege */}
       <button
@@ -833,7 +927,7 @@ function Summary({ draft }: { draft: BriefDraft }) {
           )}
           {typeof s.priceMin === "number" && typeof s.priceMax === "number" && (
             <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-white/70">
-              Preisrechner: {formatEuro(s.priceMin)} – {formatEuro(s.priceMax)}
+              Preisrechner: {formatEuro(s.priceMin)} bis {formatEuro(s.priceMax)}
             </span>
           )}
         </div>
@@ -844,6 +938,7 @@ function Summary({ draft }: { draft: BriefDraft }) {
           <span className="text-sm text-white/70">Geschätzte Gesamtkosten (mit Detailauswahl)</span>
           <span className="text-xl font-semibold tabular-nums text-[#09ed2d]">
             ca. {formatRange(estimate.oneTimeMin, estimate.oneTimeMax)}
+            {estimate.oneTimeMax > estimate.oneTimeMin && <span className="text-[#09ed2d]/80">+</span>}
           </span>
         </div>
         {estimate.hostingMax > 0 && (
@@ -873,7 +968,7 @@ function Summary({ draft }: { draft: BriefDraft }) {
         </dl>
       ) : (
         <p className="mt-3 text-xs text-white/40">
-          Du hast die Detailfragen übersprungen – das ist okay. Je mehr du ausfüllst,
+          Du hast die Detailfragen übersprungen, das ist okay. Je mehr du ausfüllst,
           desto genauer wird dein Angebot.
         </p>
       )}
@@ -968,15 +1063,22 @@ function CostCounter({ draft }: { draft: BriefDraft }) {
     <div className="rounded-2xl border border-white/15 p-5 sm:p-6">
       <p className="text-sm font-semibold text-white">Deine Kalkulation</p>
 
-      {/* Summe – immer als unverbindliche Spanne */}
+      {/* Summe, immer als unverbindliche Spanne */}
       <div className="mt-4">
-        <span className="text-xs text-white/45">geschätzt, einmalig</span>
+        <span className="flex items-center gap-1 text-xs text-white/45">
+          geschätzt, einmalig
+          <ChipHelp
+            placement="bottom"
+            text="Grober Richtwert, keine Endsumme. Bei viel Aufwand (viele Seiten, Sonderfunktionen, aufwändiges Design) kann es auch mehr werden, daher das Plus. Den genauen Preis lege ich mit dir fest."
+          />
+        </span>
         <div key={`${estimate.oneTimeMin}-${estimate.oneTimeMax}`} className="animate-cost-pop mt-0.5 origin-left">
           <span className="text-[2rem] font-bold leading-none tabular-nums text-[#09ed2d] sm:text-[2.4rem]">
             ca. <AnimatedEuro value={estimate.oneTimeMin} />
             {estimate.oneTimeMax !== estimate.oneTimeMin && (
-              <> – <AnimatedEuro value={estimate.oneTimeMax} /></>
+              <> bis <AnimatedEuro value={estimate.oneTimeMax} /></>
             )}
+            <span className="text-white/80">+</span>
           </span>
         </div>
         {estimate.monthlyMax > 0 && (
@@ -1088,6 +1190,29 @@ function AnimatedEuro({ value }: { value: number }) {
   return <>{formatEuro(display)}</>;
 }
 
+/**
+ * Sorgt dafür, dass immer-inklusive Optionen (z. B. „Startseite") in den
+ * Antwortdaten enthalten sind, auch wenn der Nutzer das Feld noch nicht
+ * angefasst hat. So sind sie sofort sichtbar ausgewählt und werden gespeichert.
+ */
+function withLockedOptions(data: BriefDraft["data"]): BriefDraft["data"] {
+  const next = { ...data };
+  for (const step of BRIEF_STEPS) {
+    for (const field of step.fields) {
+      if (!field.lockedOptions?.length) continue;
+      const current = Array.isArray(next[field.name])
+        ? (next[field.name] as string[])
+        : [];
+      const merged = [...current];
+      for (const opt of field.lockedOptions) {
+        if (!merged.includes(opt)) merged.unshift(opt);
+      }
+      next[field.name] = merged;
+    }
+  }
+  return next;
+}
+
 function readLocal(): BriefDraft | null {
   try {
     const raw = localStorage.getItem(BRIEF_STORAGE_KEY);
@@ -1103,16 +1228,36 @@ function readLocal(): BriefDraft | null {
   }
 }
 
-/** Konto-Entwurf hat Vorrang; lokaler füllt nur leere Kontaktfelder. */
-function mergeDrafts(remote: BriefDraft, local: BriefDraft): BriefDraft {
+/**
+ * Verschmilzt Konto-Entwurf (remote) und lokalen Entwurf.
+ *
+ * Standard: Konto-Entwurf hat Vorrang (geräteübergreifend), lokaler füllt Lücken.
+ * Bei `localWins` (frische Preisrechner-Übergabe) kehrt sich die Priorität um:
+ * die gerade getroffene lokale Auswahl gewinnt, der Konto-Entwurf füllt nur Lücken.
+ * Kontaktfelder nehmen jeweils den ersten nicht-leeren Wert.
+ */
+function mergeDrafts(remote: BriefDraft, local: BriefDraft, localWins = false): BriefDraft {
+  const primary = localWins ? local : remote;
+  const secondary = localWins ? remote : local;
   return {
-    data: { ...local.data, ...remote.data },
-    summary: { ...local.summary, ...remote.summary },
+    data: { ...secondary.data, ...primary.data },
+    summary: { ...secondary.summary, ...primary.summary },
     contact: {
-      name: remote.contact?.name || local.contact.name,
-      email: remote.contact?.email || local.contact.email,
-      phone: remote.contact?.phone || local.contact.phone,
-      company: remote.contact?.company || local.contact.company,
+      name: primary.contact?.name || secondary.contact?.name || "",
+      email: primary.contact?.email || secondary.contact?.email || "",
+      phone: primary.contact?.phone || secondary.contact?.phone || "",
+      company: primary.contact?.company || secondary.contact?.company || "",
     },
   };
+}
+
+/** Liest den Handoff-Marker und entfernt ihn sofort (einmalige Wirkung). */
+function consumeHandoff(): boolean {
+  try {
+    const flag = localStorage.getItem(BRIEF_HANDOFF_KEY) === "1";
+    if (flag) localStorage.removeItem(BRIEF_HANDOFF_KEY);
+    return flag;
+  } catch {
+    return false;
+  }
 }

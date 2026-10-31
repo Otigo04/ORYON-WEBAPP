@@ -228,6 +228,39 @@ body {
     animation: none;
   }
 }
+
+/* TAS-FLEET Dispatch-Terminal: einmaliger Scan-Sweep über den Screenshot beim
+   Erscheinen (kein Loop), Anspielung auf Funkleitstellen-/Radar-Ästhetik. */
+@keyframes fleet-scan {
+  0% { transform: translateX(-100%); opacity: 0.9; }
+  60% { opacity: 0.45; }
+  100% { transform: translateX(340%); opacity: 0; }
+}
+.fleet-scan {
+  animation: fleet-scan 1.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fleet-scan {
+    animation: none;
+  }
+}
+
+/* Cleaner Aurora-Hintergrund (Konfigurator): dezente Drift, nur transform,
+   damit der GPU-Compositor ohne Repaint arbeitet (kostet praktisch keine FPS). */
+@keyframes aurora-drift {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(26px); }
+}
+.aurora-drift {
+  animation: aurora-drift 16s ease-in-out infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .aurora-drift {
+    animation: none;
+  }
+}
+
 /* Druckansicht für Dokumente (Rechnungen, Angebote, Konzepte).
    Blendet UI-Chrome (.no-print) aus und stellt das Belegblatt randlos dar. */
 @media print {

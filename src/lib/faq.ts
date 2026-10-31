@@ -1,8 +1,9 @@
 import {
+  BOOKING_PRICE,
   ENTRY_PRICE,
+  PORTFOLIO_PRICE,
   PRICING,
-  SHOP_COMPLEX_PRICE,
-  SHOP_PRICE,
+  WEBAPP_PRICE,
   WEBSITE_PRICE,
   formatEuro,
 } from "@/lib/pricing";
@@ -21,7 +22,7 @@ const maintenanceFrom = Math.min(
 export const faqs = [
   {
     question: "Was kostet eine Website?",
-    answer: `Das hängt von Umfang und Ausstattung ab. Richtwerte: One-Pager ab ${formatEuro(ENTRY_PRICE)}, mehrseitige Website ab ${formatEuro(WEBSITE_PRICE)}, einfacher Online-Shop ab ${formatEuro(SHOP_PRICE)}, komplexere Shops nach Planung ab ${formatEuro(SHOP_COMPLEX_PRICE)}. ${PRICING.vatNote} Im Preisrechner siehst du in einer Minute, wo du ungefähr liegst – unverbindlich.`,
+    answer: `Das hängt von Umfang und Ausstattung ab. Richtwerte: One-Pager ab ${formatEuro(ENTRY_PRICE)}, mehrseitige Website ab ${formatEuro(WEBSITE_PRICE)}, Portfolio-Seite ab ${formatEuro(PORTFOLIO_PRICE)}, Buchungsseite ab ${formatEuro(BOOKING_PRICE)}, individuelle Web-App ab ${formatEuro(WEBAPP_PRICE)}. ${PRICING.vatNote} Im Preisrechner siehst du in einer Minute, wo du ungefähr liegst – unverbindlich.`,
   },
   {
     question: "Bekomme ich einen verbindlichen Festpreis?",

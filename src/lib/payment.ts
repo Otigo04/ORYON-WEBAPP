@@ -1,13 +1,11 @@
 /**
- * Zentrale Zahlungs-/Bankdaten.
+ * Zentrale Zahlungs-/Bankdaten für Angebote und Rechnungen.
  *
+ * Es gibt bewusst keine Online-Zahlung (kein Stripe). Angebote und Rechnungen
+ * werden als PDF erstellt und per E-Mail versendet; bezahlt wird per Überweisung.
  * Die Werte kommen aus Umgebungsvariablen (in Vercel bzw. .env.local setzen),
  * damit echte Kontodaten nicht im Code stehen. Ohne gesetzte Variablen greifen
  * neutrale Platzhalter.
- *
- * Diese Datei wird auch in Client-Komponenten (PaymentBox) importiert – daher
- * ausschließlich `NEXT_PUBLIC_*`-Variablen verwenden. Die Bankdaten werden dem
- * Kunden ohnehin angezeigt; sie sind nicht geheim.
  */
 
 export const BANK_DETAILS = {
@@ -19,14 +17,6 @@ export const BANK_DETAILS = {
 
 /** Branchenüblicher Anzahlungs-Anteil (50 % bei Projektstart). */
 export const DEPOSIT_RATE = 0.5;
-
-/**
- * Schalter für die echte Online-Zahlung (Stripe).
- * Aktiviert über `NEXT_PUBLIC_ONLINE_PAYMENT_ENABLED=true`, sobald die
- * Stripe-Keys hinterlegt und getestet sind.
- */
-export const ONLINE_PAYMENT_ENABLED =
-  process.env.NEXT_PUBLIC_ONLINE_PAYMENT_ENABLED === "true";
 
 /** Erzeugt einen sprechenden Verwendungszweck für eine Überweisung. */
 export function paymentReference(documentNumber: string): string {

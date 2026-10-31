@@ -17,7 +17,7 @@ export default async function AdminShowcaseProjectsPage() {
 
       {projects.length === 0 ? (
         <EmptyState>
-          Noch keine Referenzen. Lege die erste an – solange keine veröffentlicht ist, zeigt die
+          Noch keine Referenzen. Lege die erste an, solange keine veröffentlicht ist, zeigt die
           Startseite Beispiel-Projekte.
         </EmptyState>
       ) : (

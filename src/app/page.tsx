@@ -12,7 +12,7 @@ import { faqSchema } from "@/lib/structured-data";
 import { faqs } from "@/lib/faq";
 
 /**
- * Öffentliche Startseite (Onepager) – Server Component.
+ * Öffentliche Startseite (Onepager), Server Component.
  *
  * Aufbau: Navbar (sticky) → Hero → Leistungen → Zusammenarbeit → Case Study →
  * Preisrechner → FAQ → Kontakt. Es gibt bewusst keine Kundenbewertungen und

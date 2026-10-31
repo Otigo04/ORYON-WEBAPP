@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LogoWordmark } from "@/components/Logo";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { AdminSearch } from "@/components/admin/AdminSearch";
 import { signOutAction } from "@/lib/actions/auth";
 import { requireAdmin } from "@/lib/auth";
 
 export const metadata: Metadata = {
-  title: "Admin – TAS Webworks",
+  title: "Admin, TAS Webworks",
   description: "Internes Verwaltungs-Dashboard.",
   robots: { index: false, follow: false },
 };
@@ -37,6 +38,8 @@ export default async function AdminLayout({
                 Admin
               </span>
             </div>
+
+            <AdminSearch />
 
             <AdminSidebar />
 

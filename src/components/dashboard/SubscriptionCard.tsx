@@ -21,7 +21,7 @@ const dateFormatter = new Intl.DateTimeFormat("de-DE", {
 export function SubscriptionCard({ subscription }: { subscription: Subscription | null }) {
   if (!subscription) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
         <h2 className="text-lg font-semibold text-white">Kein aktives Abo</h2>
         <p className="mt-2 text-sm text-white/60">
           Du hast aktuell kein TAS-FLEET-Abonnement. Wähle einen Tarif, um deine
@@ -45,7 +45,7 @@ export function SubscriptionCard({ subscription }: { subscription: Subscription 
       : `${subscription.vehicle_limit} Fahrzeuge`;
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-[#09ed2d]/25 bg-gradient-to-br from-[#09ed2d]/[0.08] via-white/[0.03] to-[#22d3ee]/[0.06] p-6 backdrop-blur-md">
+    <div className="overflow-hidden rounded-2xl border border-[#09ed2d]/25 bg-gradient-to-br from-[#09ed2d]/[0.08] via-white/[0.03] to-[#22d3ee]/[0.06] p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#22d3ee]">

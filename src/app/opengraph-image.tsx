@@ -6,7 +6,7 @@ import { siteConfig } from "@/lib/site";
  * Markendesign (dunkel + OTIGO-Grün) – sorgt für hochwertige Link-Previews
  * auf LinkedIn, X, WhatsApp & Co. (wichtiger Social-/SEO-Signalgeber).
  */
-export const alt = "TAS Webworks – Websites & Online-Shops aus Berlin";
+export const alt = "TAS Webworks – Websites & Web-Apps aus Berlin";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -66,7 +66,7 @@ export default function OpengraphImage() {
               maxWidth: "900px",
             }}
           >
-            Websites und Online-Shops für kleine Unternehmen.
+            Websites und Web-Apps für kleine Unternehmen.
           </div>
         </div>
 

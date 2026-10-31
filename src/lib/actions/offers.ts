@@ -23,7 +23,7 @@ export type RespondOfferState = {
  * - Der eigentliche Statuswechsel läuft über die SECURITY-DEFINER-Funktion
  *   `respond_to_offer` in Postgres. Diese prüft selbst, dass das Angebot dem
  *   eingeloggten Nutzer gehört und noch 'sent' ist, und ändert ausschließlich
- *   status/customer_comment/responded_at – Beträge/Positionen sind unantastbar.
+ *   status/customer_comment/responded_at, Beträge/Positionen sind unantastbar.
  */
 export async function respondToOffer(input: unknown): Promise<RespondOfferState> {
   const parsed = respondSchema.safeParse(input);

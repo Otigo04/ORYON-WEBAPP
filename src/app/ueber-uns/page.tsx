@@ -115,7 +115,7 @@ export default function UeberUnsPage() {
               Baukasten-Seiten sind schnell gemacht, stoßen aber oft an Grenzen.
             </p>
             <p>
-              Deshalb baue ich Websites und Online-Shops selbst und rechne
+              Deshalb baue ich Websites und Web-Apps selbst und rechne
               transparent ab: Im Preisrechner siehst du vorab, womit du rechnen
               musst.
             </p>

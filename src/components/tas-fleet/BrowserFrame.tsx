@@ -5,54 +5,69 @@ import { useState } from "react";
 import type { FleetModule } from "@/lib/tas-fleet";
 
 /**
- * Browser-Mockup-Rahmen für die TAS-FLEET-Screenshots.
+ * Dispatch-Terminal-Rahmen für die TAS-FLEET-Screenshots.
  *
  * Versucht zunächst, den echten Screenshot unter `src` zu laden. Existiert die
  * Datei (noch) nicht, fällt die Komponente automatisch auf einen stilvollen
- * CSS-Mockup zurück – so sieht die Seite schon ohne echte Assets fertig aus.
+ * CSS-Mockup zurück, so sieht die Seite schon ohne echte Assets fertig aus.
  * Sobald du die PNGs unter /public/tas-fleet/screens/ ablegst, erscheinen sie
  * ohne weitere Codeänderung.
+ *
+ * Statt eines generischen macOS-Browserfensters trägt der Rahmen eine
+ * Funkleitstellen-Kopfzeile (Live-Status + Callsign des Moduls) und einen
+ * einmaligen Scan-Sweep beim Erscheinen, passend zum Dispositions-Thema von
+ * TAS-FLEET statt eines beliebigen Chrome-Fensters.
  */
 type Props = {
   src: string;
   alt: string;
   mock: FleetModule["mock"];
-  /** Browserzeilen-URL (rein dekorativ). */
-  url?: string;
+  /** Callsign in der Kopfzeile, z.B. das Modul-Eyebrow. Default: `mock` in Großbuchstaben. */
+  label?: string;
   className?: string;
 };
 
-export function BrowserFrame({ src, alt, mock, url = "fleet.tas-webworks.de", className = "" }: Props) {
+export function BrowserFrame({ src, alt, mock, label, className = "" }: Props) {
   const [imgFailed, setImgFailed] = useState(false);
+  const callsign = label ?? mock.toUpperCase();
 
   return (
     <div
       className={`overflow-hidden rounded-2xl border border-white/10 bg-[#070d0b] shadow-[0_30px_80px_-30px_rgba(34,211,238,0.35)] ${className}`}
     >
-      {/* Browser-Chrome */}
-      <div className="flex items-center gap-2 border-b border-white/10 bg-white/[0.03] px-4 py-3">
-        <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
-        <div className="ml-3 flex flex-1 items-center justify-center">
-          <span className="inline-flex items-center gap-1.5 rounded-md bg-black/40 px-3 py-1 text-[11px] text-white/40">
-            <LockIcon className="h-2.5 w-2.5" />
-            {url}
+      {/* Leitstellen-Kopfzeile: Live-Status links, Modul-Callsign rechts */}
+      <div className="flex items-center justify-between border-b border-white/10 bg-white/[0.03] px-4 py-2.5">
+        <span className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-[#09ed2d]">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#09ed2d] opacity-60" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#09ed2d]" />
           </span>
-        </div>
+          Live
+        </span>
+        <span className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-white/35">
+          {callsign}
+          <SignalIcon className="h-3 w-3 text-[#22d3ee]/70" />
+        </span>
       </div>
 
       {/* Inhalt: echter Screenshot oder Mockup-Fallback */}
       <div className="relative aspect-[16/10] w-full">
         {!imgFailed ? (
-          <Image
-            src={src}
-            alt={alt}
-            fill
-            sizes="(max-width: 768px) 100vw, 640px"
-            className="object-cover object-top"
-            onError={() => setImgFailed(true)}
-          />
+          <>
+            <Image
+              src={src}
+              alt={alt}
+              fill
+              quality={92}
+              sizes="(max-width: 1024px) 90vw, 544px"
+              className="object-cover object-top"
+              onError={() => setImgFailed(true)}
+            />
+            <span
+              aria-hidden="true"
+              className="fleet-scan pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-[#22d3ee]/25 to-transparent"
+            />
+          </>
         ) : (
           <MockScreen mock={mock} />
         )}
@@ -61,7 +76,7 @@ export function BrowserFrame({ src, alt, mock, url = "fleet.tas-webworks.de", cl
   );
 }
 
-/** Stilisierte App-Oberfläche je Modul – reiner CSS/JSX-Platzhalter. */
+/** Stilisierte App-Oberfläche je Modul, reiner CSS/JSX-Platzhalter. */
 function MockScreen({ mock }: { mock: FleetModule["mock"] }) {
   return (
     <div className="absolute inset-0 flex bg-gradient-to-br from-[#08120e] via-[#060c0a] to-black text-white/70">
@@ -205,11 +220,12 @@ function MockBody({ mock }: { mock: FleetModule["mock"] }) {
   }
 }
 
-function LockIcon({ className }: { className?: string }) {
+function SignalIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="none">
-      <rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" strokeWidth="2" />
-      <path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="2" />
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
+      <rect x="4" y="14" width="3" height="6" rx="0.5" />
+      <rect x="10.5" y="10" width="3" height="10" rx="0.5" />
+      <rect x="17" y="5" width="3" height="15" rx="0.5" />
     </svg>
   );
 }

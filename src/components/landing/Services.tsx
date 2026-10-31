@@ -1,41 +1,30 @@
-import {
-  ENTRY_PRICE,
-  PRICING,
-  SHOP_COMPLEX_PRICE,
-  SHOP_PRICE,
-  WEBSITE_PRICE,
-  formatEuro,
-} from "@/lib/pricing";
+import { PRICING, formatEuro, type ProjectType } from "@/lib/pricing";
 
 /**
- * Leistungen – drei Angebotsarten mit Einstiegspreis. Alle Preise stammen aus
- * `pricing.config.ts` (über `@/lib/pricing`). Reine Server Component.
+ * Leistungen – ein Angebot je Projektart mit Einstiegspreis. Labels und Preise
+ * stammen aus `pricing.config.ts` (über `@/lib/pricing`), nur die Beschreibung
+ * steht hier. Reine Server Component.
  */
-type Offer = {
-  title: string;
-  description: string;
-  price: string;
+const descriptions: Record<ProjectType, string> = {
+  onepager:
+    "Eine Seite mit allem Wichtigen: wer du bist, was du anbietest und wie man dich erreicht.",
+  website:
+    "Mehrere Unterseiten wie Leistungen, Über uns und Kontakt. Auf Wunsch mit Blog oder weiteren Sprachen.",
+  booking:
+    "Website mit integrierter Online-Terminbuchung, damit Kunden Termine direkt anfragen können.",
+  portfolio: "Eine Seite, die deine Arbeiten und Projekte anschaulich zeigt.",
+  webapp:
+    "Individuelle Web-App oder interaktives Tool nach deinen Anforderungen. Der Umfang bestimmt den Preis.",
 };
 
-const offers: Offer[] = [
-  {
-    title: "One-Pager & Landingpages",
-    description:
-      "Eine Seite mit allem Wichtigen: wer du bist, was du anbietest und wie man dich erreicht. Passend für Selbstständige und kleine Betriebe.",
-    price: `ab ${formatEuro(ENTRY_PRICE)}`,
-  },
-  {
-    title: "Mehrseitige Websites",
-    description:
-      "Mehrere Unterseiten wie Leistungen, Über uns und Kontakt. Auf Wunsch mit Blog, Online-Terminbuchung oder weiteren Sprachen.",
-    price: `ab ${formatEuro(WEBSITE_PRICE)}`,
-  },
-  {
-    title: "Online-Shops",
-    description: `Produktverwaltung, Bestellabwicklung und Zahlungsanbindung. Größere Vorhaben mit individueller Planung ab ${formatEuro(SHOP_COMPLEX_PRICE)}.`,
-    price: `ab ${formatEuro(SHOP_PRICE)}`,
-  },
-];
+const offers = (Object.keys(PRICING.projectTypes) as ProjectType[]).map((key) => {
+  const type = PRICING.projectTypes[key];
+  return {
+    title: type.label,
+    description: descriptions[key],
+    price: `ab ${formatEuro(type.base[0])}`,
+  };
+});
 
 export function Services() {
   return (
@@ -55,7 +44,7 @@ export function Services() {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {offers.map((offer) => (
             <article
               key={offer.title}

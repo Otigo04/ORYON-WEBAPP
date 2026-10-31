@@ -9,7 +9,7 @@ import { branches, brancheHref } from "@/lib/branches";
  *
  * Client-Insel: Der als Button erkennbare "Leistungen"-Eintrag öffnet beim Klick
  * ein Karten-Panel (Branchen-Lösungen). Die Animation läuft rein über
- * CSS-Transitions – der geschlossene Zustand ist bereits im (Server-)Markup
+ * CSS-Transitions, der geschlossene Zustand ist bereits im (Server-)Markup
  * versteckt (opacity-0 + pointer-events-none), daher blitzt das Panel beim
  * Laden der Seite nicht kurz auf. Öffnen/Schließen ist dadurch sofort und clean.
  * Schließen per Außenklick oder Escape.
@@ -69,7 +69,7 @@ export function ServicesMenu() {
         aria-hidden={!open}
         aria-label="Leistungen nach Branche"
         style={{ transformOrigin: "top center" }}
-        className={`absolute left-1/2 top-[calc(100%+1.4rem)] z-50 w-[min(88vw,720px)] -translate-x-1/2 rounded-2xl border border-[#09ed2d]/20 bg-black/90 p-3 shadow-[0_24px_60px_-20px_rgba(9,237,45,0.45)] backdrop-blur-xl transition duration-200 ease-out ${
+        className={`absolute left-1/2 top-[calc(100%+1.4rem)] z-50 max-h-[calc(100vh-7rem)] w-[min(88vw,720px)] -translate-x-1/2 overflow-y-auto overscroll-contain rounded-2xl border border-[#09ed2d]/20 bg-black/90 p-3 shadow-[0_24px_60px_-20px_rgba(9,237,45,0.45)] backdrop-blur-xl transition duration-200 ease-out ${
           open
             ? "translate-y-0 scale-100 opacity-100"
             : "pointer-events-none -translate-y-2 scale-95 opacity-0"

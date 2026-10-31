@@ -13,7 +13,18 @@ export function RegisterForm() {
   );
 
   if (state?.success) {
-    return <AuthSuccess message={state.success} />;
+    return (
+      <div className="flex flex-col gap-3">
+        <AuthSuccess message={state.success} />
+        <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-xs leading-relaxed text-white/55">
+          Keine E-Mail erhalten? Schau bitte in deinem{" "}
+          <span className="font-medium text-white/80">Spam- oder Junk-Ordner</span> nach.
+          Absender ist{" "}
+          <span className="font-medium text-white/80">no-reply@tas-webworks.de</span>. Der
+          Bestätigungslink ist 24 Stunden gültig.
+        </p>
+      </div>
+    );
   }
 
   return (

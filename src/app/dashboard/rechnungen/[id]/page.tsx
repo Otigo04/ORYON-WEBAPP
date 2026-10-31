@@ -3,13 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DocumentView } from "@/components/documents/DocumentView";
 import { PrintButton } from "@/components/documents/PrintButton";
-import { PaymentBox } from "@/components/dashboard/PaymentBox";
 import { getInvoice } from "@/lib/invoices";
 import { getMyProfile } from "@/lib/profile";
-import { INVOICE_STATUS_LABELS, computeTotals } from "@/lib/documents";
+import { INVOICE_STATUS_LABELS } from "@/lib/documents";
 
 export const metadata: Metadata = {
-  title: "Rechnung – TAS Webworks",
+  title: "Rechnung, TAS Webworks",
   robots: { index: false, follow: false },
 };
 
@@ -42,6 +41,7 @@ export default async function CustomerInvoicePage({
       <div className="px-6 print:px-0">
         <DocumentView
           kind="Rechnung"
+          logoSrc="/logo/tas_webworks_logo_v2_black.svg"
           number={invoice.number}
           title={invoice.title}
           meta={meta}
@@ -50,23 +50,29 @@ export default async function CustomerInvoicePage({
           currency={invoice.currency}
           customer={
             profile
-              ? { full_name: profile.full_name, email: profile.email, company: profile.company }
+              ? {
+                  full_name: profile.full_name,
+                  email: profile.email,
+                  company: profile.company,
+                  street: profile.street,
+                  postal_code: profile.postal_code,
+                  city: profile.city,
+                  country: profile.country,
+                  vat_id: profile.vat_id,
+                }
               : null
           }
           notes={invoice.notes}
+          payment={invoice.status === "sent" ? { reference: invoice.number } : null}
         />
       </div>
 
       {invoice.status === "sent" && (
         <div className="no-print mx-auto mt-6 max-w-3xl px-6">
-          <PaymentBox
-            amount={computeTotals(invoice.items, invoice.tax_rate).gross}
-            currency={invoice.currency}
-            reference={`Rechnung ${invoice.number}`}
-            heading="Offener Betrag"
-            subline={invoice.due_date ? `Fällig bis ${df.format(new Date(invoice.due_date))}` : undefined}
-            checkout={{ kind: "invoice", id: invoice.id }}
-          />
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm text-white/70">
+            Die Zahlungsdetails findest du auf der Rechnung. Bei Fragen erreichst du uns
+            jederzeit per E-Mail.
+          </div>
         </div>
       )}
     </main>

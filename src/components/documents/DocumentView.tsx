@@ -1,6 +1,7 @@
 import { computeTotals, formatMoney, type LineItem } from "@/lib/documents";
 import { SMALL_BUSINESS_VAT_EXEMPT, VAT_NOTE } from "../../../pricing.config";
 import { siteConfig } from "@/lib/site";
+import { BANK_DETAILS } from "@/lib/payment";
 
 type Meta = { label: string; value: string }[];
 
@@ -9,6 +10,17 @@ type Meta = { label: string; value: string }[];
  * print-optimiert via .doc-sheet in globals.css). Positionen + Summen werden
  * serverseitig berechnet.
  */
+type Customer = {
+  full_name: string | null;
+  email: string | null;
+  company: string | null;
+  street?: string | null;
+  postal_code?: string | null;
+  city?: string | null;
+  country?: string | null;
+  vat_id?: string | null;
+};
+
 export function DocumentView({
   kind,
   number,
@@ -20,6 +32,8 @@ export function DocumentView({
   customer,
   intro,
   notes,
+  logoSrc = "/logo/tas_wordmark.svg",
+  payment,
 }: {
   kind: "Rechnung" | "Angebot";
   number: string;
@@ -28,19 +42,34 @@ export function DocumentView({
   items: LineItem[];
   taxRate: number;
   currency: string;
-  customer: { full_name: string | null; email: string | null; company: string | null } | null;
+  customer: Customer | null;
   intro?: string | null;
   notes?: string | null;
+  /** Logo oben links (Standard: Wortmarke). */
+  logoSrc?: string;
+  /**
+   * Überweisungs-Box mit Bankverbindung. Wird gerendert, wenn gesetzt – etwa bei
+   * offenen Rechnungen (Status „Versendet"). `reference` = Verwendungszweck.
+   * `note` = optionaler Zusatz-Hinweis unter der Bankverbindung (z. B.
+   * Liefer-/Freischaltungsinfo). Wird nur gerendert, wenn gesetzt – so erscheint
+   * produktspezifischer Text (etwa TAS-FLEET-Freischaltung) nicht auf jeder
+   * beliebigen Rechnung.
+   */
+  payment?: { reference: string; note?: string | null } | null;
 }) {
   const totals = computeTotals(items, taxRate);
+  // Bankdaten aus den Umgebungsvariablen (payment.ts) – eine Quelle der Wahrheit,
+  // damit Rechnungen echte Kontodaten zeigen, sobald NEXT_PUBLIC_BANK_* gesetzt ist.
+  const bank = BANK_DETAILS;
 
   return (
     <article className="doc-sheet mx-auto max-w-3xl rounded-2xl bg-white p-8 text-neutral-900 shadow-xl sm:p-12">
       {/* Kopf */}
       <header className="flex flex-wrap items-start justify-between gap-6 border-b border-neutral-200 pb-6">
         <div>
-          <p className="text-xl font-bold tracking-tight">{siteConfig.name}</p>
-          <p className="mt-1 text-xs leading-relaxed text-neutral-500">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={logoSrc} alt={siteConfig.name} className="h-9 w-auto" />
+          <p className="mt-2 text-xs leading-relaxed text-neutral-500">
             {siteConfig.address.street}
             <br />
             {siteConfig.address.postalCode} {siteConfig.address.city}
@@ -56,13 +85,21 @@ export function DocumentView({
 
       {/* Empfänger + Meta */}
       <div className="mt-6 flex flex-wrap justify-between gap-6">
-        <div>
+        <div className="text-sm text-neutral-600">
           <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">An</p>
-          <p className="mt-1 font-medium">{customer?.company || customer?.full_name || "—"}</p>
-          {customer?.company && customer?.full_name && (
-            <p className="text-sm text-neutral-600">{customer.full_name}</p>
+          <p className="mt-1 font-medium text-neutral-900">
+            {customer?.company || customer?.full_name || "—"}
+          </p>
+          {customer?.company && customer?.full_name && <p>{customer.full_name}</p>}
+          {customer?.street && <p>{customer.street}</p>}
+          {(customer?.postal_code || customer?.city) && (
+            <p>
+              {customer?.postal_code} {customer?.city}
+            </p>
           )}
-          {customer?.email && <p className="text-sm text-neutral-600">{customer.email}</p>}
+          {customer?.country && <p>{customer.country}</p>}
+          {customer?.email && <p>{customer.email}</p>}
+          {customer?.vat_id && <p>USt-IdNr. {customer.vat_id}</p>}
         </div>
         <dl className="text-sm">
           {meta.map((m) => (
@@ -104,18 +141,20 @@ export function DocumentView({
       {/* Summen */}
       <div className="mt-4 flex justify-end">
         <dl className="w-full max-w-xs space-y-1 text-sm">
-          <div className="flex justify-between">
-            <dt className="text-neutral-500">Netto</dt>
-            <dd className="tabular-nums">{formatMoney(totals.net, currency)}</dd>
-          </div>
           {SMALL_BUSINESS_VAT_EXEMPT ? (
             <p className="text-xs text-neutral-500">{VAT_NOTE}</p>
-          ) : (
-            <div className="flex justify-between">
-              <dt className="text-neutral-500">zzgl. MwSt. ({taxRate}%)</dt>
-              <dd className="tabular-nums">{formatMoney(totals.tax, currency)}</dd>
-            </div>
-          )}
+          ) : taxRate > 0 ? (
+            <>
+              <div className="flex justify-between">
+                <dt className="text-neutral-500">Netto</dt>
+                <dd className="tabular-nums">{formatMoney(totals.net, currency)}</dd>
+              </div>
+              <div className="flex justify-between">
+                <dt className="text-neutral-500">zzgl. MwSt. ({taxRate}%)</dt>
+                <dd className="tabular-nums">{formatMoney(totals.tax, currency)}</dd>
+              </div>
+            </>
+          ) : null}
           <div className="flex justify-between border-t border-neutral-300 pt-1 text-base font-bold">
             <dt>Gesamtbetrag</dt>
             <dd className="tabular-nums">{formatMoney(totals.gross, currency)}</dd>
@@ -126,6 +165,35 @@ export function DocumentView({
       {notes && (
         <div className="mt-8 border-t border-neutral-200 pt-4 text-sm text-neutral-600">
           <p className="whitespace-pre-wrap">{notes}</p>
+        </div>
+      )}
+
+      {payment && (
+        <div className="mt-6 rounded-xl border border-neutral-300 bg-neutral-50 p-5">
+          <p className="text-sm font-semibold text-neutral-800">Zahlung per Überweisung</p>
+          <p className="mt-1 text-xs text-neutral-500">
+            Bitte überweisen Sie den Gesamtbetrag von{" "}
+            <span className="font-medium text-neutral-700">
+              {formatMoney(totals.gross, currency)}
+            </span>{" "}
+            auf folgendes Konto. Geben Sie als Verwendungszweck bitte{" "}
+            <span className="font-medium text-neutral-700">{payment.reference}</span> an.
+          </p>
+          <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
+            <dt className="text-neutral-400">Kontoinhaber</dt>
+            <dd className="font-medium text-neutral-700">{bank.accountHolder}</dd>
+            <dt className="text-neutral-400">IBAN</dt>
+            <dd className="font-medium tabular-nums text-neutral-700">{bank.iban}</dd>
+            <dt className="text-neutral-400">BIC</dt>
+            <dd className="font-medium tabular-nums text-neutral-700">{bank.bic}</dd>
+            <dt className="text-neutral-400">Bank</dt>
+            <dd className="font-medium text-neutral-700">{bank.bankName}</dd>
+            <dt className="text-neutral-400">Verwendungszweck</dt>
+            <dd className="font-medium text-neutral-700">{payment.reference}</dd>
+          </dl>
+          {payment.note && (
+            <p className="mt-3 text-xs text-neutral-500">{payment.note}</p>
+          )}
         </div>
       )}
 

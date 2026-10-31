@@ -58,7 +58,7 @@ export default async function AdminBriefDetailPage({
         </div>
         {typeof brief.price_min === "number" && typeof brief.price_max === "number" && (
           <p className="text-xl font-semibold text-[#09ed2d]">
-            {formatEuro(brief.price_min)} – {formatEuro(brief.price_max)}
+            {formatEuro(brief.price_min)} bis {formatEuro(brief.price_max)}
           </p>
         )}
       </div>
@@ -72,7 +72,7 @@ export default async function AdminBriefDetailPage({
                 Für Claude aufbereiten
               </h2>
               <p className="mt-1 text-sm text-white/50">
-                Die komplette Konfiguration als fertigen Prompt – kopieren oder als
+                Die komplette Konfiguration als fertigen Prompt, kopieren oder als
                 .md-Datei laden und direkt bei Claude einfügen/hochladen.
               </p>
             </div>

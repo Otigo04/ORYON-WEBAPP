@@ -21,7 +21,7 @@ export function FleetCta() {
             Bringen Sie Ihre Flotte ins Rollen
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-white/65">
-            Starten Sie noch heute mit TAS-FLEET – ohne Installation, ohne
+            Starten Sie noch heute mit TAS-FLEET, ohne Installation, ohne
             Setup-Kosten, jederzeit kündbar. Ihre Disposition wird es Ihnen danken.
           </p>
           <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">

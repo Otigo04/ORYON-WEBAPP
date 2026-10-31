@@ -4,6 +4,7 @@ import { Card, PageHeader } from "@/components/admin/PageHeader";
 import { InvoiceForm } from "@/components/admin/InvoiceForm";
 import { getInvoice } from "@/lib/invoices";
 import { getCustomers } from "@/lib/admin/customers";
+import { getAllBriefs } from "@/lib/briefs";
 
 export default async function EditInvoicePage({
   params,
@@ -11,7 +12,7 @@ export default async function EditInvoicePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [invoice, customers] = await Promise.all([getInvoice(id), getCustomers()]);
+  const [invoice, customers, briefs] = await Promise.all([getInvoice(id), getCustomers(), getAllBriefs()]);
   if (!invoice) notFound();
 
   return (
@@ -22,11 +23,11 @@ export default async function EditInvoicePage({
           ← Zurück
         </Link>
         <Link href={`/dashboard/rechnungen/${invoice.id}`} className="text-sm text-[#09ed2d] hover:underline">
-          Kundenansicht / Druck →
+          Als PDF herunterladen →
         </Link>
       </div>
       <Card className="max-w-3xl">
-        <InvoiceForm invoice={invoice} customers={customers} />
+        <InvoiceForm invoice={invoice} customers={customers} briefs={briefs} />
       </Card>
     </>
   );

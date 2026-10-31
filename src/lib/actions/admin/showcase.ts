@@ -22,11 +22,29 @@ const optionalText = z
 // Referenzprojekte
 // =====================================================================
 
+// Galerie-URLs kommen als JSON-Array aus dem Uploader; nur gültige http(s)-URLs
+// werden übernommen (Cover = erstes Bild).
+const imageUrl = z.string().url().max(2048);
+const imagesField = z
+  .string()
+  .optional()
+  .transform((raw) => {
+    if (!raw) return [] as string[];
+    try {
+      const arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return [] as string[];
+      const valid = arr.filter((u): u is string => imageUrl.safeParse(u).success);
+      return Array.from(new Set(valid)).slice(0, 24);
+    } catch {
+      return [] as string[];
+    }
+  });
+
 const projectSchema = z.object({
   title: z.string().trim().min(2, "Titel fehlt.").max(160),
   category: z.string().trim().min(2, "Kategorie fehlt.").max(120),
   description: z.string().trim().min(2, "Beschreibung fehlt.").max(2000),
-  image_url: optionalText.pipe(z.string().url("Bitte eine gültige URL angeben.").optional()),
+  images: imagesField,
   project_url: optionalText.pipe(z.string().url("Bitte eine gültige URL angeben.").optional()),
   sort_order: z.coerce.number().int().min(0).max(9999).default(0),
   published: z.coerce.boolean().default(false),
@@ -37,7 +55,7 @@ function readProject(formData: FormData) {
     title: formData.get("title"),
     category: formData.get("category"),
     description: formData.get("description"),
-    image_url: formData.get("image_url") ?? undefined,
+    images: formData.get("images") ?? undefined,
     project_url: formData.get("project_url") ?? undefined,
     sort_order: formData.get("sort_order") ?? 0,
     // Checkbox: vorhanden => "on"/"true", sonst null
@@ -62,7 +80,8 @@ export async function createShowcaseProject(
       title: parsed.data.title,
       category: parsed.data.category,
       description: parsed.data.description,
-      image_url: parsed.data.image_url ?? null,
+      image_url: parsed.data.images[0] ?? null,
+      images: parsed.data.images,
       project_url: parsed.data.project_url ?? null,
       sort_order: parsed.data.sort_order,
       published: parsed.data.published,
@@ -99,7 +118,8 @@ export async function updateShowcaseProject(
         title: parsed.data.title,
         category: parsed.data.category,
         description: parsed.data.description,
-        image_url: parsed.data.image_url ?? null,
+        image_url: parsed.data.images[0] ?? null,
+        images: parsed.data.images,
         project_url: parsed.data.project_url ?? null,
         sort_order: parsed.data.sort_order,
         published: parsed.data.published,

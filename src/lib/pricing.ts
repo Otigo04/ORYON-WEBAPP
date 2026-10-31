@@ -26,8 +26,9 @@ export const PRICING = {
 /** Einstiegspreise für Texte auf der Website – ausschließlich aus der Config. */
 export const ENTRY_PRICE = PRICING.projectTypes.onepager.base[0];
 export const WEBSITE_PRICE = PRICING.projectTypes.website.base[0];
-export const SHOP_PRICE = PRICING.projectTypes.shopSimple.base[0];
-export const SHOP_COMPLEX_PRICE = PRICING.projectTypes.shopComplex.base[0];
+export const BOOKING_PRICE = PRICING.projectTypes.booking.base[0];
+export const PORTFOLIO_PRICE = PRICING.projectTypes.portfolio.base[0];
+export const WEBAPP_PRICE = PRICING.projectTypes.webapp.base[0];
 
 export type ProjectType = keyof typeof PRICING.projectTypes;
 export type DesignType = keyof typeof PRICING.designLabel;
@@ -61,7 +62,7 @@ export type PriceResult = {
   /** Gesamte monatliche Spanne (Hosting + ggf. Wartung). */
   monthlyMin: number;
   monthlyMax: number;
-  /** True bei "komplexem Online-Shop" → grobe Spanne + Planungs-Hinweis. */
+  /** True bei komplexer Web-App → grobe Spanne + Planungs-Hinweis. */
   isComplex: boolean;
 };
 

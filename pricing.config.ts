@@ -30,12 +30,13 @@ export const VAT_NOTE = SMALL_BUSINESS_VAT_EXEMPT
   : "Alle Preise inkl. gesetzlicher Umsatzsteuer.";
 
 export const pricingConfig = {
-  /** Projektarten – `base` ist die Einmalpreis-Spanne [min, max]. */
+  /** Projektarten. `base` ist die Einmalpreis-Spanne [min, max]. Keine Shops. */
   projectTypes: {
-    onepager:    { label: "One-Pager / Landingpage", base: [900, 1800],    complex: false },
-    website:     { label: "Mehrseitige Website",      base: [2500, 5000],   complex: false },
-    shopSimple:  { label: "Einfacher Online-Shop",    base: [4000, 8000],   complex: false },
-    shopComplex: { label: "Komplexer Online-Shop",    base: [12000, 30000], complex: true  },
+    onepager:  { label: "One-Pager / Landingpage",        base: [95, 195],    complex: false },
+    website:   { label: "Mehrseitige Website",            base: [199, 399],   complex: false },
+    booking:   { label: "Buchungs- / Terminseite",        base: [290, 690],   complex: false },
+    portfolio: { label: "Portfolio- / Kreativseite",      base: [190, 490],   complex: false },
+    webapp:    { label: "Web-App / individuelle Lösung",  base: [690, 2900],  complex: true  },
   },
 
   /**
@@ -46,13 +47,13 @@ export const pricingConfig = {
 
   /** Optionale Zusatz-Features (Einmalpreis-Aufschlag [min, max]). */
   features: {
-    content:  { label: "Content & Texte",      hint: "Professionelle Texterstellung", price: [600, 1500] },
-    booking:  { label: "Online-Terminbuchung", hint: "Buchungs-/Kalenderfunktion",    price: [800, 1500] },
-    blog:     { label: "Blog / CMS",           hint: "Inhalte selbst pflegen",        price: [700, 1400] },
-    branding: { label: "Logo & Branding",      hint: "Logo-Design / CI-Paket",        price: [500, 1200] },
+    content:  { label: "Content & Texte",      hint: "Professionelle Texterstellung", price: [39, 99] },
+    booking:  { label: "Online-Terminbuchung", hint: "Buchungs-/Kalenderfunktion",    price: [99, 280] },
+    blog:     { label: "Blog / CMS",           hint: "Inhalte selbst pflegen",        price: [90, 180] },
+    branding: { label: "Logo & Branding",      hint: "Logo-Design / CI-Paket",        price: [200, 450] },
   },
   /** Aufpreis je zusätzlicher Sprache. `max` = maximal wählbare Sprachen. */
-  extraLanguage: { label: "Weitere Sprache", price: [500, 900], max: 5 },
+  extraLanguage: { label: "Weitere Sprache", price: [39, 79], max: 5 },
 
   /**
    * Monatliche Hosting-Pauschale (separat zum Einmalpreis). Fällt für jede
@@ -62,10 +63,11 @@ export const pricingConfig = {
   hosting: {
     label: "Hosting",
     byProjectType: {
-      onepager:    [9, 15],
-      website:     [15, 25],
-      shopSimple:  [25, 45],
-      shopComplex: [45, 79],
+      onepager:  [9, 15],
+      website:   [15, 25],
+      booking:   [15, 29],
+      portfolio: [12, 22],
+      webapp:    [29, 59],
     },
   },
 
@@ -77,10 +79,11 @@ export const pricingConfig = {
   maintenance: {
     label: "Wartung & Pflege",
     byProjectType: {
-      onepager:    [10, 24],
-      website:     [24, 44],
-      shopSimple:  [34, 74],
-      shopComplex: [54, 120],
+      onepager:  [10, 24],
+      website:   [24, 44],
+      booking:   [24, 49],
+      portfolio: [19, 39],
+      webapp:    [49, 99],
     },
   },
 
@@ -111,7 +114,6 @@ export const pricingConfig = {
       features: {
         Kontaktformular: 39,
         Terminbuchung: 99,
-        Onlineshop: 1500,
         "Blog / CMS": 149,
         Mehrsprachigkeit: 39,
         "Mitgliederbereich / Login": 199,
@@ -145,8 +147,8 @@ export const pricingConfig = {
    *  `src/lib/tas-fleet.ts`.
    */
   tasFleet: {
-    starter:      { monthly: 49,  yearly: 39  },
-    professional: { monthly: 149, yearly: 119 },
-    enterprise:   { monthly: 399, yearly: 319 },
+    starter:      { monthly: 29,  yearly: 23  },
+    professional: { monthly: 69,  yearly: 55  },
+    enterprise:   { monthly: 129, yearly: 103 },
   },
 } as const;

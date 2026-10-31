@@ -19,11 +19,17 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "TAS Webworks – Websites & Online-Shops aus Berlin",
+    default: "TAS Webworks – Websites & Web-Apps aus Berlin",
     template: "%s | TAS Webworks",
   },
   description: siteConfig.description,
   keywords: siteKeywords,
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: ["/icon.svg"],
+    apple: [{ url: "/icon.svg", type: "image/svg+xml" }],
+  },
   applicationName: siteConfig.name,
   authors: [{ name: siteConfig.name, url: siteConfig.url }],
   creator: siteConfig.name,
@@ -37,12 +43,12 @@ export const metadata: Metadata = {
     locale: siteConfig.locale,
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: "TAS Webworks – Websites & Online-Shops aus Berlin",
+    title: "TAS Webworks – Websites & Web-Apps aus Berlin",
     description: siteConfig.description,
   },
   twitter: {
     card: "summary_large_image",
-    title: "TAS Webworks – Websites & Online-Shops aus Berlin",
+    title: "TAS Webworks – Websites & Web-Apps aus Berlin",
     description: siteConfig.description,
   },
   robots: {

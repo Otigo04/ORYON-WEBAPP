@@ -26,6 +26,7 @@ export const briefSubmitSchema = z.object({
       features: z.array(z.string().max(60)).max(30).optional(),
       extraLanguages: z.number().int().min(0).max(50).optional(),
       maintenance: z.boolean().optional(),
+      hosting: z.boolean().optional(),
       priceMin: z.number().int().min(0).optional(),
       priceMax: z.number().int().min(0).optional(),
     })

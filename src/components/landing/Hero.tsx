@@ -23,7 +23,7 @@ export function Hero() {
 
         <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-6xl">
           <span className="sr-only">TAS Webworks – </span>
-          Websites und Online-Shops
+          Websites und Web-Apps
           <span className="text-[#09ed2d]"> für kleine Unternehmen.</span>
         </h1>
 

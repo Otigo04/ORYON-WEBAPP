@@ -31,7 +31,7 @@ export function OfferResponse({ offerId }: { offerId: string }) {
     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
       <h3 className="text-base font-semibold text-white">Wie möchtest du fortfahren?</h3>
       <p className="mt-1 text-sm text-white/55">
-        Nimm das Angebot an, um dein Projekt zu starten – oder gib uns Bescheid,
+        Nimm das Angebot an, um dein Projekt zu starten, oder gib uns Bescheid,
         wenn du Anpassungen wünschst.
       </p>
 

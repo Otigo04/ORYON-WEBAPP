@@ -5,9 +5,23 @@ export type Project = {
   title: string;
   category: string;
   description: string;
-  /** Optionaler Bild-URL; ist keiner gesetzt, rendert die UI einen Verlauf. */
+  /** Cover-Bild; ist keiner gesetzt, rendert die UI einen Verlauf. */
   image_url: string | null;
+  /** Weitere Galeriebilder für die Diashow (öffentliche Storage-URLs). */
+  images: string[] | null;
 };
+
+/**
+ * Vollständige Bildliste eines Projekts für die Diashow: Cover (`image_url`)
+ * zuerst, danach die weiteren `images` – ohne Duplikate. Leeres Array, wenn
+ * kein Bild vorliegt (die UI zeigt dann einen Verlauf-Fallback).
+ */
+export function projectImages(p: Pick<Project, "image_url" | "images">): string[] {
+  const all = [p.image_url, ...(p.images ?? [])].filter(
+    (u): u is string => typeof u === "string" && u.length > 0,
+  );
+  return Array.from(new Set(all));
+}
 
 /** Vollständiger Datensatz inkl. Verwaltungsfelder (für das Admin-Panel). */
 export type ShowcaseProject = Project & {
@@ -18,7 +32,7 @@ export type ShowcaseProject = Project & {
 };
 
 const ADMIN_COLS =
-  "id, created_at, title, category, description, image_url, project_url, sort_order, published";
+  "id, created_at, title, category, description, image_url, images, project_url, sort_order, published";
 
 /** Alle Referenzprojekte (inkl. Entwürfe) – nur für Admins (RLS). */
 export async function getAllShowcaseProjects(): Promise<ShowcaseProject[]> {

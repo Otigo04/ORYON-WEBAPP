@@ -37,7 +37,7 @@ export default async function AdminOverviewPage() {
     <>
       <PageHeader
         title="Übersicht"
-        subtitle="Dein zentrales Cockpit – Anfragen, Projekte und Rechnungen auf einen Blick."
+        subtitle="Dein zentrales Cockpit, Anfragen, Projekte und Rechnungen auf einen Blick."
       />
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -78,7 +78,7 @@ export default async function AdminOverviewPage() {
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="text-sm font-semibold text-[#09ed2d]">
-                        {formatEuro(lead.price_min)} – {formatEuro(lead.price_max)}
+                        {formatEuro(lead.price_min)} bis {formatEuro(lead.price_max)}
                       </span>
                       <StatusBadge label={LEAD_STATUS_LABELS[lead.status]} tone={leadTone(lead.status)} />
                     </div>

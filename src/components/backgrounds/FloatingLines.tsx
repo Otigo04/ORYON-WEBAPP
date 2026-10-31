@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react';
 import {
-  Clock,
   Mesh,
   OrthographicCamera,
   PlaneGeometry,
@@ -312,7 +311,7 @@ export default function FloatingLines({
     camera.position.z = 1;
 
     const renderer = new WebGLRenderer({ antialias: true, alpha: false });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
     container.appendChild(renderer.domElement);
@@ -388,7 +387,8 @@ export default function FloatingLines({
     const mesh = new Mesh(geometry, material);
     scene.add(mesh);
 
-    const clock = new Clock();
+    // THREE.Clock ist deprecated → einfache Zeitbasis via performance.now().
+    const startTime = performance.now();
 
     const setSize = () => {
       if (!active) return;
@@ -448,7 +448,13 @@ export default function FloatingLines({
     const renderLoop = () => {
       if (!active) return;
 
-      uniforms.iTime.value = clock.getElapsedTime();
+      // Tab im Hintergrund: nicht rendern (spart GPU/Akku), Loop am Leben halten.
+      if (typeof document !== 'undefined' && document.hidden) {
+        raf = requestAnimationFrame(renderLoop);
+        return;
+      }
+
+      uniforms.iTime.value = (performance.now() - startTime) / 1000;
 
       if (interactive) {
         currentMouseRef.current.lerp(targetMouseRef.current, mouseDamping);

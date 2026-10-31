@@ -2,9 +2,10 @@ import Link from "next/link";
 import { Card, PageHeader } from "@/components/admin/PageHeader";
 import { ConceptForm } from "@/components/admin/ConceptForm";
 import { getCustomers } from "@/lib/admin/customers";
+import { getAllBriefs } from "@/lib/briefs";
 
 export default async function NewConceptPage() {
-  const customers = await getCustomers();
+  const [customers, briefs] = await Promise.all([getCustomers(), getAllBriefs()]);
   return (
     <>
       <PageHeader title="Neues Konzept" />
@@ -15,7 +16,7 @@ export default async function NewConceptPage() {
         {customers.length === 0 ? (
           <p className="text-sm text-white/50">Es sind noch keine Kunden registriert.</p>
         ) : (
-          <ConceptForm customers={customers} />
+          <ConceptForm customers={customers} briefs={briefs} />
         )}
       </Card>
     </>

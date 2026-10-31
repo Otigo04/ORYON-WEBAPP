@@ -19,7 +19,7 @@ export function Footer() {
             <LogoWordmark className="h-12 w-auto" />
           </Link>
           <p className="mt-4 text-sm text-white/60">
-            Websites und Online-Shops für kleine Unternehmen.
+            Websites und Web-Apps für kleine Unternehmen.
           </p>
           <p className="mt-3 text-xs text-white/40">
             Gebaut mit Next.js, TypeScript, Supabase und Vercel.

@@ -15,9 +15,9 @@ export const siteConfig = {
   legalName: "TAS Webworks (Inhaber: Yakup Orhan Tas)",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.tas-webworks.de",
   description:
-    "TAS Webworks baut Websites, Landingpages und Online-Shops für kleine Unternehmen. Mit dem Preisrechner erhältst du in einer Minute einen unverbindlichen Richtpreis.",
+    "TAS Webworks baut Websites, Landingpages und Web-Apps für kleine Unternehmen. Mit dem Preisrechner erhältst du in einer Minute einen unverbindlichen Richtpreis.",
   /** Kurze Tagline für OG-Bild & Social. */
-  tagline: "Websites und Online-Shops aus Berlin",
+  tagline: "Websites und Web-Apps aus Berlin",
   locale: "de_DE",
   /**
    * Kontakt-E-Mail. Noch kein Postfach eingerichtet → sichtbarer Platzhalter.
@@ -36,17 +36,17 @@ export const siteConfig = {
     region: "Berlin",
     country: "DE",
   },
-  /** Geokoordinaten (Berlin-Reinickendorf, Brunowstraße – für LocalBusiness). */
+  /** Geokoordinaten (Berlin-Reinickendorf, Brunowstraße, für LocalBusiness). */
   geo: { latitude: 52.5876, longitude: 13.2887 },
   /**
    * Umsatzsteuer-Identifikationsnummer. `null`, da Kleinunternehmer nach
-   * § 19 UStG – es wird keine USt-IdNr. geführt und keine USt. ausgewiesen.
+   * § 19 UStG, es wird keine USt-IdNr. geführt und keine USt. ausgewiesen.
    */
   vatId: null,
   /** Kleinunternehmer-Regelung nach § 19 UStG – gesteuert in `pricing.config.ts`. */
   smallBusiness: SMALL_BUSINESS_VAT_EXEMPT,
   founder: "Yakup Orhan Tas",
-  foundingYear: "2024",
+  foundingYear: "2026",
 } as const;
 
 /**
@@ -81,7 +81,7 @@ export const siteKeywords = [
   "Webdesign Berlin",
   "Website erstellen lassen",
   "Homepage erstellen lassen",
-  "Online-Shop erstellen lassen",
+  "Web-App erstellen lassen",
   "Landingpage erstellen",
   "One-Pager Webdesign",
   "SEO Optimierung Berlin",

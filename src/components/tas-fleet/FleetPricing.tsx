@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FLEET_APP_URL, FLEET_TIERS } from "@/lib/tas-fleet";
+import { FLEET_TIERS } from "@/lib/tas-fleet";
 
 /**
  * Preis-Sektion mit drei Tarifen und Monatlich-/Jährlich-Umschalter.
@@ -13,8 +13,20 @@ export function FleetPricing() {
   const [yearly, setYearly] = useState(true);
 
   return (
-    <section id="preise" className="relative scroll-mt-28 bg-black px-6 py-24">
-      <div className="mx-auto max-w-6xl">
+    <section
+      id="preise"
+      className="relative scroll-mt-28 overflow-hidden bg-gradient-to-b from-black via-[#03100a] to-black px-6 py-24"
+    >
+      {/* Cleaner, hochwertiger Hintergrund statt flachem Schwarz */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-0 h-[34rem] w-[60rem] -translate-x-1/2 rounded-full bg-[#09ed2d]/[0.08] blur-[140px]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.6] [background-image:linear-gradient(to_right,rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.025)_1px,transparent_1px)] [background-size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]"
+      />
+      <div className="relative mx-auto max-w-6xl">
         <header className="mx-auto mb-12 max-w-2xl text-center">
           <span className="text-sm font-medium uppercase tracking-[0.2em] text-[#22d3ee]">
             Preise
@@ -47,7 +59,7 @@ export function FleetPricing() {
             >
               Jährlich
               <span className="rounded-full bg-[#09ed2d]/20 px-2 py-0.5 text-[11px] font-semibold text-[#09ed2d]">
-                −20 %
+                20 % sparen
               </span>
             </button>
           </div>
@@ -56,8 +68,11 @@ export function FleetPricing() {
         <div className="grid gap-6 lg:grid-cols-3">
           {FLEET_TIERS.map((tier) => {
             const price = yearly ? tier.yearly : tier.monthly;
-            const href = tier.id === "enterprise" ? "/#kontakt" : FLEET_APP_URL;
-            const external = tier.id !== "enterprise";
+            const href = `/dashboard/tas-fleet/bestellen?plan=${tier.id}&interval=${
+              yearly ? "yearly" : "monthly"
+            }`;
+            const external = false;
+            const cta = tier.id === "enterprise" ? "Jetzt bestellen" : tier.cta;
 
             const isEnterprise = tier.id === "enterprise";
 
@@ -67,12 +82,13 @@ export function FleetPricing() {
                 className={`relative flex flex-col rounded-2xl p-7 ${
                   isEnterprise
                     ? // Animierter Rainbow-Rahmen: dunkle Füllung auf padding-box,
-                      // Regenbogen-Verlauf auf border-box – gleiche Technik wie der
+                      // Regenbogen-Verlauf auf border-box, gleiche Technik wie der
                       // RainbowButton, nur als Karten-Rahmen statt Button.
                       "animate-rainbow border-2 border-transparent bg-[linear-gradient(#0a0a0a,#0a0a0a),linear-gradient(90deg,var(--color-1),var(--color-5),var(--color-3),var(--color-4),var(--color-2))] bg-[length:200%] [background-clip:padding-box,border-box] [background-origin:border-box] shadow-[0_0_50px_-12px_rgba(147,51,234,0.45)]"
                     : tier.featured
                       ? "border-2 border-[#09ed2d]/40 bg-gradient-to-b from-[#09ed2d]/[0.08] to-transparent shadow-[0_0_50px_-12px_rgba(9,237,45,0.4)]"
-                      : "border-2 border-white/10 bg-white/[0.03]"
+                      : // Starter: clean & hochwertig, aber bewusst ruhiger als der Pro-Tarif
+                        "border border-white/12 bg-gradient-to-b from-white/[0.07] to-white/[0.02] shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)] backdrop-blur transition hover:border-white/25"
                 }`}
               >
                 {tier.featured && (
@@ -102,7 +118,7 @@ export function FleetPricing() {
                       : "border border-white/15 bg-white/5 text-white hover:border-white/30 hover:bg-white/10"
                   }`}
                 >
-                  {tier.cta}
+                  {cta}
                 </a>
 
                 <ul className="mt-7 flex flex-col gap-3 border-t border-white/10 pt-7">
@@ -132,7 +148,7 @@ export function FleetPricing() {
         </div>
 
         <p className="mt-8 text-center text-sm text-white/40">
-          Alle Preise zzgl. MwSt. · Jederzeit kündbar · Keine Einrichtungsgebühr
+          Alle Preise inkl. MwSt. · Jederzeit kündbar · Keine Einrichtungsgebühr
         </p>
       </div>
     </section>

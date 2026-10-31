@@ -35,7 +35,7 @@ const products: Product[] = [
     eyebrow: "SaaS · Mobility",
     name: "TAS-FLEET",
     description:
-      "Die Web-App für Fuhrpark-, Fahrer- und Dispositionsverwaltung – gebaut für Taxi-, Mietwagen- und Shuttle-Betriebe.",
+      "Die Web-App für Fuhrpark-, Fahrer- und Dispositionsverwaltung, gebaut für Taxi-, Mietwagen- und Shuttle-Betriebe.",
     href: "/leistungen/tas-fleet",
   },
 ];

@@ -10,7 +10,7 @@ import { launchFlags } from "@/lib/site";
 export type Branche = {
   /** URL-Segment unter /branchen/<slug>. */
   slug: string;
-  /** Branche – wird im Dropdown als kleine Überschrift gezeigt. */
+  /** Branche, wird im Dropdown als kleine Überschrift gezeigt. */
   industry: string;
   /** Konkrete Lösung für diese Branche (Card-Titel). */
   solution: string;
@@ -24,7 +24,7 @@ export type Branche = {
   features: string[];
   /**
    * Optionales Ziel-Link-Override. Ist gesetzt, verlinkt das Leistungen-Menü
-   * dorthin statt auf die generische `/branchen/<slug>`-Seite – und es wird
+   * dorthin statt auf die generische `/branchen/<slug>`-Seite, und es wird
    * keine generische Branchenseite generiert (vermeidet doppelten Content).
    * Genutzt für TAS-FLEET, das eine eigene Produktseite besitzt.
    */
@@ -35,10 +35,10 @@ const allBranches: Branche[] = [
   {
     slug: "personenbefoerderung",
     industry: "Personenbeförderung",
-    solution: "TAS-FLEET – deine Flottenlösung",
+    solution: "TAS-FLEET: deine Flottenlösung",
     description:
       "Digitale Flotten-, Buchungs- und Dispositionsverwaltung für Taxi-, Mietwagen- und Shuttle-Unternehmen.",
-    headline: "TAS-FLEET – Die digitale Flottenlösung für die Personenbeförderung",
+    headline: "TAS-FLEET: Die digitale Flottenlösung für die Personenbeförderung",
     intro:
       "Schluss mit Zettelwirtschaft und Telefonchaos. TAS-FLEET bündelt Buchung, Disposition und Abrechnung in einer Web-App für Taxi-, Mietwagen- und Shuttle-Betriebe.",
     features: [
@@ -52,16 +52,16 @@ const allBranches: Branche[] = [
   {
     slug: "handel",
     industry: "Einzel- & Großhandel",
-    solution: "Dein eigener One-Pager oder Online-Shop",
+    solution: "Website & Produkt-Schaufenster",
     description:
-      "Vom repräsentativen One-Pager bis zum vollwertigen Online-Shop mit Zahlungsanbindung und Lagerübersicht.",
-    headline: "Online-Präsenz & Shop für Einzel- und Großhandel",
+      "Vom One-Pager bis zur mehrseitigen Website, die dein Sortiment zeigt und Anfragen ermöglicht.",
+    headline: "Online-Präsenz für Einzel- und Großhandel",
     intro:
-      "Ob digitale Visitenkarte oder voller Verkaufskanal: Ich baue dir eine Webpräsenz, die zu deinem Geschäft passt – vom One-Pager bis zum Online-Shop mit Zahlungsanbindung und Lagerübersicht.",
+      "Digitale Visitenkarte und Produkt-Schaufenster in einem: Ich baue dir eine Website, die dein Geschäft und dein Sortiment verständlich zeigt und Kunden klare Wege zur Anfrage gibt.",
     features: [
-      "Repräsentativer One-Pager oder vollwertiger Shop",
-      "Sichere Zahlungsanbindung (Stripe & Co.)",
-      "Produkt- & Lagerverwaltung",
+      "Website, die deine Marke und dein Sortiment zeigt",
+      "Produkt- und Sortiments-Schaufenster mit klaren Anfrage-Wegen",
+      "Anbindung an WhatsApp und Kontaktformular",
       "Grundlegende SEO für lokale und überregionale Suche",
     ],
   },
@@ -95,7 +95,7 @@ export function getBranche(slug: string): Branche | undefined {
   return branches.find((b) => b.slug === slug);
 }
 
-/** Ziel-URL eines Leistungs-Eintrags – eigener `href` oder generische Seite. */
+/** Ziel-URL eines Leistungs-Eintrags, eigener `href` oder generische Seite. */
 export function brancheHref(branche: Branche): string {
   return branche.href ?? `/branchen/${branche.slug}`;
 }

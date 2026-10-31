@@ -34,12 +34,17 @@ export type Profile = {
   email: string | null;
   company: string | null;
   phone: string | null;
+  street: string | null;
+  postal_code: string | null;
+  city: string | null;
+  country: string | null;
+  vat_id: string | null;
 };
 
 /**
  * Lädt das Profil des eingeloggten Nutzers (RLS-abgesichert: liefert
  * ausschließlich den eigenen Datensatz). Ohne Supabase-Konfiguration, ohne
- * Login oder bei einem Fehler wird `null` zurückgegeben – die UI fällt dann auf
+ * Login oder bei einem Fehler wird `null` zurückgegeben, die UI fällt dann auf
  * eine generische Begrüßung zurück.
  */
 export async function getMyProfile(): Promise<Profile | null> {
@@ -57,7 +62,7 @@ export async function getMyProfile(): Promise<Profile | null> {
 
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, full_name, email, company, phone")
+      .select("id, full_name, email, company, phone, street, postal_code, city, country, vat_id")
       .eq("id", user.id)
       .maybeSingle();
 
